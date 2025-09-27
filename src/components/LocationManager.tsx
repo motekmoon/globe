@@ -1,13 +1,7 @@
 import React from 'react';
 import LocationDot from './LocationDot';
 import LocationLine from './LocationLine';
-
-export interface Location {
-  id: string;
-  name: string;
-  lat: number;
-  lng: number;
-}
+import { Location } from '../lib/supabase';
 
 interface LocationManagerProps {
   locations: Location[];
@@ -29,7 +23,7 @@ const LocationManager: React.FC<LocationManagerProps> = ({ locations }) => {
   return (
     <group>
       {locations.map((location) => {
-        const position = latLngToVector3(location.lat, location.lng);
+        const position = latLngToVector3(location.latitude, location.longitude);
         return (
           <group key={location.id}>
             <LocationDot 
