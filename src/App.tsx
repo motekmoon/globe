@@ -266,7 +266,7 @@ function App() {
                   boxShadow="lg"
                 >
                   <HStack justify="space-between" align="center" mb={4}>
-                    <Heading size="md" color="white">Location Manager</Heading>
+                    <Heading size="md" color="white" fontFamily="'SUSE Mono', monospace">Location Manager</Heading>
                     <Button
                       size="sm"
                       h="25px"
