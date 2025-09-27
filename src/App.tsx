@@ -195,7 +195,7 @@ function App() {
           zIndex={10}
           width="100%"
           maxWidth="900px"
-          px={4}
+          p={4}
         >
           <LocationInput onLocationAdd={handleLocationAdd} />
           {loading && (
