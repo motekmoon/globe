@@ -264,10 +264,13 @@ function App() {
                   boxShadow="lg"
                 >
                   <HStack justify="space-between" align="center" mb={4}>
-                    <Heading size="md">Location Manager</Heading>
+                    <Heading size="md" color="white">Location Manager</Heading>
                     <Button
                       size="sm"
+                      h="25px"
+                      colorScheme="gray"
                       onClick={() => setIsDrawerOpen(false)}
+                      fontSize="0.7rem"
                     >
                       ✕
                     </Button>
@@ -285,10 +288,11 @@ function App() {
                       >
                         <HStack justify="space-between" align="center">
                           <VStack align="start" gap={1} flex={1}>
-                            <Text fontWeight="bold">
+                            <Text fontWeight="bold" color="white" fontSize="0.8rem">
                               {editingLocation?.id === location.id ? (
                                 <Input
-                                  size="sm"
+                                  size="xs"
+                                  variant="flushed"
                                   value={editingLocation.name}
                                   onChange={(e) =>
                                     setEditingLocation({
@@ -296,6 +300,9 @@ function App() {
                                       name: e.target.value,
                                     })
                                   }
+                                  bg="transparent"
+                                  color="white"
+                                  _placeholder={{ color: "gray.400" }}
                                 />
                               ) : (
                                 location.name
@@ -304,7 +311,8 @@ function App() {
                             <Text fontSize="sm" color="gray.300">
                               Lat: {editingLocation?.id === location.id ? (
                                 <Input
-                                  size="sm"
+                                  size="xs"
+                                  variant="flushed"
                                   type="number"
                                   value={editingLocation.latitude}
                                   onChange={(e) =>
@@ -313,6 +321,10 @@ function App() {
                                       latitude: parseFloat(e.target.value),
                                     })
                                   }
+                                  bg="transparent"
+                                  color="white"
+                                  _placeholder={{ color: "gray.400" }}
+                                  w="80px"
                                 />
                               ) : (
                                 location.latitude.toFixed(4)
@@ -321,7 +333,8 @@ function App() {
                             <Text fontSize="sm" color="gray.300">
                               Lng: {editingLocation?.id === location.id ? (
                                 <Input
-                                  size="sm"
+                                  size="xs"
+                                  variant="flushed"
                                   type="number"
                                   value={editingLocation.longitude}
                                   onChange={(e) =>
@@ -330,6 +343,10 @@ function App() {
                                       longitude: parseFloat(e.target.value),
                                     })
                                   }
+                                  bg="transparent"
+                                  color="white"
+                                  _placeholder={{ color: "gray.400" }}
+                                  w="80px"
                                 />
                               ) : (
                                 location.longitude.toFixed(4)
@@ -341,32 +358,52 @@ function App() {
                             {editingLocation?.id === location.id ? (
                               <Button
                                 size="sm"
+                                h="25px"
                                 colorScheme="green"
                                 onClick={() => handleSaveLocation(editingLocation)}
+                                fontWeight="600"
+                                fontSize="0.7rem"
+                                borderRadius="md"
+                                whiteSpace="nowrap"
                               >
                                 Save
                               </Button>
                             ) : (
                               <Button
                                 size="sm"
+                                h="25px"
                                 colorScheme="blue"
                                 onClick={() => handleEditLocation(location)}
+                                fontWeight="600"
+                                fontSize="0.7rem"
+                                borderRadius="md"
+                                whiteSpace="nowrap"
                               >
                                 Edit
                               </Button>
                             )}
                             <Button
                               size="sm"
+                              h="25px"
                               colorScheme={hiddenLocations.has(location.id) ? "red" : "orange"}
                               onClick={() => handleHideLocation(location.id)}
+                              fontWeight="600"
+                              fontSize="0.7rem"
+                              borderRadius="md"
+                              whiteSpace="nowrap"
                             >
                               {hiddenLocations.has(location.id) ? "Show" : "Hide"}
                             </Button>
                             <Button
                               size="sm"
+                              h="25px"
                               colorScheme="red"
                               variant="outline"
                               onClick={() => handleDeleteLocation(location.id)}
+                              fontWeight="600"
+                              fontSize="0.7rem"
+                              borderRadius="md"
+                              whiteSpace="nowrap"
                             >
                               Delete
                             </Button>
