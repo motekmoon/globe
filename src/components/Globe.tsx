@@ -32,8 +32,10 @@ const Globe: React.FC<GlobeProps> = ({ locations }) => {
         <meshPhongMaterial
           map={worldMapTexture}
           color="#ffffff"
-          shininess={100}
+          shininess={50}
           transparent={false}
+          emissive="#333333"
+          emissiveIntensity={0.3}
         />
       </mesh>
       <LocationManager locations={locations} />

@@ -152,9 +152,9 @@ function App() {
             }}
           >
             <Suspense fallback={null}>
-              <ambientLight intensity={0.6} />
-              <directionalLight position={[10, 10, 5]} intensity={1.2} />
-              <pointLight position={[-10, -10, -5]} intensity={0.5} />
+              <ambientLight intensity={1.2} />
+              <directionalLight position={[10, 10, 5]} intensity={2.0} />
+              <pointLight position={[-10, -10, -5]} intensity={1.0} />
 
               <Globe locations={locations} />
 
