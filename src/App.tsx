@@ -290,7 +290,7 @@ function App() {
                       >
                         <HStack justify="space-between" align="center">
                           <VStack align="start" gap={1} flex={1}>
-                            <Text fontWeight="bold" color="white" fontSize="0.8rem">
+                            <Text fontWeight="bold" color="white" fontSize="0.7rem">
                               {editingLocation?.id === location.id ? (
                                 <Input
                                   size="xs"
@@ -310,7 +310,7 @@ function App() {
                                 location.name
                               )}
                             </Text>
-                            <Text fontSize="sm" color="gray.300">
+                            <Text fontSize="xs" color="gray.300">
                               Lat: {editingLocation?.id === location.id ? (
                                 <Input
                                   size="xs"
@@ -332,7 +332,7 @@ function App() {
                                 location.latitude.toFixed(4)
                               )}
                             </Text>
-                            <Text fontSize="sm" color="gray.300">
+                            <Text fontSize="xs" color="gray.300">
                               Lng: {editingLocation?.id === location.id ? (
                                 <Input
                                   size="xs"
