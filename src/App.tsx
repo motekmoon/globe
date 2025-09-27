@@ -78,25 +78,40 @@ function App() {
         height="100vh"
         bg="linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)"
       >
-            {/* Logo positioned in upper left */}
+            {/* Logo and title positioned in upper left */}
             <Box
               position="absolute"
               top="5px"
               left="5px"
               zIndex={10}
-              width="30px"
-              height="30px"
+              display="flex"
+              alignItems="center"
+              gap="8px"
             >
-              <img 
-                src="/logo.PNG" 
-                alt="Globe" 
-                style={{ 
-                  width: "100%", 
-                  height: "100%", 
-                  objectFit: "contain",
-                  background: "transparent"
-                }} 
-              />
+              <Box
+                width="30px"
+                height="30px"
+              >
+                <img 
+                  src="/logo.PNG" 
+                  alt="Globe" 
+                  style={{ 
+                    width: "100%", 
+                    height: "100%", 
+                    objectFit: "contain",
+                    background: "transparent"
+                  }} 
+                />
+              </Box>
+              <Heading
+                color="white"
+                fontSize="1.2rem"
+                fontWeight="400"
+                fontFamily="'SUSE Mono', monospace"
+                margin="0"
+              >
+                Globe
+              </Heading>
             </Box>
 
         {/* Input controls */}
