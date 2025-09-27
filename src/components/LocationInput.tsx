@@ -121,18 +121,20 @@ const LocationInput: React.FC<LocationInputProps> = ({ onLocationAdd }) => {
       <HStack gap={2} align="center">
         {/* Address Input */}
         <HStack gap={2} flex={1}>
-          <Input
-            placeholder="Enter city or address..."
-            value={address}
-            onChange={(e) => setAddress(e.target.value)}
-            disabled={isLoading}
-            size="xs"
-            variant="flushed"
-            bg="transparent"
-            color="white"
-            _placeholder={{ color: "gray.400" }}
-            flex={1}
-          />
+              <Input
+                id="address-input"
+                name="address"
+                placeholder="Enter city or address..."
+                value={address}
+                onChange={(e) => setAddress(e.target.value)}
+                disabled={isLoading}
+                size="xs"
+                variant="flushed"
+                bg="transparent"
+                color="white"
+                _placeholder={{ color: "gray.400" }}
+                flex={1}
+              />
           <Button
             onClick={handleAddressSubmit}
             disabled={isLoading}
@@ -154,22 +156,26 @@ const LocationInput: React.FC<LocationInputProps> = ({ onLocationAdd }) => {
 
         {/* Coordinate Inputs */}
         <HStack gap={2} flex={1}>
+              <Input
+                id="latitude-input"
+                name="latitude"
+                type="number"
+                placeholder="Latitude"
+                value={lat}
+                onChange={(e) => setLat(e.target.value)}
+                step="any"
+                min="-90"
+                max="90"
+                size="xs"
+                variant="flushed"
+                bg="transparent"
+                w="80px"
+                color="white"
+                _placeholder={{ color: "gray.400" }}
+              />
           <Input
-            type="number"
-            placeholder="Latitude"
-            value={lat}
-            onChange={(e) => setLat(e.target.value)}
-            step="any"
-            min="-90"
-            max="90"
-            size="xs"
-            variant="flushed"
-            bg="transparent"
-            w="80px"
-            color="white"
-            _placeholder={{ color: "gray.400" }}
-          />
-          <Input
+            id="longitude-input"
+            name="longitude"
             type="number"
             placeholder="Longitude"
             value={lng}
