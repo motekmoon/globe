@@ -13,16 +13,18 @@ const LocationLine: React.FC<LocationLineProps> = ({ start, end, label }) => {
   const lineRef = useRef<THREE.Line>(null);
   const textRef = useRef<THREE.Mesh>(null);
   const { camera } = useThree();
-  const [lineLength, setLineLength] = useState(0);
+  const [lineLength, setLineLength] = useState(0.1); // Start with a small visible line
   const [showLabel, setShowLabel] = useState(false);
 
   // Create line geometry
-  const [lineGeometry] = useState(() => 
-    new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(...start),
-      new THREE.Vector3(...start) // Start with same point for animation
-    ])
-  );
+  const [lineGeometry] = useState(() => {
+    const geometry = new THREE.BufferGeometry();
+    // Start with a small visible line segment
+    const startPoint = new THREE.Vector3(...start);
+    const endPoint = new THREE.Vector3(...start);
+    geometry.setFromPoints([startPoint, endPoint]);
+    return geometry;
+  });
 
   // Animate line extension and make text always face camera
   useFrame((state, delta) => {
@@ -70,8 +72,7 @@ const LocationLine: React.FC<LocationLineProps> = ({ start, end, label }) => {
             new THREE.LineBasicMaterial({
               color: "#ffffff",
               transparent: true,
-              opacity: 0.6,
-              linewidth: 1,
+              opacity: 1.0,
             })
           )
         }
