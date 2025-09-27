@@ -80,7 +80,7 @@ const LocationLine: React.FC<LocationLineProps> = ({ start, end, label }) => {
       {showLabel && (
         <Text
           ref={textRef}
-          position={[end[0] * 1.1, end[1] * 1.1, end[2] * 1.1]}
+          position={[end[0] * 1.5, end[1] * 1.5, end[2] * 1.5]}
           fontSize={0.06}
           color="#ffffff"
           anchorX="center"
