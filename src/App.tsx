@@ -10,20 +10,6 @@ import {
   Input,
   Button,
   Text,
-  Drawer,
-  DrawerBody,
-  DrawerHeader,
-  DrawerOverlay,
-  DrawerContent,
-  DrawerCloseButton,
-  Table,
-  Thead,
-  Tbody,
-  Tr,
-  Th,
-  Td,
-  IconButton,
-  useDisclosure,
   createSystem,
   defaultConfig,
 } from "@chakra-ui/react";
@@ -39,7 +25,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [hiddenLocations, setHiddenLocations] = useState<Set<string>>(new Set());
   const [editingLocation, setEditingLocation] = useState<Location | null>(null);
-  const { isOpen, onOpen, onClose } = useDisclosure();
+  const [showLocationManager, setShowLocationManager] = useState(false);
 
   // Load locations from Supabase on component mount
   useEffect(() => {
@@ -166,13 +152,13 @@ function App() {
               </Heading>
             </Box>
 
-            {/* Locations drawer button */}
+            {/* Locations manager button */}
             <Button
               position="absolute"
               top="5px"
               right="5px"
               zIndex={10}
-              onClick={onOpen}
+              onClick={() => setShowLocationManager(true)}
               size="sm"
               colorScheme="blue"
             >
@@ -234,110 +220,140 @@ function App() {
           </Canvas>
             </Box>
 
-            {/* Locations Drawer */}
-            <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
-              <DrawerOverlay />
-              <DrawerContent>
-                <DrawerCloseButton />
-                <DrawerHeader>Location Manager</DrawerHeader>
-                <DrawerBody>
-                  <Table variant="simple" size="sm">
-                    <Thead>
-                      <Tr>
-                        <Th>Name</Th>
-                        <Th>Latitude</Th>
-                        <Th>Longitude</Th>
-                        <Th>Actions</Th>
-                      </Tr>
-                    </Thead>
-                    <Tbody>
-                      {locations.map((location) => (
-                        <Tr key={location.id}>
-                          <Td>
-                            {editingLocation?.id === location.id ? (
-                              <Input
-                                size="sm"
-                                value={editingLocation.name}
-                                onChange={(e) =>
-                                  setEditingLocation({
-                                    ...editingLocation,
-                                    name: e.target.value,
-                                  })
-                                }
-                              />
-                            ) : (
-                              location.name
-                            )}
-                          </Td>
-                          <Td>
-                            {editingLocation?.id === location.id ? (
-                              <Input
-                                size="sm"
-                                type="number"
-                                value={editingLocation.latitude}
-                                onChange={(e) =>
-                                  setEditingLocation({
-                                    ...editingLocation,
-                                    latitude: parseFloat(e.target.value),
-                                  })
-                                }
-                              />
-                            ) : (
-                              location.latitude.toFixed(4)
-                            )}
-                          </Td>
-                          <Td>
-                            {editingLocation?.id === location.id ? (
-                              <Input
-                                size="sm"
-                                type="number"
-                                value={editingLocation.longitude}
-                                onChange={(e) =>
-                                  setEditingLocation({
-                                    ...editingLocation,
-                                    longitude: parseFloat(e.target.value),
-                                  })
-                                }
-                              />
-                            ) : (
-                              location.longitude.toFixed(4)
-                            )}
-                          </Td>
-                          <Td>
-                            <HStack spacing={1}>
+            {/* Location Manager Modal */}
+            {showLocationManager && (
+              <Box
+                position="fixed"
+                top="0"
+                left="0"
+                right="0"
+                bottom="0"
+                bg="rgba(0, 0, 0, 0.8)"
+                zIndex={1000}
+                display="flex"
+                alignItems="center"
+                justifyContent="center"
+              >
+                <Box
+                  bg="gray.800"
+                  p={6}
+                  borderRadius="md"
+                  maxW="800px"
+                  maxH="80vh"
+                  overflow="auto"
+                  position="relative"
+                >
+                  <Button
+                    position="absolute"
+                    top={2}
+                    right={2}
+                    size="sm"
+                    onClick={() => setShowLocationManager(false)}
+                  >
+                    ✕
+                  </Button>
+                  
+                  <Heading size="md" mb={4}>
+                    Location Manager
+                  </Heading>
+                  
+                  <VStack gap={3} align="stretch">
+                    {locations.map((location) => (
+                      <Box
+                        key={location.id}
+                        p={3}
+                        border="1px solid"
+                        borderColor="gray.600"
+                        borderRadius="md"
+                        bg="gray.700"
+                      >
+                        <HStack justify="space-between" align="center">
+                          <VStack align="start" gap={1} flex={1}>
+                            <Text fontWeight="bold">
                               {editingLocation?.id === location.id ? (
-                                <Button
-                                  size="xs"
-                                  colorScheme="green"
-                                  onClick={() => handleSaveLocation(editingLocation)}
-                                >
-                                  Save
-                                </Button>
+                                <Input
+                                  size="sm"
+                                  value={editingLocation.name}
+                                  onChange={(e) =>
+                                    setEditingLocation({
+                                      ...editingLocation,
+                                      name: e.target.value,
+                                    })
+                                  }
+                                />
                               ) : (
-                                <Button
-                                  size="xs"
-                                  colorScheme="blue"
-                                  onClick={() => handleEditLocation(location)}
-                                >
-                                  Edit
-                                </Button>
+                                location.name
                               )}
+                            </Text>
+                            <Text fontSize="sm" color="gray.300">
+                              Lat: {editingLocation?.id === location.id ? (
+                                <Input
+                                  size="sm"
+                                  type="number"
+                                  value={editingLocation.latitude}
+                                  onChange={(e) =>
+                                    setEditingLocation({
+                                      ...editingLocation,
+                                      latitude: parseFloat(e.target.value),
+                                    })
+                                  }
+                                />
+                              ) : (
+                                location.latitude.toFixed(4)
+                              )}
+                            </Text>
+                            <Text fontSize="sm" color="gray.300">
+                              Lng: {editingLocation?.id === location.id ? (
+                                <Input
+                                  size="sm"
+                                  type="number"
+                                  value={editingLocation.longitude}
+                                  onChange={(e) =>
+                                    setEditingLocation({
+                                      ...editingLocation,
+                                      longitude: parseFloat(e.target.value),
+                                    })
+                                  }
+                                />
+                              ) : (
+                                location.longitude.toFixed(4)
+                              )}
+                            </Text>
+                          </VStack>
+                          
+                          <HStack gap={2}>
+                            {editingLocation?.id === location.id ? (
                               <Button
-                                size="xs"
-                                colorScheme={hiddenLocations.has(location.id) ? "red" : "orange"}
-                                onClick={() => handleHideLocation(location.id)}
+                                size="sm"
+                                colorScheme="green"
+                                onClick={() => handleSaveLocation(editingLocation)}
                               >
-                                {hiddenLocations.has(location.id) ? "Show" : "Hide"}
+                                Save
                               </Button>
-                            </HStack>
-                          </Td>
-                        </Tr>
-                      ))}
-                    </Tbody>
-                  </Table>
-                </DrawerBody>
-              </DrawerContent>
-            </Drawer>
+                            ) : (
+                              <Button
+                                size="sm"
+                                colorScheme="blue"
+                                onClick={() => handleEditLocation(location)}
+                              >
+                                Edit
+                              </Button>
+                            )}
+                            <Button
+                              size="sm"
+                              colorScheme={hiddenLocations.has(location.id) ? "red" : "orange"}
+                              onClick={() => handleHideLocation(location.id)}
+                            >
+                              {hiddenLocations.has(location.id) ? "Show" : "Hide"}
+                            </Button>
+                          </HStack>
+                        </HStack>
+                      </Box>
+                    ))}
+                  </VStack>
+                </Box>
+              </Box>
+            )}
           </Box>
         </ChakraProvider>
       );
