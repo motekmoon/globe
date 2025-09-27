@@ -1,4 +1,4 @@
-import React, { useRef, useState } from 'react';
+import React, { useRef, useState, useMemo } from 'react';
 import { useFrame, useThree } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import * as THREE from 'three';
@@ -16,15 +16,21 @@ const LocationLine: React.FC<LocationLineProps> = ({ start, end, label }) => {
   const [lineLength, setLineLength] = useState(0.1); // Start with a small visible line
   const [showLabel, setShowLabel] = useState(false);
 
-  // Create line geometry
-  const [lineGeometry] = useState(() => {
+  // Debug: Log when component mounts
+  React.useEffect(() => {
+    console.log('LocationLine mounted:', { start, end, label });
+  }, [start, end, label]);
+
+  // Create line geometry with proper setup
+  const lineGeometry = useMemo(() => {
     const geometry = new THREE.BufferGeometry();
-    // Start with a small visible line segment
-    const startPoint = new THREE.Vector3(...start);
-    const endPoint = new THREE.Vector3(...start);
-    geometry.setFromPoints([startPoint, endPoint]);
+    const points = [
+      new THREE.Vector3(...start),
+      new THREE.Vector3(...start) // Start with same point for animation
+    ];
+    geometry.setFromPoints(points);
     return geometry;
-  });
+  }, [start]);
 
   // Animate line extension and make text always face camera
   useFrame((state, delta) => {
@@ -47,6 +53,11 @@ const LocationLine: React.FC<LocationLineProps> = ({ start, end, label }) => {
         positions[4] = currentEnd[1];
         positions[5] = currentEnd[2];
         lineGeometry.attributes.position.needsUpdate = true;
+        
+        // Debug: Log line updates
+        if (newLength > 0.5) {
+          console.log('Line extending:', { newLength, currentEnd, positions });
+        }
         
         // Show label when line is fully extended
         if (newLength >= 1 && !showLabel) {
@@ -71,8 +82,7 @@ const LocationLine: React.FC<LocationLineProps> = ({ start, end, label }) => {
             lineGeometry,
             new THREE.LineBasicMaterial({
               color: "#ffffff",
-              transparent: true,
-              opacity: 1.0,
+              transparent: false,
             })
           )
         }
