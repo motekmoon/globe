@@ -47,17 +47,34 @@ const LocationLine: React.FC<LocationLineProps> = ({ start, end, label }) => {
           start[2] + (end[2] - start[2]) * newLength
         ];
         
-        // Update line geometry
-        const positions = lineGeometry.attributes.position.array as Float32Array;
-        positions[3] = currentEnd[0];
-        positions[4] = currentEnd[1];
-        positions[5] = currentEnd[2];
-        lineGeometry.attributes.position.needsUpdate = true;
+        // Position cylinder at midpoint between start and current end
+        const midX = (start[0] + currentEnd[0]) / 2;
+        const midY = (start[1] + currentEnd[1]) / 2;
+        const midZ = (start[2] + currentEnd[2]) / 2;
         
-        // Debug: Log line updates
-        if (newLength > 0.5) {
-          console.log('Line extending:', { newLength, currentEnd, positions });
-        }
+        lineRef.current.position.set(midX, midY, midZ);
+        
+        // Calculate distance for scale
+        const distance = Math.sqrt(
+          Math.pow(currentEnd[0] - start[0], 2) +
+          Math.pow(currentEnd[1] - start[1], 2) +
+          Math.pow(currentEnd[2] - start[2], 2)
+        );
+        
+        // Scale cylinder to match distance
+        lineRef.current.scale.set(1, distance, 1);
+        
+        // Orient cylinder to point from start to end
+        const direction = new THREE.Vector3(
+          currentEnd[0] - start[0],
+          currentEnd[1] - start[1],
+          currentEnd[2] - start[2]
+        ).normalize();
+        
+        const up = new THREE.Vector3(0, 1, 0);
+        const quaternion = new THREE.Quaternion();
+        quaternion.setFromUnitVectors(up, direction);
+        lineRef.current.quaternion.copy(quaternion);
         
         // Show label when line is fully extended
         if (newLength >= 1 && !showLabel) {
@@ -75,18 +92,10 @@ const LocationLine: React.FC<LocationLineProps> = ({ start, end, label }) => {
 
   return (
     <group>
-      <primitive
-        ref={lineRef}
-        object={
-          new THREE.Line(
-            lineGeometry,
-            new THREE.LineBasicMaterial({
-              color: "#ffffff",
-              transparent: false,
-            })
-          )
-        }
-      />
+      <mesh ref={lineRef}>
+        <cylinderGeometry args={[0.01, 0.01, 1, 8]} />
+        <meshBasicMaterial color="#ffffff" />
+      </mesh>
 
       {showLabel && (
         <Text

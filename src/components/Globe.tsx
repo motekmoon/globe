@@ -26,22 +26,20 @@ const Globe: React.FC<GlobeProps> = ({ locations }) => {
   });
 
   return (
-    <>
-      <group ref={groupRef}>
-        <mesh>
-          <sphereGeometry args={[2, 64, 32]} />
-          <meshPhongMaterial
-            map={worldMapTexture}
-            color="#ffffff"
-            shininess={50}
-            transparent={false}
-            emissive="#333333"
-            emissiveIntensity={0.3}
-          />
-        </mesh>
-      </group>
+    <group ref={groupRef}>
+      <mesh>
+        <sphereGeometry args={[2, 64, 32]} />
+        <meshPhongMaterial
+          map={worldMapTexture}
+          color="#ffffff"
+          shininess={50}
+          transparent={false}
+          emissive="#333333"
+          emissiveIntensity={0.3}
+        />
+      </mesh>
       <LocationManager locations={locations} />
-    </>
+    </group>
   );
 };
 
