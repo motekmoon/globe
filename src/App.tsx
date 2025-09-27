@@ -189,7 +189,7 @@ function App() {
         {/* Input controls */}
         <Box
           position="absolute"
-          top="40px"
+          top="5px"
           left="50%"
           transform="translateX(-50%)"
           zIndex={10}
