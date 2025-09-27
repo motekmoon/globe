@@ -1,5 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
-import { indexedDBStorage, Location as IndexedDBLocation } from './indexeddb'
+import { indexedDBStorage } from './indexeddb'
 
 // For local development, use mock values or disable Supabase
 const isDevelopment = process.env.NODE_ENV === 'development'
@@ -108,6 +108,13 @@ export const locationService = {
         storeLocations(locations)
         return newLocation
       }
+    }
+
+    const newLocation: Location = {
+      id: Date.now().toString(),
+      ...location,
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     }
 
     try {
