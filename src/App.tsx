@@ -398,7 +398,6 @@ function App() {
                               size="sm"
                               h="25px"
                               colorScheme="red"
-                              variant="outline"
                               onClick={() => handleDeleteLocation(location.id)}
                               fontWeight="600"
                               fontSize="0.7rem"
