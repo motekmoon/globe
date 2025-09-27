@@ -124,7 +124,7 @@ const LocationInput: React.FC<LocationInputProps> = ({ onLocationAdd }) => {
               <Input
                 id="address-input"
                 name="address"
-                autocomplete="street-address"
+                autoComplete="street-address"
                 placeholder="Enter city or address..."
                 value={address}
                 onChange={(e) => setAddress(e.target.value)}
@@ -160,7 +160,7 @@ const LocationInput: React.FC<LocationInputProps> = ({ onLocationAdd }) => {
               <Input
                 id="latitude-input"
                 name="latitude"
-                autocomplete="off"
+                autoComplete="off"
                 type="number"
                 placeholder="Latitude"
                 value={lat}
@@ -178,7 +178,7 @@ const LocationInput: React.FC<LocationInputProps> = ({ onLocationAdd }) => {
           <Input
             id="longitude-input"
             name="longitude"
-            autocomplete="off"
+            autoComplete="off"
             type="number"
             placeholder="Longitude"
             value={lng}
