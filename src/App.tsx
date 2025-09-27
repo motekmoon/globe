@@ -190,11 +190,11 @@ function App() {
         <Box
           position="absolute"
           top="5px"
-          left={isDrawerOpen ? "10px" : "50%"}
-          transform={isDrawerOpen ? "none" : "translateX(-50%)"}
+          left="50%"
+          transform="translateX(-50%)"
           zIndex={10}
-          width={isDrawerOpen ? "calc(100vw - 420px)" : "100%"}
-          maxWidth={isDrawerOpen ? "calc(100vw - 420px)" : "900px"}
+          width="100%"
+          maxWidth="900px"
           px={4}
         >
           <LocationInput onLocationAdd={handleLocationAdd} />
