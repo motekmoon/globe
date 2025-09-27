@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import { useFrame } from '@react-three/fiber';
+import { useFrame, useThree } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import * as THREE from 'three';
 
@@ -11,6 +11,8 @@ interface LocationLineProps {
 
 const LocationLine: React.FC<LocationLineProps> = ({ start, end, label }) => {
   const lineRef = useRef<THREE.Line>(null);
+  const textRef = useRef<THREE.Mesh>(null);
+  const { camera } = useThree();
   const [lineLength, setLineLength] = useState(0);
   const [showLabel, setShowLabel] = useState(false);
 
@@ -22,7 +24,7 @@ const LocationLine: React.FC<LocationLineProps> = ({ start, end, label }) => {
     ])
   );
 
-  // Animate line extension
+  // Animate line extension and make text always face camera
   useFrame((state, delta) => {
     if (lineRef.current) {
       // Extend line over time
@@ -50,6 +52,12 @@ const LocationLine: React.FC<LocationLineProps> = ({ start, end, label }) => {
         }
       }
     }
+
+    // Make text always face the camera (billboarding)
+    if (textRef.current && showLabel) {
+      // Simple billboarding: make text always face camera
+      textRef.current.lookAt(camera.position);
+    }
   });
 
   return (
@@ -71,6 +79,7 @@ const LocationLine: React.FC<LocationLineProps> = ({ start, end, label }) => {
 
       {showLabel && (
         <Text
+          ref={textRef}
           position={[end[0] * 1.1, end[1] * 1.1, end[2] * 1.1]}
           fontSize={0.06}
           color="#ffffff"
