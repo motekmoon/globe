@@ -25,7 +25,7 @@ function App() {
   const [loading, setLoading] = useState(true);
   const [hiddenLocations, setHiddenLocations] = useState<Set<string>>(new Set());
   const [editingLocation, setEditingLocation] = useState<Location | null>(null);
-  const [showLocationManager, setShowLocationManager] = useState(false);
+  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
 
   // Load locations from Supabase on component mount
   useEffect(() => {
@@ -152,13 +152,13 @@ function App() {
               </Heading>
             </Box>
 
-            {/* Locations manager button */}
+            {/* Locations drawer button */}
             <Button
               position="absolute"
               top="5px"
               right="5px"
               zIndex={10}
-              onClick={() => setShowLocationManager(true)}
+              onClick={() => setIsDrawerOpen(true)}
               size="sm"
               colorScheme="blue"
             >
@@ -220,42 +220,39 @@ function App() {
           </Canvas>
             </Box>
 
-            {/* Location Manager Modal */}
-            {showLocationManager && (
+            {/* Location Manager Drawer */}
+            {isDrawerOpen && (
               <Box
                 position="fixed"
                 top="0"
                 left="0"
                 right="0"
                 bottom="0"
-                bg="rgba(0, 0, 0, 0.8)"
+                bg="rgba(0, 0, 0, 0.5)"
                 zIndex={1000}
-                display="flex"
-                alignItems="center"
-                justifyContent="center"
+                onClick={() => setIsDrawerOpen(false)}
               >
                 <Box
+                  position="absolute"
+                  right="0"
+                  top="0"
+                  bottom="0"
+                  width="400px"
                   bg="gray.800"
                   p={6}
-                  borderRadius="md"
-                  maxW="800px"
-                  maxH="80vh"
                   overflow="auto"
-                  position="relative"
+                  onClick={(e) => e.stopPropagation()}
+                  boxShadow="lg"
                 >
-                  <Button
-                    position="absolute"
-                    top={2}
-                    right={2}
-                    size="sm"
-                    onClick={() => setShowLocationManager(false)}
-                  >
-                    ✕
-                  </Button>
-                  
-                  <Heading size="md" mb={4}>
-                    Location Manager
-                  </Heading>
+                  <HStack justify="space-between" align="center" mb={4}>
+                    <Heading size="md">Location Manager</Heading>
+                    <Button
+                      size="sm"
+                      onClick={() => setIsDrawerOpen(false)}
+                    >
+                      ✕
+                    </Button>
+                  </HStack>
                   
                   <VStack gap={3} align="stretch">
                     {locations.map((location) => (
