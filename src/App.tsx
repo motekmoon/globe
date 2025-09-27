@@ -257,7 +257,7 @@ function App() {
                   top="0"
                   bottom="0"
                   width="400px"
-                  bg="gray.800"
+                  bg="rgba(0, 0, 0, 0.5)"
                   p={6}
                   overflow="auto"
                   onClick={(e) => e.stopPropagation()}
@@ -282,9 +282,9 @@ function App() {
                         key={location.id}
                         p={3}
                         border="1px solid"
-                        borderColor="gray.600"
+                        borderColor="rgba(255, 255, 255, 0.2)"
                         borderRadius="md"
-                        bg="gray.700"
+                        bg="rgba(0, 0, 0, 0.3)"
                       >
                         <HStack justify="space-between" align="center">
                           <VStack align="start" gap={1} flex={1}>
