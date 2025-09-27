@@ -172,17 +172,19 @@ function App() {
             </Box>
 
             {/* Locations drawer button */}
-            <Button
-              position="absolute"
-              top="5px"
-              right="5px"
-              zIndex={10}
-              onClick={() => setIsDrawerOpen(true)}
-              size="sm"
-              colorScheme="blue"
-            >
-              Locations ({locations.length})
-            </Button>
+            {!isDrawerOpen && (
+              <Button
+                position="absolute"
+                top="5px"
+                right="5px"
+                zIndex={10}
+                onClick={() => setIsDrawerOpen(true)}
+                size="sm"
+                colorScheme="blue"
+              >
+                Locations ({locations.length})
+              </Button>
+            )}
 
         {/* Input controls */}
         <Box
