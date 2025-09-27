@@ -245,26 +245,16 @@ function App() {
             {isDrawerOpen && (
               <Box
                 position="fixed"
-                top="0"
-                left="0"
                 right="0"
+                top="0"
                 bottom="0"
-                // bg="rgba(0, 0, 0, 0.5)" // Commented out to disable dimming
+                width="400px"
+                bg="rgba(0, 0, 0, 0.5)"
+                p={6}
+                overflow="auto"
                 zIndex={1000}
-                onClick={() => setIsDrawerOpen(false)}
+                boxShadow="lg"
               >
-                <Box
-                  position="absolute"
-                  right="0"
-                  top="0"
-                  bottom="0"
-                  width="400px"
-                  bg="rgba(0, 0, 0, 0.5)"
-                  p={6}
-                  overflow="auto"
-                  onClick={(e) => e.stopPropagation()}
-                  boxShadow="lg"
-                >
                   <HStack justify="space-between" align="center" mb={4}>
                     <Heading size="md" color="white" fontFamily="'SUSE Mono', monospace">Location Manager</Heading>
                     <Button
@@ -413,7 +403,6 @@ function App() {
                       </Box>
                     ))}
                   </VStack>
-                </Box>
               </Box>
             )}
           </Box>
