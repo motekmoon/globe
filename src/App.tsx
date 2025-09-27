@@ -78,25 +78,18 @@ function App() {
         height="100vh"
         bg="linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)"
       >
-            {/* Logo positioned in upper left */}
-            <Box
+            {/* Title positioned in upper left */}
+            <Heading
               position="absolute"
               top="5px"
               left="5px"
+              color="white"
+              fontSize="1.2rem"
+              fontWeight="300"
               zIndex={10}
-              width="25px"
-              height="25px"
             >
-              <img 
-                src="/logo.svg" 
-                alt="Globe" 
-                style={{ 
-                  width: "100%", 
-                  height: "100%", 
-                  objectFit: "contain" 
-                }} 
-              />
-            </Box>
+              Globe
+            </Heading>
 
         {/* Input controls */}
         <Box
