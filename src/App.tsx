@@ -108,6 +108,25 @@ function App() {
     });
   };
 
+  const handleDeleteLocation = async (locationId: string) => {
+    try {
+      // Delete from database
+      await locationService.deleteLocation(locationId);
+      
+      // Update local state
+      setLocations((prev) => prev.filter((loc) => loc.id !== locationId));
+      
+      // Remove from hidden locations if it was hidden
+      setHiddenLocations((prev) => {
+        const newSet = new Set(prev);
+        newSet.delete(locationId);
+        return newSet;
+      });
+    } catch (error) {
+      console.error("Error deleting location:", error);
+    }
+  };
+
   return (
     <ChakraProvider value={system}>
       <Box
@@ -342,6 +361,14 @@ function App() {
                               onClick={() => handleHideLocation(location.id)}
                             >
                               {hiddenLocations.has(location.id) ? "Show" : "Hide"}
+                            </Button>
+                            <Button
+                              size="sm"
+                              colorScheme="red"
+                              variant="outline"
+                              onClick={() => handleDeleteLocation(location.id)}
+                            >
+                              Delete
                             </Button>
                           </HStack>
                         </HStack>
