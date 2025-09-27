@@ -54,17 +54,25 @@ const LocationLine: React.FC<LocationLineProps> = ({ start, end, label }) => {
 
   return (
     <group>
-      <primitive ref={lineRef} object={new THREE.Line(lineGeometry, new THREE.LineBasicMaterial({ 
-        color: "#00ff41",
-        transparent: true,
-        opacity: 0.8
-      }))} />
-      
+      <primitive
+        ref={lineRef}
+        object={
+          new THREE.Line(
+            lineGeometry,
+            new THREE.LineBasicMaterial({
+              color: "#ffffff",
+              transparent: true,
+              opacity: 0.8,
+            })
+          )
+        }
+      />
+
       {showLabel && (
         <Text
           position={[end[0] * 1.1, end[1] * 1.1, end[2] * 1.1]}
           fontSize={0.1}
-          color="#00ff41"
+          color="#ffffff"
           anchorX="center"
           anchorY="middle"
           maxWidth={2}

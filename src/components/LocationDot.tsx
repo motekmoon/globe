@@ -41,11 +41,7 @@ const LocationDot: React.FC<LocationDotProps> = ({ position, name }) => {
       onPointerOut={() => setHovered(false)}
     >
       <sphereGeometry args={[0.05, 16, 16]} />
-      <meshBasicMaterial 
-        color="#00ff41"
-        transparent
-        opacity={0.9}
-      />
+      <meshBasicMaterial color="#ffffff" transparent opacity={0.9} />
     </mesh>
   );
 };

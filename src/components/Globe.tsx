@@ -2,33 +2,42 @@ import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
+import LocationManager from "./LocationManager";
+import { Location } from "../lib/supabase";
 
-const Globe: React.FC = () => {
-  const meshRef = useRef<THREE.Mesh>(null);
-  
+interface GlobeProps {
+  locations: Location[];
+}
+
+const Globe: React.FC<GlobeProps> = ({ locations }) => {
+  const groupRef = useRef<THREE.Group>(null);
+
   // Load NASA Blue Marble world map texture
-  const worldMapTexture = useTexture('/nasa-blue-marble.jpg');
+  const worldMapTexture = useTexture("/nasa-blue-marble.jpg");
 
   // Three-axis rotation animation
   useFrame((state, delta) => {
-    if (meshRef.current) {
+    if (groupRef.current) {
       // Rotate on all three axes for complex motion
-      meshRef.current.rotation.x += delta * 0.1;
-      meshRef.current.rotation.y += delta * 0.2;
-      meshRef.current.rotation.z += delta * 0.05;
+      groupRef.current.rotation.x += delta * 0.1;
+      groupRef.current.rotation.y += delta * 0.2;
+      groupRef.current.rotation.z += delta * 0.05;
     }
   });
 
   return (
-    <mesh ref={meshRef}>
-      <sphereGeometry args={[2, 64, 32]} />
-      <meshPhongMaterial 
-        map={worldMapTexture}
-        color="#ffffff"
-        shininess={100}
-        transparent={false}
-      />
-    </mesh>
+    <group ref={groupRef}>
+      <mesh>
+        <sphereGeometry args={[2, 64, 32]} />
+        <meshPhongMaterial
+          map={worldMapTexture}
+          color="#ffffff"
+          shininess={100}
+          transparent={false}
+        />
+      </mesh>
+      <LocationManager locations={locations} />
+    </group>
   );
 };
 

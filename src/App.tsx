@@ -15,7 +15,6 @@ import {
 } from "@chakra-ui/react";
 import Globe from "./components/Globe";
 import LocationInput from "./components/LocationInput";
-import LocationManager from "./components/LocationManager";
 import { locationService, Location } from "./lib/supabase";
 
 // Create a system for Chakra UI
@@ -125,8 +124,7 @@ function App() {
               <directionalLight position={[10, 10, 5]} intensity={1.2} />
               <pointLight position={[-10, -10, -5]} intensity={0.5} />
 
-              <Globe />
-              <LocationManager locations={locations} />
+              <Globe locations={locations} />
 
               <OrbitControls
                 enablePan={false}
