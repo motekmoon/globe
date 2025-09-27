@@ -10,6 +10,7 @@ import {
   Input,
   Button,
   Text,
+  Select,
   createSystem,
   defaultConfig,
 } from "@chakra-ui/react";
@@ -26,6 +27,27 @@ function App() {
   const [hiddenLocations, setHiddenLocations] = useState<Set<string>>(new Set());
   const [editingLocation, setEditingLocation] = useState<Location | null>(null);
   const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [sortBy, setSortBy] = useState<'name' | 'date' | 'distance'>('date');
+
+  // Filter and sort locations
+  const filteredLocations = locations
+    .filter(location =>
+      location.name.toLowerCase().includes(searchQuery.toLowerCase())
+    )
+    .sort((a, b) => {
+      switch (sortBy) {
+        case 'name':
+          return a.name.localeCompare(b.name);
+        case 'date':
+          return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+        case 'distance':
+          // For now, just sort by name as distance calculation would require user location
+          return a.name.localeCompare(b.name);
+        default:
+          return 0;
+      }
+    });
 
   // Load locations from Supabase on component mount
   useEffect(() => {
@@ -190,12 +212,13 @@ function App() {
         <Box
           position="absolute"
           top="5px"
-          left="50%"
-          transform="translateX(-50%)"
+          left={isDrawerOpen ? "10px" : "50%"}
+          transform={isDrawerOpen ? "none" : "translateX(-50%)"}
           zIndex={10}
-          width="100%"
-          maxWidth="900px"
+          width={isDrawerOpen ? "calc(100vw - 420px)" : "100%"}
+          maxWidth={isDrawerOpen ? "none" : "900px"}
           p={4}
+          transition="all 0.3s ease-in-out"
         >
           <LocationInput onLocationAdd={handleLocationAdd} />
           {loading && (
@@ -268,8 +291,43 @@ function App() {
                     </Button>
                   </HStack>
                   
+                  {/* Search Input */}
+                  <Input
+                    placeholder="Search locations..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    bg="rgba(255, 255, 255, 0.1)"
+                    border="1px solid rgba(255, 255, 255, 0.2)"
+                    color="white"
+                    _placeholder={{ color: "gray.400" }}
+                    _focus={{ borderColor: "blue.400", boxShadow: "0 0 0 1px rgba(66, 153, 225, 0.6)" }}
+                    mb={2}
+                    size="sm"
+                  />
+                  
+                  {/* Sort Dropdown */}
+                  <Select
+                    value={sortBy}
+                    onChange={(e) => setSortBy(e.target.value as 'name' | 'date' | 'distance')}
+                    bg="rgba(255, 255, 255, 0.1)"
+                    border="1px solid rgba(255, 255, 255, 0.2)"
+                    color="white"
+                    _focus={{ borderColor: "blue.400", boxShadow: "0 0 0 1px rgba(66, 153, 225, 0.6)" }}
+                    mb={4}
+                    size="sm"
+                  >
+                    <option value="date" style={{ backgroundColor: '#1a1a1a', color: 'white' }}>Sort by Date (Newest)</option>
+                    <option value="name" style={{ backgroundColor: '#1a1a1a', color: 'white' }}>Sort by Name</option>
+                    <option value="distance" style={{ backgroundColor: '#1a1a1a', color: 'white' }}>Sort by Distance</option>
+                  </Select>
+                  
                   <VStack gap={3} align="stretch">
-                    {locations.map((location) => (
+                    {filteredLocations.length === 0 ? (
+                      <Text color="gray.400" textAlign="center" py={4}>
+                        {searchQuery ? "No locations found matching your search." : "No locations added yet."}
+                      </Text>
+                    ) : (
+                      filteredLocations.map((location) => (
                       <Box
                         key={location.id}
                         p={3}
@@ -399,7 +457,8 @@ function App() {
                           </HStack>
                         </HStack>
                       </Box>
-                    ))}
+                      ))
+                    )}
                   </VStack>
               </Box>
             )}
