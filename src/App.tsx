@@ -134,7 +134,16 @@ function App() {
         </Box>
 
         {/* 3D Canvas */}
-        <Box position="absolute" top={0} left={0} width="100%" height="100%">
+        <Box 
+          position="absolute" 
+          top={0} 
+          left={0} 
+          width="100%" 
+          height="100%"
+          style={{
+            filter: "grayscale(100%)"
+          }}
+        >
           <Canvas
             camera={{ position: [0, 0, 5], fov: 50 }}
             style={{

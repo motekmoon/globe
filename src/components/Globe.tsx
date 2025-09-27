@@ -29,9 +29,10 @@ const Globe: React.FC<GlobeProps> = ({ locations }) => {
     <group ref={groupRef}>
       <mesh>
         <sphereGeometry args={[2, 64, 32]} />
-        <meshBasicMaterial
+        <meshPhongMaterial
           map={worldMapTexture}
-          color="#808080"
+          color="#ffffff"
+          shininess={100}
           transparent={false}
         />
       </mesh>
