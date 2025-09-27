@@ -273,8 +273,6 @@ function App() {
                       <Box
                         key={location.id}
                         p={3}
-                        border="1px solid"
-                        borderColor="rgba(255, 255, 255, 0.2)"
                         borderRadius="md"
                         bg="rgba(0, 0, 0, 0.3)"
                       >
