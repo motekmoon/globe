@@ -247,7 +247,7 @@ function App() {
                 left="0"
                 right="0"
                 bottom="0"
-                bg="rgba(0, 0, 0, 0.5)"
+                // bg="rgba(0, 0, 0, 0.5)" // Commented out to disable dimming
                 zIndex={1000}
                 onClick={() => setIsDrawerOpen(false)}
               >
