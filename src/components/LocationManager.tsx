@@ -13,16 +13,11 @@ const LocationManager: React.FC<LocationManagerProps> = ({ locations }) => {
     const phi = (90 - lat) * (Math.PI / 180);
     const theta = (lng + 180) * (Math.PI / 180);
     
-    const result = {
+    return {
       x: -(radius * Math.sin(phi) * Math.cos(theta)), // Fixed: Added negative sign
       y: radius * Math.cos(phi),
       z: radius * Math.sin(phi) * Math.sin(theta)
     };
-    
-    // Debug logging
-    console.log(`Converting ${lat}, ${lng} to 3D:`, result);
-    
-    return result;
   };
 
   return (

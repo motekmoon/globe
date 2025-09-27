@@ -41,8 +41,6 @@ const LocationInput: React.FC<LocationInputProps> = ({ onLocationAdd }) => {
         const [lng, lat] = data.features[0].center;
         const name = data.features[0].place_name;
 
-        console.log(`Geocoding result for "${address}":`, { name, lat, lng });
-
         if (onLocationAdd) {
           onLocationAdd({ name, lat, lng });
         }
