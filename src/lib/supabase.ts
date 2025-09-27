@@ -1,4 +1,5 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import { indexedDBStorage, Location as IndexedDBLocation } from './indexeddb'
 
 // For local development, use mock values or disable Supabase
 const isDevelopment = process.env.NODE_ENV === 'development'
@@ -58,9 +59,15 @@ const storeLocations = (locations: Location[]) => {
 export const locationService = {
   // Get all locations
   async getLocations(): Promise<Location[]> {
-    // In development mode, use localStorage
+    // In development mode, use IndexedDB with localStorage fallback
     if (isDevelopment) {
-      return getStoredLocations()
+      try {
+        await indexedDBStorage.init()
+        return await indexedDBStorage.getLocations()
+      } catch (error) {
+        console.error('IndexedDB error, falling back to localStorage:', error)
+        return getStoredLocations()
+      }
     }
 
     try {
@@ -83,19 +90,24 @@ export const locationService = {
 
   // Add a new location
   async addLocation(location: Omit<Location, 'id' | 'created_at' | 'updated_at'>): Promise<Location | null> {
-    const newLocation: Location = {
-      id: Date.now().toString(),
-      ...location,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-
-    // In development mode, use localStorage
+    // In development mode, use IndexedDB with localStorage fallback
     if (isDevelopment) {
-      const locations = getStoredLocations()
-      locations.unshift(newLocation)
-      storeLocations(locations)
-      return newLocation
+      try {
+        await indexedDBStorage.init()
+        return await indexedDBStorage.addLocation(location)
+      } catch (error) {
+        console.error('IndexedDB error, falling back to localStorage:', error)
+        const newLocation: Location = {
+          id: Date.now().toString(),
+          ...location,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
+        const locations = getStoredLocations()
+        locations.unshift(newLocation)
+        storeLocations(locations)
+        return newLocation
+      }
     }
 
     try {
@@ -127,20 +139,26 @@ export const locationService = {
 
   // Update a location
   async updateLocation(id: string, updates: Partial<Omit<Location, 'id' | 'created_at' | 'updated_at'>>): Promise<Location | null> {
-    // In development mode, use localStorage
+    // In development mode, use IndexedDB with localStorage fallback
     if (isDevelopment) {
-      const locations = getStoredLocations()
-      const locationIndex = locations.findIndex(loc => loc.id === id)
-      if (locationIndex === -1) return null
-      
-      const updatedLocation = {
-        ...locations[locationIndex],
-        ...updates,
-        updated_at: new Date().toISOString()
+      try {
+        await indexedDBStorage.init()
+        return await indexedDBStorage.updateLocation(id, updates)
+      } catch (error) {
+        console.error('IndexedDB error, falling back to localStorage:', error)
+        const locations = getStoredLocations()
+        const locationIndex = locations.findIndex(loc => loc.id === id)
+        if (locationIndex === -1) return null
+        
+        const updatedLocation = {
+          ...locations[locationIndex],
+          ...updates,
+          updated_at: new Date().toISOString()
+        }
+        locations[locationIndex] = updatedLocation
+        storeLocations(locations)
+        return updatedLocation
       }
-      locations[locationIndex] = updatedLocation
-      storeLocations(locations)
-      return updatedLocation
     }
 
     try {
@@ -165,12 +183,18 @@ export const locationService = {
 
   // Delete a location
   async deleteLocation(id: string): Promise<boolean> {
-    // In development mode, use localStorage
+    // In development mode, use IndexedDB with localStorage fallback
     if (isDevelopment) {
-      const locations = getStoredLocations()
-      const filtered = locations.filter(loc => loc.id !== id)
-      storeLocations(filtered)
-      return true
+      try {
+        await indexedDBStorage.init()
+        return await indexedDBStorage.deleteLocation(id)
+      } catch (error) {
+        console.error('IndexedDB error, falling back to localStorage:', error)
+        const locations = getStoredLocations()
+        const filtered = locations.filter(loc => loc.id !== id)
+        storeLocations(filtered)
+        return true
+      }
     }
 
     try {
@@ -187,6 +211,52 @@ export const locationService = {
       return true
     } catch (error) {
       console.error('Database connection error:', error)
+      return false
+    }
+  },
+
+  // Export locations to JSON
+  async exportLocations(): Promise<string> {
+    if (isDevelopment) {
+      try {
+        await indexedDBStorage.init()
+        return await indexedDBStorage.exportLocations()
+      } catch (error) {
+        console.error('IndexedDB export error, using localStorage:', error)
+        const locations = getStoredLocations()
+        return JSON.stringify(locations, null, 2)
+      }
+    }
+    
+    // For production, export from Supabase
+    const locations = await this.getLocations()
+    return JSON.stringify(locations, null, 2)
+  },
+
+  // Import locations from JSON
+  async importLocations(jsonData: string): Promise<boolean> {
+    try {
+      const locations = JSON.parse(jsonData)
+      if (!Array.isArray(locations)) return false
+
+      if (isDevelopment) {
+        try {
+          await indexedDBStorage.init()
+          return await indexedDBStorage.importLocations(jsonData)
+        } catch (error) {
+          console.error('IndexedDB import error, using localStorage:', error)
+          storeLocations(locations)
+          return true
+        }
+      }
+
+      // For production, import to Supabase
+      for (const location of locations) {
+        await this.addLocation(location)
+      }
+      return true
+    } catch (error) {
+      console.error('Import error:', error)
       return false
     }
   }
