@@ -125,6 +125,44 @@ export const locationService = {
     }
   },
 
+  // Update a location
+  async updateLocation(id: string, updates: Partial<Omit<Location, 'id' | 'created_at' | 'updated_at'>>): Promise<Location | null> {
+    // In development mode, use localStorage
+    if (isDevelopment) {
+      const locations = getStoredLocations()
+      const locationIndex = locations.findIndex(loc => loc.id === id)
+      if (locationIndex === -1) return null
+      
+      const updatedLocation = {
+        ...locations[locationIndex],
+        ...updates,
+        updated_at: new Date().toISOString()
+      }
+      locations[locationIndex] = updatedLocation
+      storeLocations(locations)
+      return updatedLocation
+    }
+
+    try {
+      const { data, error } = await supabase
+        .from('locations')
+        .update(updates)
+        .eq('id', id)
+        .select()
+        .single()
+
+      if (error) {
+        console.error('Error updating location:', error)
+        return null
+      }
+
+      return data
+    } catch (error) {
+      console.error('Database connection error:', error)
+      return null
+    }
+  },
+
   // Delete a location
   async deleteLocation(id: string): Promise<boolean> {
     // In development mode, use localStorage
@@ -140,12 +178,12 @@ export const locationService = {
         .from('locations')
         .delete()
         .eq('id', id)
-      
+
       if (error) {
         console.error('Error deleting location:', error)
         return false
       }
-      
+
       return true
     } catch (error) {
       console.error('Database connection error:', error)

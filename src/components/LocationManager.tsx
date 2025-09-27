@@ -5,9 +5,10 @@ import { Location } from '../lib/supabase';
 
 interface LocationManagerProps {
   locations: Location[];
+  hiddenLocations: Set<string>;
 }
 
-const LocationManager: React.FC<LocationManagerProps> = ({ locations }) => {
+const LocationManager: React.FC<LocationManagerProps> = ({ locations, hiddenLocations }) => {
   // Convert lat/lng to 3D coordinates on sphere
   const latLngToVector3 = (lat: number, lng: number, radius: number = 2.01) => {
     const phi = (90 - lat) * (Math.PI / 180);
@@ -23,6 +24,11 @@ const LocationManager: React.FC<LocationManagerProps> = ({ locations }) => {
   return (
     <group>
       {locations.map((location) => {
+        // Skip rendering if location is hidden
+        if (hiddenLocations.has(location.id)) {
+          return null;
+        }
+        
         const position = latLngToVector3(location.latitude, location.longitude);
         return (
           <group key={location.id}>

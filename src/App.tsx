@@ -10,6 +10,20 @@ import {
   Input,
   Button,
   Text,
+  Drawer,
+  DrawerBody,
+  DrawerHeader,
+  DrawerOverlay,
+  DrawerContent,
+  DrawerCloseButton,
+  Table,
+  Thead,
+  Tbody,
+  Tr,
+  Th,
+  Td,
+  IconButton,
+  useDisclosure,
   createSystem,
   defaultConfig,
 } from "@chakra-ui/react";
@@ -23,6 +37,9 @@ const system = createSystem(defaultConfig);
 function App() {
   const [locations, setLocations] = useState<Location[]>([]);
   const [loading, setLoading] = useState(true);
+  const [hiddenLocations, setHiddenLocations] = useState<Set<string>>(new Set());
+  const [editingLocation, setEditingLocation] = useState<Location | null>(null);
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   // Load locations from Supabase on component mount
   useEffect(() => {
@@ -70,6 +87,41 @@ function App() {
     }
   };
 
+  const handleEditLocation = (location: Location) => {
+    setEditingLocation(location);
+  };
+
+  const handleSaveLocation = async (updatedLocation: Location) => {
+    try {
+      // Update in database
+      await locationService.updateLocation(updatedLocation.id, {
+        name: updatedLocation.name,
+        latitude: updatedLocation.latitude,
+        longitude: updatedLocation.longitude,
+      });
+      
+      // Update local state
+      setLocations((prev) =>
+        prev.map((loc) => (loc.id === updatedLocation.id ? updatedLocation : loc))
+      );
+      setEditingLocation(null);
+    } catch (error) {
+      console.error("Error updating location:", error);
+    }
+  };
+
+  const handleHideLocation = (locationId: string) => {
+    setHiddenLocations((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(locationId)) {
+        newSet.delete(locationId);
+      } else {
+        newSet.add(locationId);
+      }
+      return newSet;
+    });
+  };
+
   return (
     <ChakraProvider value={system}>
       <Box
@@ -114,6 +166,19 @@ function App() {
               </Heading>
             </Box>
 
+            {/* Locations drawer button */}
+            <Button
+              position="absolute"
+              top="5px"
+              right="5px"
+              zIndex={10}
+              onClick={onOpen}
+              size="sm"
+              colorScheme="blue"
+            >
+              Locations ({locations.length})
+            </Button>
+
         {/* Input controls */}
         <Box
           position="absolute"
@@ -156,7 +221,7 @@ function App() {
               <directionalLight position={[10, 10, 5]} intensity={2.0} />
               <pointLight position={[-10, -10, -5]} intensity={1.0} />
 
-              <Globe locations={locations} />
+                  <Globe locations={locations} hiddenLocations={hiddenLocations} />
 
               <OrbitControls
                 enablePan={false}
@@ -167,10 +232,115 @@ function App() {
               />
             </Suspense>
           </Canvas>
-        </Box>
-      </Box>
-    </ChakraProvider>
-  );
-}
+            </Box>
 
-export default App;
+            {/* Locations Drawer */}
+            <Drawer isOpen={isOpen} placement="right" onClose={onClose} size="md">
+              <DrawerOverlay />
+              <DrawerContent>
+                <DrawerCloseButton />
+                <DrawerHeader>Location Manager</DrawerHeader>
+                <DrawerBody>
+                  <Table variant="simple" size="sm">
+                    <Thead>
+                      <Tr>
+                        <Th>Name</Th>
+                        <Th>Latitude</Th>
+                        <Th>Longitude</Th>
+                        <Th>Actions</Th>
+                      </Tr>
+                    </Thead>
+                    <Tbody>
+                      {locations.map((location) => (
+                        <Tr key={location.id}>
+                          <Td>
+                            {editingLocation?.id === location.id ? (
+                              <Input
+                                size="sm"
+                                value={editingLocation.name}
+                                onChange={(e) =>
+                                  setEditingLocation({
+                                    ...editingLocation,
+                                    name: e.target.value,
+                                  })
+                                }
+                              />
+                            ) : (
+                              location.name
+                            )}
+                          </Td>
+                          <Td>
+                            {editingLocation?.id === location.id ? (
+                              <Input
+                                size="sm"
+                                type="number"
+                                value={editingLocation.latitude}
+                                onChange={(e) =>
+                                  setEditingLocation({
+                                    ...editingLocation,
+                                    latitude: parseFloat(e.target.value),
+                                  })
+                                }
+                              />
+                            ) : (
+                              location.latitude.toFixed(4)
+                            )}
+                          </Td>
+                          <Td>
+                            {editingLocation?.id === location.id ? (
+                              <Input
+                                size="sm"
+                                type="number"
+                                value={editingLocation.longitude}
+                                onChange={(e) =>
+                                  setEditingLocation({
+                                    ...editingLocation,
+                                    longitude: parseFloat(e.target.value),
+                                  })
+                                }
+                              />
+                            ) : (
+                              location.longitude.toFixed(4)
+                            )}
+                          </Td>
+                          <Td>
+                            <HStack spacing={1}>
+                              {editingLocation?.id === location.id ? (
+                                <Button
+                                  size="xs"
+                                  colorScheme="green"
+                                  onClick={() => handleSaveLocation(editingLocation)}
+                                >
+                                  Save
+                                </Button>
+                              ) : (
+                                <Button
+                                  size="xs"
+                                  colorScheme="blue"
+                                  onClick={() => handleEditLocation(location)}
+                                >
+                                  Edit
+                                </Button>
+                              )}
+                              <Button
+                                size="xs"
+                                colorScheme={hiddenLocations.has(location.id) ? "red" : "orange"}
+                                onClick={() => handleHideLocation(location.id)}
+                              >
+                                {hiddenLocations.has(location.id) ? "Show" : "Hide"}
+                              </Button>
+                            </HStack>
+                          </Td>
+                        </Tr>
+                      ))}
+                    </Tbody>
+                  </Table>
+                </DrawerBody>
+              </DrawerContent>
+            </Drawer>
+          </Box>
+        </ChakraProvider>
+      );
+    }
+
+    export default App;

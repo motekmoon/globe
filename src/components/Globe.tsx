@@ -7,9 +7,10 @@ import { Location } from "../lib/supabase";
 
 interface GlobeProps {
   locations: Location[];
+  hiddenLocations: Set<string>;
 }
 
-const Globe: React.FC<GlobeProps> = ({ locations }) => {
+const Globe: React.FC<GlobeProps> = ({ locations, hiddenLocations }) => {
   const groupRef = useRef<THREE.Group>(null);
 
   // Load NASA Blue Marble world map texture
@@ -38,7 +39,7 @@ const Globe: React.FC<GlobeProps> = ({ locations }) => {
           emissiveIntensity={0.3}
         />
       </mesh>
-      <LocationManager locations={locations} />
+      <LocationManager locations={locations} hiddenLocations={hiddenLocations} />
     </group>
   );
 };
