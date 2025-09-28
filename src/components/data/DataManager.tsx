@@ -375,7 +375,6 @@ const DataManager: React.FC<DataManagerProps> = ({
             </TabsRoot>
           </VStack>
         </Box>
-        </Box>
       </Box>
 
       {/* Edit Location Modal */}
