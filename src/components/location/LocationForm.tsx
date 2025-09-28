@@ -90,7 +90,8 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             variant="flushed"
             bg="transparent"
             color="white"
-            _placeholder={{ color: "gray.400" }}
+            fontSize="0.7rem"
+            _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
             flex={1}
           />
           <Input
@@ -106,7 +107,8 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             variant="flushed"
             bg="transparent"
             color="white"
-            _placeholder={{ color: "gray.400" }}
+            fontSize="0.7rem"
+            _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
             w="100px"
             step="any"
             min="0"
@@ -149,7 +151,8 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             bg="transparent"
             flex={1}
             color="white"
-            _placeholder={{ color: "gray.400" }}
+            fontSize="0.7rem"
+            _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
           />
           <Input
             id="longitude-input"
@@ -168,7 +171,8 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             bg="transparent"
             flex={1}
             color="white"
-            _placeholder={{ color: "gray.400" }}
+            fontSize="0.7rem"
+            _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
           />
           <Input
             id="quantity-coord-input"
@@ -182,7 +186,8 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             variant="flushed"
             bg="transparent"
             color="white"
-            _placeholder={{ color: "gray.400" }}
+            fontSize="0.7rem"
+            _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
             w="100px"
             step="any"
             min="0"
