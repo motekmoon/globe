@@ -64,6 +64,21 @@ function App() {
   const [showQuantityVisualization, setShowQuantityVisualization] =
     React.useState(false);
 
+  // Globe rendering state
+  const [isGlobeReady, setIsGlobeReady] = React.useState(false);
+  const [isDataVisualizationReady, setIsDataVisualizationReady] = React.useState(false);
+
+  // Trigger data visualization animation after globe is ready
+  React.useEffect(() => {
+    if (isGlobeReady) {
+      // Small delay to ensure globe is fully rendered
+      const timer = setTimeout(() => {
+        setIsDataVisualizationReady(true);
+      }, 200);
+      return () => clearTimeout(timer);
+    }
+  }, [isGlobeReady]);
+
   // Filter and sort locations using utility function
   const filteredLocations = filterAndSortLocations(
     locations,
@@ -207,12 +222,17 @@ function App() {
           left={0}
           width="100%"
           height="100%"
+          className={`globe-container ${isGlobeReady ? 'ready' : ''}`}
           style={{
             filter: "grayscale(100%)",
           }}
         >
           <Canvas
             camera={{ position: [0, 0, 5], fov: 50 }}
+            onCreated={() => {
+              // Globe is ready when Canvas is created
+              setTimeout(() => setIsGlobeReady(true), 100);
+            }}
             style={{
               background:
                 "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)",
@@ -223,12 +243,14 @@ function App() {
               <directionalLight position={[10, 10, 5]} intensity={2.0} />
               <pointLight position={[-10, -10, -5]} intensity={1.0} />
 
-              <Globe
-                locations={locations}
-                hiddenLocations={hiddenLocations}
-                isPlaying={isPlaying && !isGlobePaused}
-                showQuantityVisualization={showQuantityVisualization}
-              />
+              <div className={`data-visualization ${isDataVisualizationReady ? 'ready' : ''}`}>
+                <Globe
+                  locations={locations}
+                  hiddenLocations={hiddenLocations}
+                  isPlaying={isPlaying && !isGlobePaused}
+                  showQuantityVisualization={showQuantityVisualization}
+                />
+              </div>
 
               <OrbitControls
                 enablePan={false}
