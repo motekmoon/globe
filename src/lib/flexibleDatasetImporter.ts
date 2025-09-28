@@ -264,15 +264,20 @@ export class FlexibleDatasetImporter {
         const name = nameColumn ? String(row[nameColumn]) : `${lat.toFixed(2)}, ${lng.toFixed(2)}`;
         const quantity = quantityColumn ? parseFloat(row[quantityColumn]) : undefined;
 
-        parsedLocations.push({
+        // Create location with all original data preserved
+        const location: Location = {
           id: `imported-${Date.now()}-${index}`,
           name,
           latitude: lat,
           longitude: lng,
           quantity: isNaN(quantity || 0) ? undefined : quantity,
           created_at: new Date().toISOString(),
-          updated_at: new Date().toISOString()
-        });
+          updated_at: new Date().toISOString(),
+          // Preserve all original columns as dynamic properties
+          ...row
+        };
+
+        parsedLocations.push(location);
 
       } catch (error) {
         errors.push(`Row ${index + 1}: ${error instanceof Error ? error.message : 'Unknown error'}`);
