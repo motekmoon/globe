@@ -7,6 +7,9 @@ import {
   Button,
   Text,
   Heading,
+  Progress,
+  Spinner,
+  VStack,
   createSystem,
   defaultConfig,
 } from "@chakra-ui/react";
@@ -174,12 +177,36 @@ function App() {
           transition="all 0.3s ease-in-out"
         >
           <LocationForm onLocationAdd={handleLocationAdd} />
-          {loading && (
-            <Text color="white" textAlign="center" mt={2}>
-              Loading locations...
-            </Text>
-          )}
         </Box>
+
+        {/* Loading Indicator */}
+        {loading && (
+          <Box
+            position="absolute"
+            top="50%"
+            left="50%"
+            transform="translate(-50%, -50%)"
+            zIndex={20}
+            bg="rgba(0, 0, 0, 0.8)"
+            p={6}
+            borderRadius="lg"
+            boxShadow="xl"
+          >
+            <VStack gap={4} align="center">
+              <Spinner size="xl" color="blue.400" />
+              <Text color="white" fontSize="lg" fontWeight="semibold">
+                Loading locations...
+              </Text>
+              <Progress
+                size="sm"
+                isIndeterminate
+                colorScheme="blue"
+                w="200px"
+                borderRadius="full"
+              />
+            </VStack>
+          </Box>
+        )}
 
         {/* 3D Canvas */}
         <Box
