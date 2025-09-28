@@ -68,9 +68,9 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
   return (
     <Box
       bg="rgba(0, 0, 0, 0.5)"
-      p={3}
-      maxH="50px"
-      maxW="900px"
+      p={4}
+      maxH="60px"
+      maxW="1000px"
       w="100%"
       overflow="hidden"
     >
@@ -97,7 +97,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             id="quantity-input"
             name="quantity"
             type="number"
-            placeholder="Qty"
+            placeholder="Quantity"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
             disabled={isLoading}
@@ -107,7 +107,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             bg="transparent"
             color="white"
             _placeholder={{ color: "gray.400" }}
-            w="60px"
+            w="80px"
             step="any"
             min="0"
           />
@@ -174,7 +174,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             id="quantity-coord-input"
             name="quantity"
             type="number"
-            placeholder="Qty"
+            placeholder="Quantity"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
             size="sm"
@@ -183,7 +183,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             bg="transparent"
             color="white"
             _placeholder={{ color: "gray.400" }}
-            w="60px"
+            w="80px"
             step="any"
             min="0"
           />
