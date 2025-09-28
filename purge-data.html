@@ -93,44 +93,21 @@
             successDiv.style.display = 'none';
             errorDiv.style.display = 'none';
             
-            console.log('🗑️ Starting comprehensive data purge...');
+            console.log('🗑️ Starting data purge...');
             
             try {
-                // Clear localStorage - comprehensive
-                const keysToRemove = [];
-                for (let i = 0; i < localStorage.length; i++) {
-                    const key = localStorage.key(i);
-                    if (key && (key.includes('globe') || key.includes('location') || key.includes('GlobeLocationsDB'))) {
-                        keysToRemove.push(key);
-                    }
-                }
-                keysToRemove.forEach(key => localStorage.removeItem(key));
-                localStorage.removeItem('globe-locations'); // Fallback
-                console.log('✅ localStorage cleared (including all globe-related keys)');
+                // Clear localStorage
+                localStorage.removeItem('globe-locations');
+                console.log('✅ localStorage cleared');
                 
-                // Clear IndexedDB completely
+                // Clear IndexedDB
                 await clearIndexedDB();
                 
-                // Clear any other potential storage
-                try {
-                    sessionStorage.clear();
-                    console.log('✅ sessionStorage cleared');
-                } catch (e) {
-                    console.log('⚠️ sessionStorage clear failed');
-                }
-                
                 // Show success message
-                successDiv.innerHTML = '✅ <strong>Comprehensive Data Purge Successful!</strong><br>All data has been cleared from:<br>• localStorage<br>• IndexedDB<br>• sessionStorage<br><br><strong>Please refresh the Globe app to see the changes.</strong>';
+                successDiv.innerHTML = '✅ <strong>Data Purge Successful!</strong><br>All data has been cleared. Refresh the Globe app to see the changes.';
                 successDiv.style.display = 'block';
                 
-                console.log('🎯 Comprehensive data purge completed successfully!');
-                
-                // Auto-refresh suggestion
-                setTimeout(() => {
-                    if (confirm('Data purged! Would you like to open the Globe app now?')) {
-                        window.open('http://localhost:3003', '_blank');
-                    }
-                }, 2000);
+                console.log('🎯 Data purge completed successfully!');
                 
             } catch (error) {
                 console.error('❌ Error during purge:', error);
@@ -142,7 +119,6 @@
         async function clearIndexedDB() {
             return new Promise((resolve, reject) => {
                 try {
-                    // First try to clear the existing database
                     const request = indexedDB.open('GlobeLocationsDB', 1);
                     
                     request.onsuccess = () => {
@@ -153,51 +129,21 @@
                         const clearRequest = store.clear();
                         
                         clearRequest.onsuccess = () => {
-                            console.log('✅ IndexedDB data cleared successfully');
+                            console.log('✅ IndexedDB cleared successfully');
                             db.close();
-                            
-                            // Now try to delete the entire database
-                            const deleteRequest = indexedDB.deleteDatabase('GlobeLocationsDB');
-                            deleteRequest.onsuccess = () => {
-                                console.log('✅ IndexedDB database deleted completely');
-                                resolve(true);
-                            };
-                            deleteRequest.onerror = () => {
-                                console.log('⚠️ Could not delete IndexedDB database, but data cleared');
-                                resolve(true);
-                            };
+                            resolve(true);
                         };
                         
                         clearRequest.onerror = () => {
-                            console.error('❌ Error clearing IndexedDB data:', clearRequest.error);
+                            console.error('❌ Error clearing IndexedDB:', clearRequest.error);
                             db.close();
-                            
-                            // Try to delete the database anyway
-                            const deleteRequest = indexedDB.deleteDatabase('GlobeLocationsDB');
-                            deleteRequest.onsuccess = () => {
-                                console.log('✅ IndexedDB database deleted after clear error');
-                                resolve(true);
-                            };
-                            deleteRequest.onerror = () => {
-                                console.log('⚠️ Could not delete IndexedDB database');
-                                resolve(true);
-                            };
+                            reject(clearRequest.error);
                         };
                     };
                     
                     request.onerror = () => {
-                        console.log('⚠️ Could not open IndexedDB, trying to delete database directly');
-                        
-                        // Try to delete the database directly
-                        const deleteRequest = indexedDB.deleteDatabase('GlobeLocationsDB');
-                        deleteRequest.onsuccess = () => {
-                            console.log('✅ IndexedDB database deleted directly');
-                            resolve(true);
-                        };
-                        deleteRequest.onerror = () => {
-                            console.log('⚠️ Could not delete IndexedDB database');
-                            resolve(true);
-                        };
+                        console.error('❌ Error opening IndexedDB:', request.error);
+                        reject(request.error);
                     };
                 } catch (error) {
                     console.error('❌ Error clearing IndexedDB:', error);

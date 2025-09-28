@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head><title>Clear Globe Data</title></head>
+<body>
+<script>
+console.log('🗑️ Starting Globe data purge...');
+
+// Clear localStorage
+localStorage.removeItem('globe-locations');
+localStorage.clear();
+console.log('✅ localStorage cleared');
+
+// Clear IndexedDB
+const request = indexedDB.open('GlobeLocationsDB', 1);
+request.onsuccess = () => {
+  const db = request.result;
+  const transaction = db.transaction(['locations'], 'readwrite');
+  const store = transaction.objectStore('locations');
+  store.clear();
+  console.log('✅ IndexedDB cleared');
+  db.close();
+  console.log('🎯 All Globe data deleted successfully!');
+};
+request.onerror = () => {
+  console.log('ℹ️ IndexedDB not found or already cleared');
+  console.log('🎯 Globe data deletion completed!');
+};
+</script>
+</body>
+</html>
