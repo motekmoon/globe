@@ -7,7 +7,6 @@ import {
   Button,
   Text,
   Heading,
-  Progress,
   Spinner,
   VStack,
   createSystem,
@@ -197,13 +196,6 @@ function App() {
               <Text color="white" fontSize="lg" fontWeight="semibold">
                 Loading locations...
               </Text>
-              <Progress
-                size="sm"
-                isIndeterminate
-                colorScheme="blue"
-                w="200px"
-                borderRadius="full"
-              />
             </VStack>
           </Box>
         )}
