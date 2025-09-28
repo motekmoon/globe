@@ -133,12 +133,16 @@ function App() {
               onClick={() => setIsDataManagerOpen(true)}
               size="sm"
               h="25px"
-              colorScheme="purple"
-              variant="outline"
+              bg="rgba(255, 255, 255, 0.8)"
+              color="black"
               fontWeight="600"
               fontSize="0.7rem"
               borderRadius="md"
               whiteSpace="nowrap"
+              border="none"
+              _hover={{
+                bg: "rgba(255, 255, 255, 0.9)"
+              }}
             >
               Data Manager
             </Button>
@@ -228,15 +232,19 @@ function App() {
           right="20px"
           size="sm"
           h="25px"
-          colorScheme={showQuantityVisualization ? "green" : "gray"}
-          variant="outline"
+          bg="rgba(255, 255, 255, 0.8)"
+          color="black"
           fontWeight="600"
           fontSize="0.7rem"
           borderRadius="md"
           whiteSpace="nowrap"
+          border="none"
           onClick={() =>
             setShowQuantityVisualization(!showQuantityVisualization)
           }
+          _hover={{
+            bg: "rgba(255, 255, 255, 0.9)"
+          }}
         >
           {showQuantityVisualization ? "Hide Qty" : "Show Qty"}
         </Button>
