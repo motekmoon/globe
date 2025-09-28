@@ -196,7 +196,7 @@ const Drawer: React.FC<DrawerProps> = ({
                         w="80px"
                       />
                     ) : (
-                      location.latitude !== undefined && location.latitude !== null 
+                      typeof location.latitude === 'number' && !isNaN(location.latitude)
                         ? location.latitude.toFixed(4) 
                         : "N/A"
                     )}
@@ -221,7 +221,7 @@ const Drawer: React.FC<DrawerProps> = ({
                         w="80px"
                       />
                     ) : (
-                      location.longitude !== undefined && location.longitude !== null 
+                      typeof location.longitude === 'number' && !isNaN(location.longitude)
                         ? location.longitude.toFixed(4) 
                         : "N/A"
                     )}
