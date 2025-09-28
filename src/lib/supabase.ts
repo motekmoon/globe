@@ -267,5 +267,30 @@ export const locationService = {
       console.error('Import error:', error)
       return false
     }
+  },
+
+  // Purge all data - DEVELOPMENT ONLY
+  async purgeAllData(): Promise<boolean> {
+    console.warn('🗑️ PURGING ALL DATA - This action cannot be undone!')
+    
+    if (isDevelopment) {
+      try {
+        // Clear IndexedDB
+        await indexedDBStorage.init()
+        await indexedDBStorage.clearAllData()
+        
+        // Clear localStorage
+        localStorage.removeItem(STORAGE_KEY)
+        
+        console.log('✅ All data purged successfully')
+        return true
+      } catch (error) {
+        console.error('Error purging data:', error)
+        return false
+      }
+    } else {
+      console.error('❌ Data purging is only available in development mode')
+      return false
+    }
   }
 }

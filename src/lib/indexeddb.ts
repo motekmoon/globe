@@ -145,6 +145,25 @@ class IndexedDBStorage {
       return false
     }
   }
+
+  async clearAllData(): Promise<boolean> {
+    if (!this.db) await this.init()
+
+    return new Promise((resolve, reject) => {
+      const transaction = this.db!.transaction([STORE_NAME], 'readwrite')
+      const store = transaction.objectStore(STORE_NAME)
+      const clearRequest = store.clear()
+
+      clearRequest.onsuccess = () => {
+        console.log('✅ IndexedDB data cleared successfully')
+        resolve(true)
+      }
+      clearRequest.onerror = () => {
+        console.error('❌ Error clearing IndexedDB data:', clearRequest.error)
+        reject(clearRequest.error)
+      }
+    })
+  }
 }
 
 export const indexedDBStorage = new IndexedDBStorage()
