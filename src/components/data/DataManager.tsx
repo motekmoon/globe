@@ -24,12 +24,7 @@ import {
   DialogFooter,
   DialogCloseTrigger,
 } from "@chakra-ui/react";
-import {
-  TableCellsIcon,
-  CloudArrowUpIcon,
-  DocumentTextIcon,
-  ChartBarIcon,
-} from '@heroicons/react/24/outline';
+// Icons removed
 import { Location } from '../../lib/supabase';
 import { useDataManager } from '../../hooks/useDataManager';
 import DataTable from './DataTable';
@@ -96,7 +91,6 @@ const DataManager: React.FC<DataManagerProps> = ({
                   colorScheme="blue"
                   onClick={() => setShowImport(true)}
                 >
-                  <CloudArrowUpIcon className="h-4 w-4 mr-2" />
                   Import Data
                 </Button>
                 <Badge colorScheme="blue" fontSize="sm">
@@ -123,15 +117,12 @@ const DataManager: React.FC<DataManagerProps> = ({
             >
               <TabsList>
                 <TabsTrigger value="table">
-                  <TableCellsIcon className="h-4 w-4 mr-2" />
                   Data Table
                 </TabsTrigger>
                 <TabsTrigger value="analytics">
-                  <ChartBarIcon className="h-4 w-4 mr-2" />
                   Analytics
                 </TabsTrigger>
                 <TabsTrigger value="export">
-                  <DocumentTextIcon className="h-4 w-4 mr-2" />
                   Export
                 </TabsTrigger>
               </TabsList>

@@ -29,13 +29,7 @@ import {
   NativeSelectIndicator,
   TooltipRoot,
 } from '@chakra-ui/react';
-import {
-  PencilIcon,
-  TrashIcon,
-  ChevronDownIcon,
-  MagnifyingGlassIcon,
-  FunnelIcon,
-} from '@heroicons/react/24/outline';
+// Icons removed
 import { Location } from '../../lib/supabase';
 import { useDataManager } from '../../hooks/useDataManager';
 
@@ -191,7 +185,6 @@ const DataTable: React.FC<DataTableProps> = ({
         {/* Search and filters */}
         <HStack gap={4} wrap="wrap">
           <HStack gap={2} flex="1" minW="300px">
-            <MagnifyingGlassIcon className="h-4 w-4" />
             <Input
               placeholder="Search locations..."
               value={searchQuery}
@@ -201,7 +194,6 @@ const DataTable: React.FC<DataTableProps> = ({
           </HStack>
 
           <HStack gap={2}>
-            <FunnelIcon className="h-4 w-4" />
             <NativeSelectRoot size="sm" w="150px">
               <NativeSelectField
                 value={filterBy}
@@ -325,25 +317,21 @@ const DataTable: React.FC<DataTableProps> = ({
                 </TableCell>
                 <TableCell>
                   <HStack gap={1}>
-                    <TooltipRoot label="Edit location">
-                      <IconButton
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => onLocationEdit?.(location)}
-                      >
-                        <PencilIcon className="h-4 w-4" />
-                      </IconButton>
-                    </TooltipRoot>
-                    <TooltipRoot label="Delete location">
-                      <IconButton
-                        size="sm"
-                        variant="ghost"
-                        colorScheme="red"
-                        onClick={() => handleDeleteLocation(location.id)}
-                      >
-                        <TrashIcon className="h-4 w-4" />
-                      </IconButton>
-                    </TooltipRoot>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      onClick={() => onLocationEdit?.(location)}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      size="sm"
+                      variant="ghost"
+                      colorScheme="red"
+                      onClick={() => handleDeleteLocation(location.id)}
+                    >
+                      Delete
+                    </Button>
                   </HStack>
                 </TableCell>
               </TableRow>

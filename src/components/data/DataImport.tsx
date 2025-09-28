@@ -23,13 +23,7 @@ import {
   DialogHeader,
   Code,
 } from '@chakra-ui/react';
-import {
-  CloudArrowUpIcon,
-  DocumentTextIcon,
-  CheckCircleIcon,
-  ExclamationTriangleIcon,
-  XMarkIcon,
-} from '@heroicons/react/24/outline';
+// Icons removed
 import { datasetImporter, DatasetImportResult } from '../../lib/datasetImport';
 import {
   flexibleDatasetImporter,
@@ -262,7 +256,6 @@ const DataImport: React.FC<DataImportProps> = ({ isOpen, onClose }) => {
               onDrop={handleDrop}
             >
               <VStack gap={3}>
-                <CloudArrowUpIcon className="h-8 w-8 text-gray-400" />
                 <Text fontSize="lg" fontWeight="semibold">
                   Drop your file here or click to browse
                 </Text>
@@ -297,7 +290,6 @@ const DataImport: React.FC<DataImportProps> = ({ isOpen, onClose }) => {
                   variant="outline"
                   onClick={() => handleDownloadTemplate("csv")}
                 >
-                  <DocumentTextIcon className="h-4 w-4 mr-2" />
                   CSV Template
                 </Button>
                 <Button
@@ -305,7 +297,6 @@ const DataImport: React.FC<DataImportProps> = ({ isOpen, onClose }) => {
                   variant="outline"
                   onClick={() => handleDownloadTemplate("json")}
                 >
-                  <DocumentTextIcon className="h-4 w-4 mr-2" />
                   JSON Template
                 </Button>
               </HStack>
@@ -389,9 +380,7 @@ const DataImport: React.FC<DataImportProps> = ({ isOpen, onClose }) => {
                   {flexibleResult.success &&
                     flexibleResult.parsedLocations.length > 0 && (
                       <AlertRoot status="success">
-                        <AlertIndicator>
-                          <CheckCircleIcon className="h-4 w-4" />
-                        </AlertIndicator>
+                        <AlertIndicator />
                         <AlertContent>
                           <AlertTitle>Import Successful!</AlertTitle>
                           <AlertDescription>
@@ -405,9 +394,7 @@ const DataImport: React.FC<DataImportProps> = ({ isOpen, onClose }) => {
 
                   {flexibleResult.errors.length > 0 && (
                     <AlertRoot status="error">
-                      <AlertIndicator>
-                        <ExclamationTriangleIcon className="h-4 w-4" />
-                      </AlertIndicator>
+                      <AlertIndicator />
                       <AlertContent>
                         <AlertTitle>Import Issues Found</AlertTitle>
                         <AlertDescription>
@@ -513,14 +500,12 @@ const DataImport: React.FC<DataImportProps> = ({ isOpen, onClose }) => {
           <HStack gap={2} w="100%" justify="flex-end">
             {importResult && (
               <Button variant="outline" onClick={resetImport}>
-                <XMarkIcon className="h-4 w-4 mr-2" />
                 Reset
               </Button>
             )}
 
             {flexibleResult && (
               <Button variant="outline" onClick={resetImport}>
-                <XMarkIcon className="h-4 w-4 mr-2" />
                 Reset
               </Button>
             )}
@@ -532,7 +517,6 @@ const DataImport: React.FC<DataImportProps> = ({ isOpen, onClose }) => {
             {/* Flexible Import Buttons */}
             {flexibleResult && (
               <Button colorScheme="blue" onClick={handleImport}>
-                <CheckCircleIcon className="h-4 w-4 mr-2" />
                 Import {flexibleResult.parsedLocations?.length || 0} Locations
               </Button>
             )}
@@ -540,7 +524,6 @@ const DataImport: React.FC<DataImportProps> = ({ isOpen, onClose }) => {
             {/* Original Import Buttons */}
             {importResult && (
               <Button colorScheme="blue" onClick={handleImport}>
-                <CheckCircleIcon className="h-4 w-4 mr-2" />
                 Import {importResult.imported?.length || 0} Locations
               </Button>
             )}
