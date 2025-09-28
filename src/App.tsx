@@ -15,6 +15,7 @@ import LocationForm from "./components/location/LocationForm";
 import Drawer from "./components/layout/Drawer";
 import AnimationControl from "./components/controls/AnimationControl";
 import DatasetImport from "./components/import/DatasetImport";
+import DataManager from "./components/data/DataManager";
 import { useLocations } from "./hooks/useLocations";
 import { useDrawer } from "./hooks/useDrawer";
 import { useAnimation } from "./hooks/useAnimation";
@@ -52,6 +53,9 @@ function App() {
 
   // Import modal state
   const [isImportModalOpen, setIsImportModalOpen] = React.useState(false);
+
+  // Data Management modal state
+  const [isDataManagerOpen, setIsDataManagerOpen] = React.useState(false);
 
   // Quantity visualization toggle
   const [showQuantityVisualization, setShowQuantityVisualization] =
@@ -146,6 +150,19 @@ function App() {
               whiteSpace="nowrap"
             >
               Import
+            </Button>
+            <Button
+              onClick={() => setIsDataManagerOpen(true)}
+              size="sm"
+              h="25px"
+              colorScheme="purple"
+              variant="outline"
+              fontWeight="600"
+              fontSize="0.7rem"
+              borderRadius="md"
+              whiteSpace="nowrap"
+            >
+              Data Manager
             </Button>
             <Button
               onClick={openDrawer}
@@ -269,6 +286,12 @@ function App() {
           isOpen={isImportModalOpen}
           onClose={() => setIsImportModalOpen(false)}
           onImport={handleImportLocations}
+        />
+
+        {/* Data Management Modal */}
+        <DataManager
+          isOpen={isDataManagerOpen}
+          onClose={() => setIsDataManagerOpen(false)}
         />
       </Box>
     </ChakraProvider>
