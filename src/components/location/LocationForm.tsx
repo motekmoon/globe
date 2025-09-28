@@ -70,7 +70,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
       bg="rgba(0, 0, 0, 0.5)"
       p={4}
       maxH="70px"
-      maxW="1200px"
+      maxW="1400px"
       w="100%"
       overflow="hidden"
     >
