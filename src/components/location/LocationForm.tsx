@@ -68,15 +68,15 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
   return (
     <Box
       bg="rgba(0, 0, 0, 0.5)"
-      p={2}
+      p={3}
       maxH="40px"
       maxW="900px"
       w="100%"
       overflow="hidden"
     >
-      <HStack gap={1} align="center">
+      <HStack gap={2} align="center">
         {/* Address Input */}
-        <HStack gap={1} flex={1}>
+        <HStack gap={2} flex={1}>
           <Input
             id="address-input"
             name="address"
@@ -85,7 +85,8 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             value={address}
             onChange={(e) => setAddress(e.target.value)}
             disabled={isLoading}
-            size="xs"
+            size="sm"
+            h="25px"
             variant="flushed"
             bg="transparent"
             color="white"
@@ -100,7 +101,8 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
             disabled={isLoading}
-            size="xs"
+            size="sm"
+            h="25px"
             variant="flushed"
             bg="transparent"
             color="white"
@@ -129,7 +131,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
         </Text>
 
         {/* Coordinate Inputs */}
-        <HStack gap={1} flex={1}>
+        <HStack gap={2} flex={1}>
           <Input
             id="latitude-input"
             name="latitude"
@@ -141,10 +143,11 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             step="any"
             min="-90"
             max="90"
-            size="xs"
+            size="sm"
+            h="25px"
             variant="flushed"
             bg="transparent"
-            w="80px"
+            flex={1}
             color="white"
             _placeholder={{ color: "gray.400" }}
           />
@@ -159,10 +162,11 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             step="any"
             min="-180"
             max="180"
-            size="xs"
+            size="sm"
+            h="25px"
             variant="flushed"
             bg="transparent"
-            w="80px"
+            flex={1}
             color="white"
             _placeholder={{ color: "gray.400" }}
           />
@@ -173,7 +177,8 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             placeholder="Qty"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
-            size="xs"
+            size="sm"
+            h="25px"
             variant="flushed"
             bg="transparent"
             color="white"
