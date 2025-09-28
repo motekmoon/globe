@@ -105,7 +105,7 @@ function App() {
           </Box>
           <Heading
             color="white"
-            fontSize="0.7rem"
+            fontSize="1.2rem"
             fontWeight="600"
             fontFamily="'SUSE Mono', monospace"
             margin="0"
