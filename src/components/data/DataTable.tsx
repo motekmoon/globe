@@ -369,8 +369,8 @@ const DataTable: React.FC<DataTableProps> = ({
                 <input
                   type="checkbox"
                   style={{
-                    outline: '3px solid #3182ce',
-                    outlineOffset: '1px'
+                    border: '3px solid #000',
+                    transform: 'scale(1.2)'
                   }}
                   checked={
                     selectedLocations.size ===
