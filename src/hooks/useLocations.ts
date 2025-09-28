@@ -27,12 +27,14 @@ export const useLocations = () => {
     name: string;
     lat: number;
     lng: number;
+    quantity?: number;
   }) => {
     try {
       const newLocation = await locationService.addLocation({
         name: location.name,
         latitude: location.lat,
         longitude: location.lng,
+        quantity: location.quantity,
       });
 
       if (newLocation) {
@@ -46,6 +48,7 @@ export const useLocations = () => {
         name: location.name,
         latitude: location.lat,
         longitude: location.lng,
+        quantity: location.quantity,
         created_at: new Date().toISOString(),
         updated_at: new Date().toISOString(),
       };
@@ -64,6 +67,7 @@ export const useLocations = () => {
         name: updatedLocation.name,
         latitude: updatedLocation.latitude,
         longitude: updatedLocation.longitude,
+        quantity: updatedLocation.quantity,
       });
 
       // Update local state
@@ -120,6 +124,7 @@ export const useLocations = () => {
             name: location.name,
             latitude: location.latitude,
             longitude: location.longitude,
+            quantity: location.quantity,
           });
           
           if (newLocation) {

@@ -2,51 +2,61 @@
   {
     "name": "Silicon Valley",
     "latitude": 37.4419,
-    "longitude": -122.1430
+    "longitude": -122.1430,
+    "quantity": 25.8
   },
   {
     "name": "Seattle",
     "latitude": 47.6062,
-    "longitude": -122.3321
+    "longitude": -122.3321,
+    "quantity": 18.3
   },
   {
     "name": "Austin",
     "latitude": 30.2672,
-    "longitude": -97.7431
+    "longitude": -97.7431,
+    "quantity": 12.7
   },
   {
     "name": "Boston",
     "latitude": 42.3601,
-    "longitude": -71.0589
+    "longitude": -71.0589,
+    "quantity": 15.4
   },
   {
     "name": "Denver",
     "latitude": 39.7392,
-    "longitude": -104.9903
+    "longitude": -104.9903,
+    "quantity": 8.9
   },
   {
     "name": "Tel Aviv",
     "latitude": 32.0853,
-    "longitude": 34.7818
+    "longitude": 34.7818,
+    "quantity": 14.2
   },
   {
     "name": "Bangalore",
     "latitude": 12.9716,
-    "longitude": 77.5946
+    "longitude": 77.5946,
+    "quantity": 22.1
   },
   {
     "name": "Singapore",
     "latitude": 1.3521,
-    "longitude": 103.8198
+    "longitude": 103.8198,
+    "quantity": 16.8
   },
   {
     "name": "Shanghai",
     "latitude": 31.2304,
-    "longitude": 121.4737
+    "longitude": 121.4737,
+    "quantity": 19.6
   },
   {
     "name": "Shenzhen",
     "latitude": 22.5431,
-    "longitude": 114.0579
+    "longitude": 114.0579,
+    "quantity": 17.3
   }
 ]

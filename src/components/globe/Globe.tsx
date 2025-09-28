@@ -3,15 +3,22 @@ import { useFrame } from '@react-three/fiber';
 import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import GlobeMarkers from './GlobeMarkers';
+import QuantityVisualization from "../visualization/QuantityVisualization";
 import { Location } from '../../lib/supabase';
 
 interface GlobeProps {
   locations: Location[];
   hiddenLocations: Set<string>;
   isPlaying?: boolean;
+  showQuantityVisualization?: boolean; // New prop to toggle quantity visualization
 }
 
-const Globe: React.FC<GlobeProps> = ({ locations, hiddenLocations, isPlaying = true }) => {
+const Globe: React.FC<GlobeProps> = ({
+  locations,
+  hiddenLocations,
+  isPlaying = true,
+  showQuantityVisualization = false,
+}) => {
   const groupRef = useRef<THREE.Group>(null);
 
   // Load NASA Blue Marble world map texture
@@ -41,6 +48,11 @@ const Globe: React.FC<GlobeProps> = ({ locations, hiddenLocations, isPlaying = t
         />
       </mesh>
       <GlobeMarkers locations={locations} hiddenLocations={hiddenLocations} />
+      <QuantityVisualization
+        locations={locations}
+        hiddenLocations={hiddenLocations}
+        isEnabled={showQuantityVisualization}
+      />
     </group>
   );
 };

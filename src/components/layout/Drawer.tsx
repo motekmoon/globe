@@ -60,11 +60,7 @@ const Drawer: React.FC<DrawerProps> = ({
       boxShadow="lg"
     >
       <HStack justify="space-between" align="center" mb={4}>
-        <Heading
-          size="md"
-          color="white"
-          fontFamily="'SUSE Mono', monospace"
-        >
+        <Heading size="md" color="white" fontFamily="'SUSE Mono', monospace">
           Location Manager
         </Heading>
         <Button
@@ -224,6 +220,32 @@ const Drawer: React.FC<DrawerProps> = ({
                       />
                     ) : (
                       location.longitude.toFixed(4)
+                    )}
+                  </Text>
+                  <Text fontSize="xs" color="gray.300">
+                    Qty:{" "}
+                    {editingLocation?.id === location.id ? (
+                      <Input
+                        size="xs"
+                        variant="flushed"
+                        type="number"
+                        value={editingLocation.quantity || ""}
+                        onChange={(e) =>
+                          onEditLocation({
+                            ...editingLocation,
+                            quantity: e.target.value
+                              ? parseFloat(e.target.value)
+                              : undefined,
+                          })
+                        }
+                        bg="transparent"
+                        color="white"
+                        _placeholder={{ color: "gray.400" }}
+                        w="60px"
+                        placeholder="1"
+                      />
+                    ) : (
+                      location.quantity || "1"
                     )}
                   </Text>
                 </VStack>

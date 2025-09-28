@@ -179,7 +179,12 @@ export class DatasetImporter {
       'lon': 'longitude',
       'long': 'longitude',
       'latitude': 'latitude',
-      'longitude': 'longitude'
+      'longitude': 'longitude',
+      'quantity': 'quantity',
+      'qty': 'quantity',
+      'value': 'quantity',
+      'size': 'quantity',
+      'amount': 'quantity'
     };
 
     for (let i = 0; i < headers.length; i++) {
@@ -189,7 +194,7 @@ export class DatasetImporter {
       if (value && columnMap[header]) {
         const field = columnMap[header];
         
-        if (field === 'latitude' || field === 'longitude') {
+        if (field === 'latitude' || field === 'longitude' || field === 'quantity') {
           const numValue = parseFloat(value);
           if (!isNaN(numValue)) {
             location[field] = numValue;
@@ -220,6 +225,7 @@ export class DatasetImporter {
       name: location.name,
       latitude: location.latitude,
       longitude: location.longitude,
+      quantity: location.quantity,
       created_at: new Date().toISOString(),
       updated_at: new Date().toISOString()
     };
@@ -236,6 +242,7 @@ export class DatasetImporter {
     const name = obj.name || obj.title || obj.location || obj.address;
     const latitude = parseFloat(obj.latitude || obj.lat);
     const longitude = parseFloat(obj.longitude || obj.lng || obj.lon || obj.long);
+    const quantity = parseFloat(obj.quantity || obj.qty || obj.value || obj.size || obj.amount);
 
     if (!name || isNaN(latitude) || isNaN(longitude)) {
       return null;
@@ -256,6 +263,7 @@ export class DatasetImporter {
       name: name,
       latitude: latitude,
       longitude: longitude,
+      quantity: isNaN(quantity) ? undefined : quantity,
       created_at: obj.created_at || new Date().toISOString(),
       updated_at: obj.updated_at || new Date().toISOString()
     };
@@ -277,12 +285,12 @@ export class DatasetImporter {
    * Generate sample CSV template
    */
   generateCSVTemplate(): string {
-    return `name,latitude,longitude
-"New York City",40.7128,-74.0060
-"London",51.5074,-0.1278
-"Tokyo",35.6762,139.6503
-"Paris",48.8566,2.3522
-"Sydney",-33.8688,151.2093`;
+    return `name,latitude,longitude,quantity
+"New York City",40.7128,-74.0060,15.2
+"London",51.5074,-0.1278,12.8
+"Tokyo",35.6762,139.6503,18.5
+"Paris",48.8566,2.3522,10.3
+"Sydney",-33.8688,151.2093,8.7`;
   }
 
   /**
@@ -293,17 +301,20 @@ export class DatasetImporter {
       {
         "name": "New York City",
         "latitude": 40.7128,
-        "longitude": -74.0060
+        "longitude": -74.0060,
+        "quantity": 15.2
       },
       {
         "name": "London", 
         "latitude": 51.5074,
-        "longitude": -0.1278
+        "longitude": -0.1278,
+        "quantity": 12.8
       },
       {
         "name": "Tokyo",
         "latitude": 35.6762,
-        "longitude": 139.6503
+        "longitude": 139.6503,
+        "quantity": 18.5
       }
     ], null, 2);
   }

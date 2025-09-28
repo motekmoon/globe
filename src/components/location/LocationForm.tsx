@@ -7,6 +7,7 @@ interface LocationFormProps {
     name: string;
     lat: number;
     lng: number;
+    quantity?: number;
   }) => void;
 }
 
@@ -14,6 +15,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
   const [address, setAddress] = useState("");
   const [lat, setLat] = useState("");
   const [lng, setLng] = useState("");
+  const [quantity, setQuantity] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
   const handleAddressSubmit = async (e: React.FormEvent) => {
@@ -24,9 +26,12 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
 
     try {
       const result = await geocodeAddress(address);
-      
+
       if (onLocationAdd) {
-        onLocationAdd(result);
+        onLocationAdd({
+          ...result,
+          quantity: quantity ? parseFloat(quantity) : undefined,
+        });
       }
       setAddress("");
     } catch (error) {
@@ -39,16 +44,17 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
 
   const handleCoordinateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     try {
       const coords = validateCoordinates(lat, lng);
-      
+
       if (coords) {
         if (onLocationAdd) {
           onLocationAdd({
             name: `${coords.lat.toFixed(2)}, ${coords.lng.toFixed(2)}`,
             lat: coords.lat,
             lng: coords.lng,
+            quantity: quantity ? parseFloat(quantity) : undefined,
           });
         }
         setLat("");
@@ -85,6 +91,23 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             color="white"
             _placeholder={{ color: "gray.400" }}
             flex={1}
+          />
+          <Input
+            id="quantity-input"
+            name="quantity"
+            type="number"
+            placeholder="Qty"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            disabled={isLoading}
+            size="xs"
+            variant="flushed"
+            bg="transparent"
+            color="white"
+            _placeholder={{ color: "gray.400" }}
+            w="60px"
+            step="any"
+            min="0"
           />
           <Button
             onClick={handleAddressSubmit}
@@ -142,6 +165,22 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             w="80px"
             color="white"
             _placeholder={{ color: "gray.400" }}
+          />
+          <Input
+            id="quantity-coord-input"
+            name="quantity"
+            type="number"
+            placeholder="Qty"
+            value={quantity}
+            onChange={(e) => setQuantity(e.target.value)}
+            size="xs"
+            variant="flushed"
+            bg="transparent"
+            color="white"
+            _placeholder={{ color: "gray.400" }}
+            w="60px"
+            step="any"
+            min="0"
           />
           <Button
             onClick={handleCoordinateSubmit}

@@ -3,16 +3,16 @@ import { useFrame, useThree } from '@react-three/fiber';
 import { Text } from '@react-three/drei';
 import * as THREE from 'three';
 
-interface MarkerLineProps {
-  start: [number, number, number];
-  end: [number, number, number];
+interface QuantityLineProps {
+  start: [number, number, number]; // Dot position (surface of globe)
+  direction: [number, number, number]; // Direction vector from center to dot
   label: string;
-  quantity?: number; // New prop for dynamic line length
+  quantity?: number; // Value to determine line length
 }
 
-const MarkerLine: React.FC<MarkerLineProps> = ({
+const QuantityLine: React.FC<QuantityLineProps> = ({
   start,
-  end,
+  direction,
   label,
   quantity = 1,
 }) => {
@@ -22,14 +22,14 @@ const MarkerLine: React.FC<MarkerLineProps> = ({
   const [lineLength, setLineLength] = useState(0);
   const [showLabel, setShowLabel] = useState(false);
 
-  // Calculate line length based on quantity (normalize to 0.5-2.0 range)
-  const normalizedQuantity = Math.max(0.5, Math.min(2.0, (quantity || 1) / 10));
+  // Calculate line length based on quantity (normalize to 0.2-1.0 range)
+  const normalizedQuantity = Math.max(0.2, Math.min(1.0, (quantity || 1) / 20));
   const targetLength = normalizedQuantity;
 
-  // Create line geometry - FIXED: Start from globe center, not same point
+  // Create line geometry - starts at dot position, extends outward
   const [lineGeometry] = useState(() =>
     new THREE.BufferGeometry().setFromPoints([
-      new THREE.Vector3(...start), // Globe center
+      new THREE.Vector3(...start), // Start at dot position
       new THREE.Vector3(...start), // Will be updated to extend outward
     ])
   );
@@ -42,27 +42,11 @@ const MarkerLine: React.FC<MarkerLineProps> = ({
         const newLength = Math.min(lineLength + delta * 2, targetLength);
         setLineLength(newLength);
 
-        // Calculate current end point - extend from globe center outward
-        const direction = [
-          end[0] - start[0],
-          end[1] - start[1],
-          end[2] - start[2],
-        ];
-
-        // Normalize direction and scale by current length
-        const magnitude = Math.sqrt(
-          direction[0] ** 2 + direction[1] ** 2 + direction[2] ** 2
-        );
-        const normalizedDirection = [
-          direction[0] / magnitude,
-          direction[1] / magnitude,
-          direction[2] / magnitude,
-        ];
-
+        // Calculate current end point - extend from dot outward
         const currentEnd = [
-          start[0] + normalizedDirection[0] * newLength,
-          start[1] + normalizedDirection[1] * newLength,
-          start[2] + normalizedDirection[2] * newLength,
+          start[0] + direction[0] * newLength,
+          start[1] + direction[1] * newLength,
+          start[2] + direction[2] * newLength,
         ];
 
         // Update line geometry
@@ -82,7 +66,6 @@ const MarkerLine: React.FC<MarkerLineProps> = ({
 
     // Make text always face the camera (billboarding)
     if (textRef.current && showLabel) {
-      // Simple billboarding: make text always face camera
       textRef.current.lookAt(camera.position);
     }
   });
@@ -95,9 +78,9 @@ const MarkerLine: React.FC<MarkerLineProps> = ({
           new THREE.Line(
             lineGeometry,
             new THREE.LineBasicMaterial({
-              color: "#ffffff",
+              color: "#00ff88", // Green color to distinguish from location lines
               transparent: true,
-              opacity: 0.8,
+              opacity: 0.9,
             })
           )
         }
@@ -106,9 +89,13 @@ const MarkerLine: React.FC<MarkerLineProps> = ({
       {showLabel && (
         <Text
           ref={textRef}
-          position={[end[0] * 1.5, end[1] * 1.5, end[2] * 1.5]}
+          position={[
+            start[0] + direction[0] * targetLength,
+            start[1] + direction[1] * targetLength,
+            start[2] + direction[2] * targetLength,
+          ]}
           fontSize={0.04}
-          color="#ffffff"
+          color="#00ff88"
           anchorX="center"
           anchorY="middle"
           maxWidth={1.5}
@@ -116,11 +103,11 @@ const MarkerLine: React.FC<MarkerLineProps> = ({
           letterSpacing={0.01}
           textAlign="center"
         >
-          {label}
+          {label} ({quantity})
         </Text>
       )}
     </group>
   );
 };
 
-export default MarkerLine;
+export default QuantityLine;

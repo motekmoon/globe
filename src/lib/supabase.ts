@@ -31,6 +31,7 @@ export interface Location {
   name: string
   latitude: number
   longitude: number
+  quantity?: number  // New field for dynamic visualization
   created_at: string
   updated_at: string
 }

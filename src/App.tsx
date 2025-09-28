@@ -53,6 +53,10 @@ function App() {
   // Import modal state
   const [isImportModalOpen, setIsImportModalOpen] = React.useState(false);
 
+  // Quantity visualization toggle
+  const [showQuantityVisualization, setShowQuantityVisualization] =
+    React.useState(false);
+
   // Filter and sort locations using utility function
   const filteredLocations = filterAndSortLocations(
     locations,
@@ -205,6 +209,7 @@ function App() {
                 locations={locations}
                 hiddenLocations={hiddenLocations}
                 isPlaying={isPlaying}
+                showQuantityVisualization={showQuantityVisualization}
               />
 
               <OrbitControls
@@ -220,6 +225,26 @@ function App() {
 
         {/* Animation Control Button */}
         <AnimationControl isPlaying={isPlaying} onToggle={toggleAnimation} />
+
+        {/* Quantity Visualization Toggle Button */}
+        <Button
+          position="absolute"
+          bottom="20px"
+          right="20px"
+          size="sm"
+          h="25px"
+          colorScheme={showQuantityVisualization ? "green" : "gray"}
+          variant="outline"
+          fontWeight="600"
+          fontSize="0.7rem"
+          borderRadius="md"
+          whiteSpace="nowrap"
+          onClick={() =>
+            setShowQuantityVisualization(!showQuantityVisualization)
+          }
+        >
+          {showQuantityVisualization ? "Hide Qty" : "Show Qty"}
+        </Button>
 
         {/* Location Manager Drawer */}
         <Drawer
