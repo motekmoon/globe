@@ -13,8 +13,10 @@ import {
 import Globe from "./components/globe/Globe";
 import LocationForm from "./components/location/LocationForm";
 import Drawer from "./components/layout/Drawer";
+import AnimationControl from "./components/controls/AnimationControl";
 import { useLocations } from "./hooks/useLocations";
 import { useDrawer } from "./hooks/useDrawer";
+import { useAnimation } from "./hooks/useAnimation";
 import { filterAndSortLocations } from "./utils/locationUtils";
 
 // Create a system for Chakra UI
@@ -44,6 +46,11 @@ function App() {
     sortBy,
     setSortBy,
   } = useDrawer();
+
+  const {
+    isPlaying,
+    toggleAnimation,
+  } = useAnimation();
 
   // Filter and sort locations using utility function
   const filteredLocations = filterAndSortLocations(locations, searchQuery, sortBy);
@@ -147,7 +154,7 @@ function App() {
               <directionalLight position={[10, 10, 5]} intensity={2.0} />
               <pointLight position={[-10, -10, -5]} intensity={1.0} />
 
-              <Globe locations={locations} hiddenLocations={hiddenLocations} />
+              <Globe locations={locations} hiddenLocations={hiddenLocations} isPlaying={isPlaying} />
 
               <OrbitControls
                 enablePan={false}
@@ -159,6 +166,12 @@ function App() {
             </Suspense>
           </Canvas>
         </Box>
+
+        {/* Animation Control Button */}
+        <AnimationControl 
+          isPlaying={isPlaying}
+          onToggle={toggleAnimation}
+        />
 
         {/* Location Manager Drawer */}
         <Drawer

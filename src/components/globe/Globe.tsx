@@ -8,17 +8,18 @@ import { Location } from '../../lib/supabase';
 interface GlobeProps {
   locations: Location[];
   hiddenLocations: Set<string>;
+  isPlaying?: boolean;
 }
 
-const Globe: React.FC<GlobeProps> = ({ locations, hiddenLocations }) => {
+const Globe: React.FC<GlobeProps> = ({ locations, hiddenLocations, isPlaying = true }) => {
   const groupRef = useRef<THREE.Group>(null);
 
   // Load NASA Blue Marble world map texture
   const worldMapTexture = useTexture("/nasa-blue-marble.jpg");
 
-  // Three-axis rotation animation
+  // Three-axis rotation animation (only when playing)
   useFrame((state, delta) => {
-    if (groupRef.current) {
+    if (groupRef.current && isPlaying) {
       // Rotate on all three axes for complex motion
       groupRef.current.rotation.x += delta * 0.1;
       groupRef.current.rotation.y += delta * 0.2;
