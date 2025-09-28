@@ -366,10 +366,7 @@ const DataTable: React.FC<DataTableProps> = ({
           <TableHeader>
             <TableRow>
               <TableColumnHeader>
-                <VStack gap={1} align="center" justify="center" h="100%">
-                  <Text fontSize="sm" fontWeight="semibold" opacity={0}>
-                    Select All
-                  </Text>
+                <Box display="flex" justifyContent="center" alignItems="center">
                   <input
                     type="checkbox"
                     style={{
@@ -397,7 +394,7 @@ const DataTable: React.FC<DataTableProps> = ({
                       }
                     }}
                   />
-                </VStack>
+                </Box>
               </TableColumnHeader>
               {/* Dynamic column headers */}
               {availableColumns.map((column) => (
