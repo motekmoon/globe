@@ -191,7 +191,7 @@ const DataTable: React.FC<DataTableProps> = ({
         {/* Search and filters */}
         <HStack gap={4} wrap="wrap">
           <HStack gap={2} flex="1" minW="300px">
-            <MagnifyingGlassIcon className="h-4 w-4" />
+            <MagnifyingGlassIcon className="h-3 w-3" />
             <Input
               placeholder="Search locations..."
               value={searchQuery}
@@ -201,7 +201,7 @@ const DataTable: React.FC<DataTableProps> = ({
           </HStack>
 
           <HStack gap={2}>
-            <FunnelIcon className="h-4 w-4" />
+            <FunnelIcon className="h-3 w-3" />
             <NativeSelectRoot size="sm" w="150px">
               <NativeSelectField
                 value={filterBy}
