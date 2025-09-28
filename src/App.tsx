@@ -88,10 +88,10 @@ function App() {
           display="flex"
           alignItems="center"
           gap="8px"
-          h="25px"
+          h="45px"
           p="0"
         >
-          <Box width="20px" height="20px">
+          <Box width="40px" height="40px">
             <img
               src="/logo.PNG"
               alt="Globe"
@@ -109,8 +109,8 @@ function App() {
             fontWeight="600"
             fontFamily="'SUSE Mono', monospace"
             margin="0"
-            h="25px"
-            lineHeight="25px"
+            h="45px"
+            lineHeight="45px"
           >
             Globe
           </Heading>
