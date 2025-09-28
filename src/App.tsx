@@ -4,19 +4,15 @@ import { OrbitControls } from "@react-three/drei";
 import {
   ChakraProvider,
   Box,
-  Heading,
-  VStack,
-  HStack,
-  Input,
   Button,
   Text,
+  Heading,
   createSystem,
   defaultConfig,
-  Drawer,
-  Portal,
 } from "@chakra-ui/react";
 import Globe from "./components/Globe";
 import LocationInput from "./components/LocationInput";
+import Drawer from "./components/layout/Drawer";
 import { locationService, Location } from "./lib/supabase";
 
 // Create a system for Chakra UI
@@ -269,251 +265,22 @@ function App() {
         </Box>
 
         {/* Location Manager Drawer */}
-        {isDrawerOpen && (
-          <Box
-            data-drawer="location-manager"
-            position="fixed"
-            right="0"
-            top="0"
-            bottom="0"
-            width="300px"
-            bg="rgba(0, 0, 0, 0.5)"
-            p={4}
-            overflow="auto"
-            zIndex={1000}
-            boxShadow="lg"
-          >
-            <HStack justify="space-between" align="center" mb={4}>
-              <Heading
-                size="md"
-                color="white"
-                fontFamily="'SUSE Mono', monospace"
-              >
-                Location Manager
-              </Heading>
-              <Button
-                size="sm"
-                h="25px"
-                colorScheme="gray"
-                onClick={() => setIsDrawerOpen(false)}
-                fontSize="0.7rem"
-              >
-                ✕
-              </Button>
-            </HStack>
-
-            {/* Search Input */}
-            <Input
-              placeholder="Search locations..."
-              value={searchQuery}
-              onChange={(e) => setSearchQuery(e.target.value)}
-              variant="flushed"
-              bg="transparent"
-              color="white"
-              _placeholder={{ color: "gray.400" }}
-              mb={2}
-              size="xs"
-            />
-
-            {/* Sort Dropdown */}
-            <select
-              value={sortBy}
-              onChange={(e: React.ChangeEvent<HTMLSelectElement>) =>
-                setSortBy(e.target.value as "name" | "date" | "distance")
-              }
-              className="sort-dropdown"
-              style={{
-                backgroundColor: "transparent",
-                border: "none",
-                borderBottom: "1px solid rgba(255, 255, 255, 0.3)",
-                color: "white",
-                padding: "4px 0",
-                fontSize: "0.7rem",
-                marginBottom: "16px",
-                outline: "none",
-                fontFamily: "inherit",
-                fontWeight: "400",
-                borderRadius: "0",
-                WebkitBorderRadius: "0",
-                MozBorderRadius: "0",
-                appearance: "none",
-                WebkitAppearance: "none",
-                MozAppearance: "none",
-              }}
-              onFocus={(e) => {
-                e.target.style.borderBottomColor = "rgba(66, 153, 225, 0.8)";
-              }}
-              onBlur={(e) => {
-                e.target.style.borderBottomColor = "rgba(255, 255, 255, 0.3)";
-              }}
-            >
-              <option
-                value="date"
-                style={{ backgroundColor: "#1a1a1a", color: "white" }}
-              >
-                Sort by Date (Newest)
-              </option>
-              <option
-                value="name"
-                style={{ backgroundColor: "#1a1a1a", color: "white" }}
-              >
-                Sort by Name
-              </option>
-              <option
-                value="distance"
-                style={{ backgroundColor: "#1a1a1a", color: "white" }}
-              >
-                Sort by Distance
-              </option>
-            </select>
-
-            <VStack gap={3} align="stretch">
-              {filteredLocations.length === 0 ? (
-                <Text color="gray.400" textAlign="center" py={4}>
-                  {searchQuery
-                    ? "No locations found matching your search."
-                    : "No locations added yet."}
-                </Text>
-              ) : (
-                filteredLocations.map((location) => (
-                  <Box
-                    key={location.id}
-                    p={3}
-                    borderRadius="md"
-                    bg="rgba(0, 0, 0, 0.3)"
-                  >
-                    <HStack justify="space-between" align="center">
-                      <VStack align="start" gap={1} flex={1}>
-                        <Text fontWeight="bold" color="white" fontSize="0.7rem">
-                          {editingLocation?.id === location.id ? (
-                            <Input
-                              size="xs"
-                              variant="flushed"
-                              value={editingLocation.name}
-                              onChange={(e) =>
-                                setEditingLocation({
-                                  ...editingLocation,
-                                  name: e.target.value,
-                                })
-                              }
-                              bg="transparent"
-                              color="white"
-                              _placeholder={{ color: "gray.400" }}
-                            />
-                          ) : (
-                            location.name
-                          )}
-                        </Text>
-                        <Text fontSize="xs" color="gray.300">
-                          Lat:{" "}
-                          {editingLocation?.id === location.id ? (
-                            <Input
-                              size="xs"
-                              variant="flushed"
-                              type="number"
-                              value={editingLocation.latitude}
-                              onChange={(e) =>
-                                setEditingLocation({
-                                  ...editingLocation,
-                                  latitude: parseFloat(e.target.value),
-                                })
-                              }
-                              bg="transparent"
-                              color="white"
-                              _placeholder={{ color: "gray.400" }}
-                              w="80px"
-                            />
-                          ) : (
-                            location.latitude.toFixed(4)
-                          )}
-                        </Text>
-                        <Text fontSize="xs" color="gray.300">
-                          Lng:{" "}
-                          {editingLocation?.id === location.id ? (
-                            <Input
-                              size="xs"
-                              variant="flushed"
-                              type="number"
-                              value={editingLocation.longitude}
-                              onChange={(e) =>
-                                setEditingLocation({
-                                  ...editingLocation,
-                                  longitude: parseFloat(e.target.value),
-                                })
-                              }
-                              bg="transparent"
-                              color="white"
-                              _placeholder={{ color: "gray.400" }}
-                              w="80px"
-                            />
-                          ) : (
-                            location.longitude.toFixed(4)
-                          )}
-                        </Text>
-                      </VStack>
-
-                      <HStack gap={2}>
-                        {editingLocation?.id === location.id ? (
-                          <Button
-                            size="sm"
-                            h="25px"
-                            colorScheme="green"
-                            onClick={() => handleSaveLocation(editingLocation)}
-                            fontWeight="600"
-                            fontSize="0.7rem"
-                            borderRadius="md"
-                            whiteSpace="nowrap"
-                          >
-                            Save
-                          </Button>
-                        ) : (
-                          <Button
-                            size="sm"
-                            h="25px"
-                            colorScheme="blue"
-                            onClick={() => handleEditLocation(location)}
-                            fontWeight="600"
-                            fontSize="0.7rem"
-                            borderRadius="md"
-                            whiteSpace="nowrap"
-                          >
-                            Edit
-                          </Button>
-                        )}
-                        <Button
-                          size="sm"
-                          h="25px"
-                          colorScheme={
-                            hiddenLocations.has(location.id) ? "red" : "orange"
-                          }
-                          onClick={() => handleHideLocation(location.id)}
-                          fontWeight="600"
-                          fontSize="0.7rem"
-                          borderRadius="md"
-                          whiteSpace="nowrap"
-                        >
-                          {hiddenLocations.has(location.id) ? "Show" : "Hide"}
-                        </Button>
-                        <Button
-                          size="sm"
-                          h="25px"
-                          colorScheme="red"
-                          onClick={() => handleDeleteLocation(location.id)}
-                          fontWeight="600"
-                          fontSize="0.7rem"
-                          borderRadius="md"
-                          whiteSpace="nowrap"
-                        >
-                          Delete
-                        </Button>
-                      </HStack>
-                    </HStack>
-                  </Box>
-                ))
-              )}
-            </VStack>
-          </Box>
-        )}
+        <Drawer
+          isOpen={isDrawerOpen}
+          onClose={() => setIsDrawerOpen(false)}
+          locations={locations}
+          filteredLocations={filteredLocations}
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          sortBy={sortBy}
+          onSortChange={setSortBy}
+          editingLocation={editingLocation}
+          onEditLocation={setEditingLocation}
+          onSaveLocation={handleSaveLocation}
+          onHideLocation={handleHideLocation}
+          onDeleteLocation={handleDeleteLocation}
+          hiddenLocations={hiddenLocations}
+        />
       </Box>
     </ChakraProvider>
   );
