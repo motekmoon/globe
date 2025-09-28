@@ -17,14 +17,6 @@ import {
   AlertContent,
   AlertTitle,
   AlertDescription,
-  DialogRoot,
-  DialogBackdrop,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogBody,
-  DialogFooter,
-  DialogCloseTrigger,
 } from "@chakra-ui/react";
 // Icons removed
 import { Location } from '../../lib/supabase';
@@ -76,19 +68,6 @@ const DataManager: React.FC<DataManagerProps> = ({
     }
   }, [isOpen, onGlobePause]);
 
-  // Prevent body scroll when modal is open
-  useEffect(() => {
-    if (isOpen) {
-      document.body.classList.add('modal-open');
-    } else {
-      document.body.classList.remove('modal-open');
-    }
-    
-    // Cleanup on unmount
-    return () => {
-      document.body.classList.remove('modal-open');
-    };
-  }, [isOpen]);
 
   const handleImportSuccess = () => {
     refreshData(); // Refresh the data table
@@ -179,18 +158,52 @@ const DataManager: React.FC<DataManagerProps> = ({
     }
   };
 
-  return (
-    <DialogRoot open={isOpen} onOpenChange={onClose}>
-      <DialogBackdrop />
-      <DialogContent maxW="100vw" maxH="100vh" w="100%" h="100vh" borderRadius="0px">
-        <DialogHeader>
-          <Text fontSize="xl" fontWeight="bold">
-            Data Management
-          </Text>
-          <DialogCloseTrigger />
-        </DialogHeader>
+  if (!isOpen) return null;
 
-        <DialogBody overflowY="auto">
+  return (
+    <Box
+      position="fixed"
+      top="0"
+      left="0"
+      right="0"
+      bottom="0"
+      bg="rgba(0, 0, 0, 0.9)"
+      zIndex={2000}
+      overflow="auto"
+    >
+      <Box
+        position="relative"
+        w="100%"
+        h="100vh"
+        bg="white"
+        overflow="auto"
+      >
+        {/* Header */}
+        <Box
+          position="sticky"
+          top="0"
+          bg="white"
+          borderBottom="1px solid"
+          borderColor="gray.200"
+          p={4}
+          zIndex={10}
+        >
+          <HStack justify="space-between" align="center">
+            <Text fontSize="xl" fontWeight="bold">
+              Data Management
+            </Text>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={onClose}
+            >
+              ✕
+            </Button>
+          </HStack>
+        </Box>
+
+        {/* Body */}
+        <Box p={4}>
           <VStack align="stretch" gap={4}>
             {/* Header */}
             <HStack justify="space-between">
@@ -448,17 +461,17 @@ const DataManager: React.FC<DataManagerProps> = ({
                   />
                 </Box>
               </VStack>
-            </DialogBody>
-            <DialogFooter>
+            </Box>
+            <HStack justify="flex-end" gap={2} p={4} borderTop="1px solid" borderColor="gray.200">
               <Button variant="outline" onClick={handleCancelEdit}>
                 Cancel
               </Button>
               <Button onClick={handleSaveEdit}>Save Changes</Button>
-            </DialogFooter>
-          </DialogContent>
-        </DialogRoot>
-      )}
-    </DialogRoot>
+            </HStack>
+          </Box>
+        )}
+      </Box>
+    </Box>
   );
 };
 
