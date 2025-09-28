@@ -32,3 +32,10 @@ select.sort-dropdown {
   -webkit-border-radius: 0 !important;
   -moz-border-radius: 0 !important;
 }
+
+/* Prevent body scroll when data manager modal is open */
+body.modal-open {
+  overflow: hidden !important;
+  position: fixed !important;
+  width: 100% !important;
+}

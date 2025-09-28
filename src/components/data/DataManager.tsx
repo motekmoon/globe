@@ -76,6 +76,20 @@ const DataManager: React.FC<DataManagerProps> = ({
     }
   }, [isOpen, onGlobePause]);
 
+  // Prevent body scroll when modal is open
+  useEffect(() => {
+    if (isOpen) {
+      document.body.classList.add('modal-open');
+    } else {
+      document.body.classList.remove('modal-open');
+    }
+    
+    // Cleanup on unmount
+    return () => {
+      document.body.classList.remove('modal-open');
+    };
+  }, [isOpen]);
+
   const handleImportSuccess = () => {
     refreshData(); // Refresh the data table
   };
