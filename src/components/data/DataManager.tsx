@@ -113,16 +113,28 @@ const DataManager: React.FC<DataManagerProps> = ({
             {/* Main Content */}
             <TabsRoot
               value={activeTab}
-              onValueChange={(value: string) => setActiveTab(value)}
+              onValueChange={(value: string) => {
+                console.log('Tab change:', value);
+                setActiveTab(value);
+              }}
             >
               <TabsList>
-                <TabsTrigger value="table">
+                <TabsTrigger 
+                  value="table"
+                  onClick={() => setActiveTab("table")}
+                >
                   Data Table
                 </TabsTrigger>
-                <TabsTrigger value="analytics">
+                <TabsTrigger 
+                  value="analytics"
+                  onClick={() => setActiveTab("analytics")}
+                >
                   Analytics
                 </TabsTrigger>
-                <TabsTrigger value="export">
+                <TabsTrigger 
+                  value="export"
+                  onClick={() => setActiveTab("export")}
+                >
                   Export
                 </TabsTrigger>
               </TabsList>
