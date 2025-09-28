@@ -21,7 +21,6 @@ import {
   DialogBackdrop,
   DialogContent,
   DialogHeader,
-  DialogTitle,
   DialogBody,
   DialogFooter,
   DialogCloseTrigger,
@@ -45,7 +44,7 @@ const DataManager: React.FC<DataManagerProps> = ({
   onLocationSelect,
   onLocationEdit,
 }) => {
-  const { locations, loading, error, refreshData, importLocations, updateLocation } =
+  const { locations, loading, error, refreshData, importLocations } =
     useDataManager();
 
   const [activeTab, setActiveTab] = useState("table");
@@ -53,7 +52,6 @@ const DataManager: React.FC<DataManagerProps> = ({
   const [importLoading, setImportLoading] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const [importSuccess, setImportSuccess] = useState<string | null>(null);
-  const [editingLocation, setEditingLocation] = useState<Location | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load data on mount
@@ -66,23 +64,7 @@ const DataManager: React.FC<DataManagerProps> = ({
   };
 
   const handleLocationEdit = (location: Location) => {
-    setEditingLocation(location);
-  };
-
-  const handleSaveEdit = async () => {
-    if (!editingLocation) return;
-    
-    try {
-      await updateLocation(editingLocation.id, editingLocation);
-      setEditingLocation(null);
-      refreshData();
-    } catch (error) {
-      console.error('Error updating location:', error);
-    }
-  };
-
-  const handleCancelEdit = () => {
-    setEditingLocation(null);
+    onLocationEdit?.(location);
   };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -338,86 +320,6 @@ const DataManager: React.FC<DataManagerProps> = ({
           </Button>
         </DialogFooter>
       </DialogContent>
-
-      {/* Edit Location Modal */}
-      {editingLocation && (
-        <DialogRoot open={!!editingLocation} onOpenChange={() => setEditingLocation(null)}>
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Edit Location</DialogTitle>
-            </DialogHeader>
-            <DialogBody>
-              <VStack gap={4}>
-                <Box>
-                  <Text fontSize="sm" fontWeight="medium" mb={2}>
-                    Name
-                  </Text>
-                  <Input
-                    value={editingLocation.name}
-                    onChange={(e) => setEditingLocation({
-                      ...editingLocation,
-                      name: e.target.value
-                    })}
-                    placeholder="Location name"
-                  />
-                </Box>
-                <HStack gap={4} w="100%">
-                  <Box flex={1}>
-                    <Text fontSize="sm" fontWeight="medium" mb={2}>
-                      Latitude
-                    </Text>
-                    <Input
-                      type="number"
-                      value={editingLocation.latitude}
-                      onChange={(e) => setEditingLocation({
-                        ...editingLocation,
-                        latitude: parseFloat(e.target.value) || 0
-                      })}
-                      placeholder="Latitude"
-                    />
-                  </Box>
-                  <Box flex={1}>
-                    <Text fontSize="sm" fontWeight="medium" mb={2}>
-                      Longitude
-                    </Text>
-                    <Input
-                      type="number"
-                      value={editingLocation.longitude}
-                      onChange={(e) => setEditingLocation({
-                        ...editingLocation,
-                        longitude: parseFloat(e.target.value) || 0
-                      })}
-                      placeholder="Longitude"
-                    />
-                  </Box>
-                </HStack>
-                <Box w="100%">
-                  <Text fontSize="sm" fontWeight="medium" mb={2}>
-                    Quantity (Optional)
-                  </Text>
-                  <Input
-                    type="number"
-                    value={editingLocation.quantity || ''}
-                    onChange={(e) => setEditingLocation({
-                      ...editingLocation,
-                      quantity: e.target.value ? parseFloat(e.target.value) : undefined
-                    })}
-                    placeholder="Quantity"
-                  />
-                </Box>
-              </VStack>
-            </DialogBody>
-            <DialogFooter>
-              <Button variant="outline" onClick={handleCancelEdit}>
-                Cancel
-              </Button>
-              <Button onClick={handleSaveEdit}>
-                Save Changes
-              </Button>
-            </DialogFooter>
-          </DialogContent>
-        </DialogRoot>
-      )}
     </DialogRoot>
   );
 };
