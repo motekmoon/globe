@@ -161,24 +161,25 @@ const DataManager: React.FC<DataManagerProps> = ({
   if (!isOpen) return null;
 
   return (
-    <>
-    <Box
-      position="fixed"
-      top="0"
-      left="0"
-      right="0"
-      bottom="0"
-      bg="rgba(0, 0, 0, 0.9)"
-      zIndex={2000}
-      overflow="auto"
-    >
+    <Box>
+      {/* Main Data Manager Modal */}
       <Box
-        position="relative"
-        w="100%"
-        h="100vh"
-        bg="white"
+        position="fixed"
+        top="0"
+        left="0"
+        right="0"
+        bottom="0"
+        bg="rgba(0, 0, 0, 0.9)"
+        zIndex={2000}
         overflow="auto"
       >
+        <Box
+          position="relative"
+          w="100%"
+          h="100vh"
+          bg="white"
+          overflow="auto"
+        >
         {/* Header */}
         <Box
           position="sticky"
@@ -374,6 +375,7 @@ const DataManager: React.FC<DataManagerProps> = ({
             </TabsRoot>
           </VStack>
         </Box>
+        </Box>
       </Box>
 
       {/* Edit Location Modal */}
@@ -480,8 +482,7 @@ const DataManager: React.FC<DataManagerProps> = ({
             </HStack>
           </Box>
         )}
-      </Box>
-    </>
+    </Box>
   );
 };
 
