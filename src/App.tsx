@@ -94,7 +94,7 @@ function App() {
         position="relative"
         width="100vw"
         height="100vh"
-        bg="linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)"
+        // bg="linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)"
       >
         {/* Logo and title positioned in upper left */}
         <Box
