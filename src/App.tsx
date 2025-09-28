@@ -1,4 +1,4 @@
-import React, { Suspense, useState, useEffect } from "react";
+import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import {
@@ -13,144 +13,40 @@ import {
 import Globe from "./components/globe/Globe";
 import LocationForm from "./components/location/LocationForm";
 import Drawer from "./components/layout/Drawer";
-import { locationService, Location } from "./lib/supabase";
+import { useLocations } from "./hooks/useLocations";
+import { useDrawer } from "./hooks/useDrawer";
+import { filterAndSortLocations } from "./utils/locationUtils";
 
 // Create a system for Chakra UI
 const system = createSystem(defaultConfig);
 
 function App() {
-  const [locations, setLocations] = useState<Location[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [hiddenLocations, setHiddenLocations] = useState<Set<string>>(
-    new Set()
-  );
-  const [editingLocation, setEditingLocation] = useState<Location | null>(null);
-  const [isDrawerOpen, setIsDrawerOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
-  const [sortBy, setSortBy] = useState<"name" | "date" | "distance">("date");
+  // Use custom hooks for state management
+  const {
+    locations,
+    loading,
+    hiddenLocations,
+    editingLocation,
+    setEditingLocation,
+    handleLocationAdd,
+    handleEditLocation,
+    handleSaveLocation,
+    handleHideLocation,
+    handleDeleteLocation,
+  } = useLocations();
 
-  // Filter and sort locations
-  const filteredLocations = locations
-    .filter((location) =>
-      location.name.toLowerCase().includes(searchQuery.toLowerCase())
-    )
-    .sort((a, b) => {
-      switch (sortBy) {
-        case "name":
-          return a.name.localeCompare(b.name);
-        case "date":
-          return (
-            new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
-          );
-        case "distance":
-          // For now, just sort by name as distance calculation would require user location
-          return a.name.localeCompare(b.name);
-        default:
-          return 0;
-      }
-    });
+  const {
+    isDrawerOpen,
+    openDrawer,
+    closeDrawer,
+    searchQuery,
+    setSearchQuery,
+    sortBy,
+    setSortBy,
+  } = useDrawer();
 
-  // Load locations from Supabase on component mount
-  useEffect(() => {
-    const loadLocations = async () => {
-      try {
-        const data = await locationService.getLocations();
-        setLocations(data);
-      } catch (error) {
-        console.error("Error loading locations:", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    loadLocations();
-  }, []);
-
-  const handleLocationAdd = async (location: {
-    name: string;
-    lat: number;
-    lng: number;
-  }) => {
-    try {
-      const newLocation = await locationService.addLocation({
-        name: location.name,
-        latitude: location.lat,
-        longitude: location.lng,
-      });
-
-      if (newLocation) {
-        setLocations((prev) => [newLocation, ...prev]);
-      }
-    } catch (error) {
-      console.error("Error adding location:", error);
-      // Fallback to local state if database fails
-      const fallbackLocation = {
-        id: Date.now().toString(),
-        name: location.name,
-        latitude: location.lat,
-        longitude: location.lng,
-        created_at: new Date().toISOString(),
-        updated_at: new Date().toISOString(),
-      };
-      setLocations((prev) => [fallbackLocation, ...prev]);
-    }
-  };
-
-  const handleEditLocation = (location: Location) => {
-    setEditingLocation(location);
-  };
-
-  const handleSaveLocation = async (updatedLocation: Location) => {
-    try {
-      // Update in database
-      await locationService.updateLocation(updatedLocation.id, {
-        name: updatedLocation.name,
-        latitude: updatedLocation.latitude,
-        longitude: updatedLocation.longitude,
-      });
-
-      // Update local state
-      setLocations((prev) =>
-        prev.map((loc) =>
-          loc.id === updatedLocation.id ? updatedLocation : loc
-        )
-      );
-      setEditingLocation(null);
-    } catch (error) {
-      console.error("Error updating location:", error);
-    }
-  };
-
-  const handleHideLocation = (locationId: string) => {
-    setHiddenLocations((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(locationId)) {
-        newSet.delete(locationId);
-      } else {
-        newSet.add(locationId);
-      }
-      return newSet;
-    });
-  };
-
-  const handleDeleteLocation = async (locationId: string) => {
-    try {
-      // Delete from database
-      await locationService.deleteLocation(locationId);
-
-      // Update local state
-      setLocations((prev) => prev.filter((loc) => loc.id !== locationId));
-
-      // Remove from hidden locations if it was hidden
-      setHiddenLocations((prev) => {
-        const newSet = new Set(prev);
-        newSet.delete(locationId);
-        return newSet;
-      });
-    } catch (error) {
-      console.error("Error deleting location:", error);
-    }
-  };
+  // Filter and sort locations using utility function
+  const filteredLocations = filterAndSortLocations(locations, searchQuery, sortBy);
 
   return (
     <ChakraProvider value={system}>
@@ -200,7 +96,7 @@ function App() {
             top="5px"
             right="5px"
             zIndex={10}
-            onClick={() => setIsDrawerOpen(true)}
+            onClick={openDrawer}
             size="sm"
             colorScheme="blue"
           >
@@ -267,7 +163,7 @@ function App() {
         {/* Location Manager Drawer */}
         <Drawer
           isOpen={isDrawerOpen}
-          onClose={() => setIsDrawerOpen(false)}
+          onClose={closeDrawer}
           locations={locations}
           filteredLocations={filteredLocations}
           searchQuery={searchQuery}
