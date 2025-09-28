@@ -191,9 +191,14 @@ const DataManager: React.FC<DataManagerProps> = ({
           zIndex={10}
         >
           <HStack justify="space-between" align="center">
-            <Text fontSize="xl" fontWeight="bold">
-              Data Management
-            </Text>
+            <HStack gap={3} align="center">
+              <Text fontSize="xl" fontWeight="bold">
+                Data Management
+              </Text>
+              <Badge colorScheme="blue" fontSize="sm">
+                {locations.length} locations
+              </Badge>
+            </HStack>
             <Button
               size="sm"
               variant="ghost"
@@ -207,15 +212,6 @@ const DataManager: React.FC<DataManagerProps> = ({
         {/* Body */}
         <Box p={4}>
           <VStack align="stretch" gap={4}>
-            {/* Header */}
-            <HStack justify="space-between">
-              <Box></Box>
-              <HStack gap={2}>
-                <Badge colorScheme="blue" fontSize="sm">
-                  {locations.length} locations
-                </Badge>
-              </HStack>
-            </HStack>
 
             {/* Error Display */}
             {error && (
