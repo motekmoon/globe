@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Box, HStack, Input, Button, Text, VStack } from "@chakra-ui/react";
+import { Box, HStack, Input, Button, Text } from "@chakra-ui/react";
 
 interface LocationInputProps {
   onLocationAdd?: (location: {
@@ -112,30 +112,30 @@ const LocationInput: React.FC<LocationInputProps> = ({ onLocationAdd }) => {
   return (
     <Box
       bg="rgba(0, 0, 0, 0.5)"
-      p={2}
-      maxH="50px"
+      p={1}
+      maxH="40px"
       maxW="900px"
       w="100%"
       overflow="hidden"
     >
-      <HStack gap={2} align="center">
+      <HStack gap={1} align="center">
         {/* Address Input */}
-        <HStack gap={2} flex={1}>
-              <Input
-                id="address-input"
-                name="address"
-                autoComplete="street-address"
-                placeholder="Enter city or address..."
-                value={address}
-                onChange={(e) => setAddress(e.target.value)}
-                disabled={isLoading}
-                size="xs"
-                variant="flushed"
-                bg="transparent"
-                color="white"
-                _placeholder={{ color: "gray.400" }}
-                flex={1}
-              />
+        <HStack gap={1} flex={1}>
+          <Input
+            id="address-input"
+            name="address"
+            autoComplete="street-address"
+            placeholder="Enter city or address..."
+            value={address}
+            onChange={(e) => setAddress(e.target.value)}
+            disabled={isLoading}
+            size="xs"
+            variant="flushed"
+            bg="transparent"
+            color="white"
+            _placeholder={{ color: "gray.400" }}
+            flex={1}
+          />
           <Button
             onClick={handleAddressSubmit}
             disabled={isLoading}
@@ -156,25 +156,25 @@ const LocationInput: React.FC<LocationInputProps> = ({ onLocationAdd }) => {
         </Text>
 
         {/* Coordinate Inputs */}
-        <HStack gap={2} flex={1}>
-              <Input
-                id="latitude-input"
-                name="latitude"
-                autoComplete="off"
-                type="number"
-                placeholder="Latitude"
-                value={lat}
-                onChange={(e) => setLat(e.target.value)}
-                step="any"
-                min="-90"
-                max="90"
-                size="xs"
-                variant="flushed"
-                bg="transparent"
-                w="80px"
-                color="white"
-                _placeholder={{ color: "gray.400" }}
-              />
+        <HStack gap={1} flex={1}>
+          <Input
+            id="latitude-input"
+            name="latitude"
+            autoComplete="off"
+            type="number"
+            placeholder="Latitude"
+            value={lat}
+            onChange={(e) => setLat(e.target.value)}
+            step="any"
+            min="-90"
+            max="90"
+            size="xs"
+            variant="flushed"
+            bg="transparent"
+            w="80px"
+            color="white"
+            _placeholder={{ color: "gray.400" }}
+          />
           <Input
             id="longitude-input"
             name="longitude"
