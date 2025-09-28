@@ -35,16 +35,13 @@ html, body {
   opacity: 1;
 }
 
-/* Data visualization fade-in */
+/* Data visualization fade-in - only affects children, not the container itself */
 .data-visualization {
-  opacity: 0;
-  transform: scale(0.95);
-  transition: all 0.4s ease-out;
+  /* Container is always visible, only affects child animations */
 }
 
 .data-visualization.ready {
-  opacity: 1;
-  transform: scale(1);
+  /* Ready state for child animations */
 }
 
 
