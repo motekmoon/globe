@@ -69,14 +69,14 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
     <Box
       bg="rgba(0, 0, 0, 0.5)"
       p={4}
-      maxH="60px"
-      maxW="1000px"
+      maxH="70px"
+      maxW="1200px"
       w="100%"
       overflow="hidden"
     >
-      <HStack gap={2} align="center">
+      <HStack gap={3} align="center">
         {/* Address Input */}
-        <HStack gap={2} flex={1}>
+        <HStack gap={3} flex={1}>
           <Input
             id="address-input"
             name="address"
@@ -107,7 +107,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             bg="transparent"
             color="white"
             _placeholder={{ color: "gray.400" }}
-            w="80px"
+            w="100px"
             step="any"
             min="0"
           />
@@ -131,7 +131,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
         </Text>
 
         {/* Coordinate Inputs */}
-        <HStack gap={2} flex={1}>
+        <HStack gap={3} flex={1}>
           <Input
             id="latitude-input"
             name="latitude"
@@ -183,7 +183,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             bg="transparent"
             color="white"
             _placeholder={{ color: "gray.400" }}
-            w="80px"
+            w="100px"
             step="any"
             min="0"
           />
