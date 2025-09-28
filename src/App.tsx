@@ -213,6 +213,7 @@ function App() {
         >
           <Canvas
             camera={{ position: [0, 0, 5], fov: 50 }}
+            className="globe-fade-in"
             style={{
               background:
                 "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)",
