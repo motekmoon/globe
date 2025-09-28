@@ -1,4 +1,4 @@
-import { Location } from '../types/Location';
+import { Location } from './supabase';
 
 export interface DatasetImportResult {
   success: boolean;
@@ -195,7 +195,7 @@ export class DatasetImporter {
             location[field] = numValue;
           }
         } else {
-          location[field] = value;
+          (location as any)[field] = value;
         }
       }
     }
@@ -220,7 +220,8 @@ export class DatasetImporter {
       name: location.name,
       latitude: location.latitude,
       longitude: location.longitude,
-      createdAt: new Date().toISOString()
+      created_at: new Date().toISOString(),
+      updated_at: new Date().toISOString()
     };
   }
 
@@ -255,7 +256,8 @@ export class DatasetImporter {
       name: name,
       latitude: latitude,
       longitude: longitude,
-      createdAt: obj.createdAt || new Date().toISOString()
+      created_at: obj.created_at || new Date().toISOString(),
+      updated_at: obj.updated_at || new Date().toISOString()
     };
   }
 

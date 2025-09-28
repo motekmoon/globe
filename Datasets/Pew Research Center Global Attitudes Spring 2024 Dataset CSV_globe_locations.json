@@ -1,0 +1,212 @@
+[
+  {
+    "name": "Argentina",
+    "latitude": -34.6118,
+    "longitude": -58.396,
+    "survey_responses": 1163
+  },
+  {
+    "name": "Australia",
+    "latitude": -25.2744,
+    "longitude": 133.7751,
+    "survey_responses": 1018
+  },
+  {
+    "name": "Bangladesh",
+    "latitude": 23.685,
+    "longitude": 90.3563,
+    "survey_responses": 1008
+  },
+  {
+    "name": "Brazil",
+    "latitude": -14.235,
+    "longitude": -51.9253,
+    "survey_responses": 1015
+  },
+  {
+    "name": "Canada",
+    "latitude": 56.1304,
+    "longitude": -106.3468,
+    "survey_responses": 996
+  },
+  {
+    "name": "Chile",
+    "latitude": -35.6751,
+    "longitude": -71.543,
+    "survey_responses": 1120
+  },
+  {
+    "name": "Colombia",
+    "latitude": 4.5709,
+    "longitude": -74.2973,
+    "survey_responses": 1010
+  },
+  {
+    "name": "France",
+    "latitude": 46.2276,
+    "longitude": 2.2137,
+    "survey_responses": 1031
+  },
+  {
+    "name": "Germany",
+    "latitude": 51.1657,
+    "longitude": 10.4515,
+    "survey_responses": 1013
+  },
+  {
+    "name": "Ghana",
+    "latitude": 7.9465,
+    "longitude": -1.0232,
+    "survey_responses": 1017
+  },
+  {
+    "name": "Greece",
+    "latitude": 39.0742,
+    "longitude": 21.8243,
+    "survey_responses": 1017
+  },
+  {
+    "name": "Hungary",
+    "latitude": 47.1625,
+    "longitude": 19.5033,
+    "survey_responses": 2021
+  },
+  {
+    "name": "India",
+    "latitude": 20.5937,
+    "longitude": 78.9629,
+    "survey_responses": 1046
+  },
+  {
+    "name": "Indonesia",
+    "latitude": -0.7893,
+    "longitude": 113.9213,
+    "survey_responses": 3559
+  },
+  {
+    "name": "Israel",
+    "latitude": 31.0461,
+    "longitude": 34.8516,
+    "survey_responses": 937
+  },
+  {
+    "name": "Italy",
+    "latitude": 41.8719,
+    "longitude": 12.5674,
+    "survey_responses": 1003
+  },
+  {
+    "name": "Japan",
+    "latitude": 36.2048,
+    "longitude": 138.2529,
+    "survey_responses": 1005
+  },
+  {
+    "name": "Kenya",
+    "latitude": -0.0236,
+    "longitude": 37.9062,
+    "survey_responses": 1011
+  },
+  {
+    "name": "Malaysia",
+    "latitude": 4.2105,
+    "longitude": 101.9758,
+    "survey_responses": 1014
+  },
+  {
+    "name": "Mexico",
+    "latitude": 23.6345,
+    "longitude": -102.5528,
+    "survey_responses": 1029
+  },
+  {
+    "name": "Netherlands",
+    "latitude": 52.1326,
+    "longitude": 5.2913,
+    "survey_responses": 2519
+  },
+  {
+    "name": "Nigeria",
+    "latitude": 9.081999,
+    "longitude": 8.675277,
+    "survey_responses": 1000
+  },
+  {
+    "name": "Peru",
+    "latitude": -9.19,
+    "longitude": -75.0152,
+    "survey_responses": 1001
+  },
+  {
+    "name": "Philippines",
+    "latitude": 12.8797,
+    "longitude": 121.774,
+    "survey_responses": 1009
+  },
+  {
+    "name": "Poland",
+    "latitude": 51.9194,
+    "longitude": 19.1451,
+    "survey_responses": 1049
+  },
+  {
+    "name": "Singapore",
+    "latitude": 1.3521,
+    "longitude": 103.8198,
+    "survey_responses": 1035
+  },
+  {
+    "name": "South Africa",
+    "latitude": -30.5595,
+    "longitude": 22.9375,
+    "survey_responses": 1049
+  },
+  {
+    "name": "South Korea",
+    "latitude": 35.9078,
+    "longitude": 127.7669,
+    "survey_responses": 1050
+  },
+  {
+    "name": "Spain",
+    "latitude": 40.4637,
+    "longitude": -3.7492,
+    "survey_responses": 1524
+  },
+  {
+    "name": "Sri Lanka",
+    "latitude": 7.8731,
+    "longitude": 80.7718,
+    "survey_responses": 1017
+  },
+  {
+    "name": "Sweden",
+    "latitude": 60.1282,
+    "longitude": 18.6435,
+    "survey_responses": 1054
+  },
+  {
+    "name": "Thailand",
+    "latitude": 15.87,
+    "longitude": 100.9925,
+    "survey_responses": 1020
+  },
+  {
+    "name": "Tunisia",
+    "latitude": 33.8869,
+    "longitude": 9.5375,
+    "survey_responses": 1051
+  },
+  {
+    "name": "Turkey",
+    "latitude": 38.9637,
+    "longitude": 35.2433,
+    "survey_responses": 1042
+  },
+  {
+    "name": "United Kingdom",
+    "latitude": 55.3781,
+    "longitude": -3.436,
+    "survey_responses": 1050
+  }
+]

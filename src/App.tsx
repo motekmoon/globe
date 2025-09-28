@@ -30,7 +30,6 @@ function App() {
     loading,
     hiddenLocations,
     editingLocation,
-    setEditingLocation,
     handleLocationAdd,
     handleEditLocation,
     handleSaveLocation,
@@ -49,22 +48,25 @@ function App() {
     setSortBy,
   } = useDrawer();
 
-  const {
-    isPlaying,
-    toggleAnimation,
-  } = useAnimation();
+  const { isPlaying, toggleAnimation } = useAnimation();
 
   // Import modal state
   const [isImportModalOpen, setIsImportModalOpen] = React.useState(false);
 
   // Filter and sort locations using utility function
-  const filteredLocations = filterAndSortLocations(locations, searchQuery, sortBy);
+  const filteredLocations = filterAndSortLocations(
+    locations,
+    searchQuery,
+    sortBy
+  );
 
   // Handle bulk import
   const handleImportLocations = async (importedLocations: any[]) => {
     try {
       const result = await handleBulkImport(importedLocations);
-      console.log(`Import completed: ${result.success} successful, ${result.failed} failed`);
+      console.log(
+        `Import completed: ${result.success} successful, ${result.failed} failed`
+      );
     } catch (error) {
       console.error("Bulk import failed:", error);
     }
@@ -81,14 +83,16 @@ function App() {
         {/* Logo and title positioned in upper left */}
         <Box
           position="absolute"
-          top="5px"
-          left="5px"
+          top="10px"
+          left="10px"
           zIndex={10}
           display="flex"
           alignItems="center"
           gap="8px"
+          h="25px"
+          p="0"
         >
-          <Box width="30px" height="30px">
+          <Box width="20px" height="20px">
             <img
               src="/logo.PNG"
               alt="Globe"
@@ -102,10 +106,12 @@ function App() {
           </Box>
           <Heading
             color="white"
-            fontSize="1.2rem"
-            fontWeight="400"
+            fontSize="0.7rem"
+            fontWeight="600"
             fontFamily="'SUSE Mono', monospace"
             margin="0"
+            h="25px"
+            lineHeight="25px"
           >
             Globe
           </Heading>
@@ -115,24 +121,37 @@ function App() {
         {!isDrawerOpen && (
           <Box
             position="absolute"
-            top="5px"
-            right="5px"
+            top="10px"
+            right="10px"
             zIndex={10}
             display="flex"
             gap="8px"
+            h="25px"
+            p="0"
+            alignItems="center"
           >
             <Button
               onClick={() => setIsImportModalOpen(true)}
               size="sm"
+              h="25px"
               colorScheme="green"
               variant="outline"
+              fontWeight="600"
+              fontSize="0.7rem"
+              borderRadius="md"
+              whiteSpace="nowrap"
             >
               Import
             </Button>
             <Button
               onClick={openDrawer}
               size="sm"
+              h="25px"
               colorScheme="blue"
+              fontWeight="600"
+              fontSize="0.7rem"
+              borderRadius="md"
+              whiteSpace="nowrap"
             >
               Locations ({locations.length})
             </Button>
@@ -142,13 +161,13 @@ function App() {
         {/* Input controls */}
         <Box
           position="absolute"
-          top="5px"
+          top="10px"
           left={isDrawerOpen ? "10px" : "50%"}
           transform={isDrawerOpen ? "none" : "translateX(-50%)"}
           zIndex={10}
           width={isDrawerOpen ? "calc(100vw - 320px)" : "auto"}
           maxWidth="900px"
-          p={2}
+          p="0"
           transition="all 0.3s ease-in-out"
         >
           <LocationForm onLocationAdd={handleLocationAdd} />
@@ -182,7 +201,11 @@ function App() {
               <directionalLight position={[10, 10, 5]} intensity={2.0} />
               <pointLight position={[-10, -10, -5]} intensity={1.0} />
 
-              <Globe locations={locations} hiddenLocations={hiddenLocations} isPlaying={isPlaying} />
+              <Globe
+                locations={locations}
+                hiddenLocations={hiddenLocations}
+                isPlaying={isPlaying}
+              />
 
               <OrbitControls
                 enablePan={false}
@@ -196,10 +219,7 @@ function App() {
         </Box>
 
         {/* Animation Control Button */}
-        <AnimationControl 
-          isPlaying={isPlaying}
-          onToggle={toggleAnimation}
-        />
+        <AnimationControl isPlaying={isPlaying} onToggle={toggleAnimation} />
 
         {/* Location Manager Drawer */}
         <Drawer

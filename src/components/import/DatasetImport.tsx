@@ -5,36 +5,32 @@ import {
   VStack,
   HStack,
   Text,
-  Alert,
-  AlertIcon,
-  AlertTitle,
+  AlertContent,
   AlertDescription,
-  Progress,
-  Divider,
+  AlertIndicator,
+  AlertRoot,
+  AlertTitle,
+  ProgressRoot,
+  ProgressRange,
+  ProgressTrack,
   Badge,
-  useToast,
-  Modal,
-  ModalOverlay,
-  ModalContent,
-  ModalHeader,
-  ModalBody,
-  ModalFooter,
-  ModalCloseButton,
-  useDisclosure,
+  DialogRoot,
+  DialogBackdrop,
+  DialogBody,
+  DialogCloseTrigger,
+  DialogContent,
+  DialogFooter,
+  DialogHeader,
   Code,
-  Link,
-  IconButton,
-  Tooltip
-} from '@chakra-ui/react';
-import { 
-  CloudArrowUpIcon, 
-  DocumentTextIcon, 
+} from "@chakra-ui/react";
+import {
+  CloudArrowUpIcon,
+  DocumentTextIcon,
   CheckCircleIcon,
   ExclamationTriangleIcon,
   XMarkIcon,
-  EyeIcon
-} from '@heroicons/react/24/outline';
-import { datasetImporter, DatasetImportResult } from '../../lib/datasetImport';
+} from "@heroicons/react/24/outline";
+import { datasetImporter, DatasetImportResult } from "../../lib/datasetImport";
 
 interface DatasetImportProps {
   onImport: (locations: any[]) => void;
@@ -42,12 +38,25 @@ interface DatasetImportProps {
   onClose: () => void;
 }
 
-const DatasetImport: React.FC<DatasetImportProps> = ({ onImport, isOpen, onClose }) => {
+const DatasetImport: React.FC<DatasetImportProps> = ({
+  onImport,
+  isOpen,
+  onClose,
+}) => {
   const [isLoading, setIsLoading] = useState(false);
-  const [importResult, setImportResult] = useState<DatasetImportResult | null>(null);
+  const [importResult, setImportResult] = useState<DatasetImportResult | null>(
+    null
+  );
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const toast = useToast();
+  // Note: useToast is not available in Chakra UI v3, using console.log for now
+  const showToast = (
+    title: string,
+    description: string,
+    status: "success" | "warning" | "error"
+  ) => {
+    console.log(`${status.toUpperCase()}: ${title} - ${description}`);
+  };
 
   const handleFileSelect = async (file: File) => {
     if (!file) return;
@@ -60,36 +69,32 @@ const DatasetImport: React.FC<DatasetImportProps> = ({ onImport, isOpen, onClose
       setImportResult(result);
 
       if (result.success && result.imported.length > 0) {
-        toast({
-          title: "Import Successful",
-          description: `Imported ${result.imported.length} locations`,
-          status: "success",
-          duration: 3000,
-          isClosable: true,
-        });
+        showToast(
+          "Import Successful",
+          `Imported ${result.imported.length} locations`,
+          "success"
+        );
       } else if (result.errors.length > 0) {
-        toast({
-          title: "Import Issues",
-          description: `${result.errors.length} errors found. Check details below.`,
-          status: "warning",
-          duration: 5000,
-          isClosable: true,
-        });
+        showToast(
+          "Import Issues",
+          `${result.errors.length} errors found. Check details below.`,
+          "warning"
+        );
       }
     } catch (error) {
-      toast({
-        title: "Import Failed",
-        description: error instanceof Error ? error.message : "Unknown error occurred",
-        status: "error",
-        duration: 5000,
-        isClosable: true,
-      });
+      showToast(
+        "Import Failed",
+        error instanceof Error ? error.message : "Unknown error occurred",
+        "error"
+      );
     } finally {
       setIsLoading(false);
     }
   };
 
-  const handleFileInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileInputChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
     if (file) {
       handleFileSelect(file);
@@ -99,7 +104,7 @@ const DatasetImport: React.FC<DatasetImportProps> = ({ onImport, isOpen, onClose
   const handleDrop = (event: React.DragEvent) => {
     event.preventDefault();
     setDragActive(false);
-    
+
     const file = event.dataTransfer.files[0];
     if (file) {
       handleFileSelect(file);
@@ -124,14 +129,17 @@ const DatasetImport: React.FC<DatasetImportProps> = ({ onImport, isOpen, onClose
     }
   };
 
-  const handleDownloadTemplate = (format: 'csv' | 'json') => {
-    const template = format === 'csv' 
-      ? datasetImporter.generateCSVTemplate()
-      : datasetImporter.generateJSONTemplate();
-    
-    const blob = new Blob([template], { type: format === 'csv' ? 'text/csv' : 'application/json' });
+  const handleDownloadTemplate = (format: "csv" | "json") => {
+    const template =
+      format === "csv"
+        ? datasetImporter.generateCSVTemplate()
+        : datasetImporter.generateJSONTemplate();
+
+    const blob = new Blob([template], {
+      type: format === "csv" ? "text/csv" : "application/json",
+    });
     const url = URL.createObjectURL(blob);
-    const a = document.createElement('a');
+    const a = document.createElement("a");
     a.href = url;
     a.download = `globe-locations-template.${format}`;
     document.body.appendChild(a);
@@ -143,30 +151,42 @@ const DatasetImport: React.FC<DatasetImportProps> = ({ onImport, isOpen, onClose
   const resetImport = () => {
     setImportResult(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={onClose} size="xl">
-      <ModalOverlay />
-      <ModalContent>
-        <ModalHeader>
+    <DialogRoot open={isOpen} onOpenChange={(e: any) => !e.open && onClose()}>
+      <DialogBackdrop position="fixed" top="0" left="0" right="0" bottom="0" />
+      <DialogContent
+        maxW="500px"
+        w="500px"
+        minH="300px"
+        maxH="80vh"
+        position="fixed"
+        top="50%"
+        left="50%"
+        transform="translate(-50%, -50%)"
+        zIndex={1000}
+        margin="0"
+        overflowY="auto"
+      >
+        <DialogHeader>
           <HStack>
             <CloudArrowUpIcon className="h-5 w-5" />
             <Text>Import Dataset</Text>
           </HStack>
-        </ModalHeader>
-        <ModalCloseButton />
-        
-        <ModalBody>
-          <VStack spacing={6} align="stretch">
+        </DialogHeader>
+        <DialogCloseTrigger />
+
+        <DialogBody>
+          <VStack gap={3} align="stretch">
             {/* File Upload Area */}
             <Box
               border="2px dashed"
               borderColor={dragActive ? "blue.300" : "gray.300"}
-              borderRadius="lg"
-              p={8}
+              borderRadius="md"
+              p={3}
               textAlign="center"
               bg={dragActive ? "blue.50" : "gray.50"}
               cursor="pointer"
@@ -176,18 +196,23 @@ const DatasetImport: React.FC<DatasetImportProps> = ({ onImport, isOpen, onClose
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onClick={() => fileInputRef.current?.click()}
+              minH="100px"
+              maxH="120px"
+              display="flex"
+              flexDirection="column"
+              justifyContent="center"
             >
-              <CloudArrowUpIcon className="h-12 w-12 mx-auto text-gray-400 mb-4" />
-              <Text fontSize="lg" fontWeight="semibold" mb={2}>
-                Drop your file here or click to browse
+              <CloudArrowUpIcon className="h-6 w-6 mx-auto text-gray-400 mb-1" />
+              <Text fontSize="sm" fontWeight="semibold" mb={1}>
+                Drop file here or click to browse
               </Text>
-              <Text color="gray.600" mb={4}>
-                Supports CSV and JSON files
+              <Text color="gray.600" fontSize="xs" mb={2}>
+                CSV and JSON files
               </Text>
               <Button
                 colorScheme="blue"
                 variant="outline"
-                size="sm"
+                size="xs"
                 onClick={(e) => {
                   e.stopPropagation();
                   fileInputRef.current?.click();
@@ -202,27 +227,29 @@ const DatasetImport: React.FC<DatasetImportProps> = ({ onImport, isOpen, onClose
               type="file"
               accept=".csv,.json"
               onChange={handleFileInputChange}
-              style={{ display: 'none' }}
+              style={{ display: "none" }}
             />
 
             {/* Template Downloads */}
             <Box>
-              <Text fontWeight="semibold" mb={3}>Download Templates:</Text>
-              <HStack spacing={4}>
+              <Text fontWeight="semibold" mb={2}>
+                Download Templates:
+              </Text>
+              <HStack gap={2}>
                 <Button
                   size="sm"
                   variant="outline"
-                  leftIcon={<DocumentTextIcon className="h-4 w-4" />}
-                  onClick={() => handleDownloadTemplate('csv')}
+                  onClick={() => handleDownloadTemplate("csv")}
                 >
+                  <DocumentTextIcon className="h-4 w-4 mr-2" />
                   CSV Template
                 </Button>
                 <Button
                   size="sm"
                   variant="outline"
-                  leftIcon={<DocumentTextIcon className="h-4 w-4" />}
-                  onClick={() => handleDownloadTemplate('json')}
+                  onClick={() => handleDownloadTemplate("json")}
                 >
+                  <DocumentTextIcon className="h-4 w-4 mr-2" />
                   JSON Template
                 </Button>
               </HStack>
@@ -232,28 +259,33 @@ const DatasetImport: React.FC<DatasetImportProps> = ({ onImport, isOpen, onClose
             {isLoading && (
               <Box>
                 <Text mb={2}>Processing file...</Text>
-                <Progress size="sm" isIndeterminate colorScheme="blue" />
+                <ProgressRoot value={null} size="sm" colorScheme="blue">
+                  <ProgressTrack />
+                  <ProgressRange />
+                </ProgressRoot>
               </Box>
             )}
 
             {/* Import Results */}
             {importResult && (
               <Box>
-                <Divider mb={4} />
-                <Text fontWeight="semibold" mb={3}>Import Results:</Text>
-                
-                <VStack spacing={3} align="stretch">
+                <Box height="1px" bg="gray.200" mb={4} />
+                <Text fontWeight="semibold" mb={3}>
+                  Import Results:
+                </Text>
+
+                <VStack gap={3} align="stretch">
                   {/* Summary */}
                   <HStack justify="space-between">
                     <Text>Total Rows:</Text>
                     <Badge colorScheme="gray">{importResult.totalRows}</Badge>
                   </HStack>
-                  
+
                   <HStack justify="space-between">
                     <Text>Valid Locations:</Text>
                     <Badge colorScheme="green">{importResult.validRows}</Badge>
                   </HStack>
-                  
+
                   <HStack justify="space-between">
                     <Text>Invalid Rows:</Text>
                     <Badge colorScheme="red">{importResult.invalidRows}</Badge>
@@ -261,36 +293,56 @@ const DatasetImport: React.FC<DatasetImportProps> = ({ onImport, isOpen, onClose
 
                   {/* Success/Error Alerts */}
                   {importResult.success && importResult.imported.length > 0 && (
-                    <Alert status="success">
-                      <CheckCircleIcon className="h-4 w-4" />
-                      <Box>
+                    <AlertRoot status="success">
+                      <AlertIndicator>
+                        <CheckCircleIcon className="h-4 w-4" />
+                      </AlertIndicator>
+                      <AlertContent>
                         <AlertTitle>Import Successful!</AlertTitle>
                         <AlertDescription>
-                          {importResult.imported.length} locations ready to import
+                          {importResult.imported.length} locations ready to
+                          import
                         </AlertDescription>
-                      </Box>
-                    </Alert>
+                      </AlertContent>
+                    </AlertRoot>
                   )}
 
                   {importResult.errors.length > 0 && (
-                    <Alert status="warning">
-                      <ExclamationTriangleIcon className="h-4 w-4" />
-                      <Box>
+                    <AlertRoot status="warning">
+                      <AlertIndicator>
+                        <ExclamationTriangleIcon className="h-4 w-4" />
+                      </AlertIndicator>
+                      <AlertContent>
                         <AlertTitle>Import Issues Found</AlertTitle>
                         <AlertDescription>
-                          {importResult.errors.length} errors detected. Check details below.
+                          {importResult.errors.length} errors detected. Check
+                          details below.
                         </AlertDescription>
-                      </Box>
-                    </Alert>
+                      </AlertContent>
+                    </AlertRoot>
                   )}
 
                   {/* Error Details */}
                   {importResult.errors.length > 0 && (
                     <Box>
-                      <Text fontWeight="semibold" mb={2}>Errors:</Text>
-                      <VStack spacing={1} align="stretch" maxH="200px" overflowY="auto">
+                      <Text fontWeight="semibold" mb={2}>
+                        Errors:
+                      </Text>
+                      <VStack
+                        gap={1}
+                        align="stretch"
+                        maxH="200px"
+                        overflowY="auto"
+                      >
                         {importResult.errors.map((error, index) => (
-                          <Text key={index} fontSize="sm" color="red.600" bg="red.50" p={2} borderRadius="md">
+                          <Text
+                            key={index}
+                            fontSize="sm"
+                            color="red.600"
+                            bg="red.50"
+                            p={2}
+                            borderRadius="md"
+                          >
                             {error}
                           </Text>
                         ))}
@@ -301,9 +353,21 @@ const DatasetImport: React.FC<DatasetImportProps> = ({ onImport, isOpen, onClose
                   {/* Sample Data Preview */}
                   {importResult.imported.length > 0 && (
                     <Box>
-                      <Text fontWeight="semibold" mb={2}>Preview (first 3 locations):</Text>
-                      <Code p={3} borderRadius="md" fontSize="sm" maxH="150px" overflowY="auto">
-                        {JSON.stringify(importResult.imported.slice(0, 3), null, 2)}
+                      <Text fontWeight="semibold" mb={2}>
+                        Preview (first 3 locations):
+                      </Text>
+                      <Code
+                        p={3}
+                        borderRadius="md"
+                        fontSize="sm"
+                        maxH="150px"
+                        overflowY="auto"
+                      >
+                        {JSON.stringify(
+                          importResult.imported.slice(0, 3),
+                          null,
+                          2
+                        )}
                       </Code>
                     </Box>
                   )}
@@ -311,37 +375,31 @@ const DatasetImport: React.FC<DatasetImportProps> = ({ onImport, isOpen, onClose
               </Box>
             )}
           </VStack>
-        </ModalBody>
+        </DialogBody>
 
-        <ModalFooter>
-          <HStack spacing={3}>
+        <DialogFooter>
+          <HStack gap={2}>
             {importResult && (
-              <Button
-                variant="outline"
-                leftIcon={<XMarkIcon className="h-4 w-4" />}
-                onClick={resetImport}
-              >
+              <Button variant="outline" onClick={resetImport}>
+                <XMarkIcon className="h-4 w-4 mr-2" />
                 Reset
               </Button>
             )}
-            
+
             <Button variant="outline" onClick={onClose}>
               Cancel
             </Button>
-            
-            {importResult && importResult.imported.length > 0 && (
-              <Button
-                colorScheme="blue"
-                leftIcon={<CheckCircleIcon className="h-4 w-4" />}
-                onClick={handleImport}
-              >
-                Import {importResult.imported.length} Locations
+
+            {importResult && (
+              <Button colorScheme="blue" onClick={handleImport}>
+                <CheckCircleIcon className="h-4 w-4 mr-2" />
+                Import {importResult.imported?.length || 0} Locations
               </Button>
             )}
           </HStack>
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
+        </DialogFooter>
+      </DialogContent>
+    </DialogRoot>
   );
 };
 
