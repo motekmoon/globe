@@ -10,7 +10,6 @@ import {
   createSystem,
   defaultConfig,
 } from "@chakra-ui/react";
-import { motion } from "framer-motion";
 import Globe from "./components/globe/Globe";
 import LocationForm from "./components/location/LocationForm";
 import Drawer from "./components/layout/Drawer";
@@ -58,32 +57,21 @@ function App() {
 
   return (
     <ChakraProvider value={system}>
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.4, ease: "easeOut" }}
-        style={{ width: "100vw", height: "100vh" }}
+      <Box
+        position="relative"
+        width="100vw"
+        height="100vh"
+        bg="linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)"
       >
-        <Box
-          position="relative"
-          width="100vw"
-          height="100vh"
-          bg="linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)"
-        >
         {/* Logo and title positioned in upper left */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.1, ease: "easeOut" }}
-          style={{
-            position: "absolute",
-            top: "5px",
-            left: "5px",
-            zIndex: 10,
-            display: "flex",
-            alignItems: "center",
-            gap: "8px"
-          }}
+        <Box
+          position="absolute"
+          top="5px"
+          left="5px"
+          zIndex={10}
+          display="flex"
+          alignItems="center"
+          gap="8px"
         >
           <Box width="30px" height="30px">
             <img
@@ -106,47 +94,34 @@ function App() {
           >
             Globe
           </Heading>
-        </motion.div>
+        </Box>
 
         {/* Locations drawer button */}
         {!isDrawerOpen && (
-          <motion.div
-            initial={{ opacity: 0, y: -20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.2, ease: "easeOut" }}
-            style={{
-              position: "absolute",
-              top: "5px",
-              right: "5px",
-              zIndex: 10
-            }}
+          <Button
+            position="absolute"
+            top="5px"
+            right="5px"
+            zIndex={10}
+            onClick={openDrawer}
+            size="sm"
+            colorScheme="blue"
           >
-            <Button
-              onClick={openDrawer}
-              size="sm"
-              colorScheme="blue"
-            >
-              Locations ({locations.length})
-            </Button>
-          </motion.div>
+            Locations ({locations.length})
+          </Button>
         )}
 
         {/* Input controls */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5, delay: 0.3, ease: "easeOut" }}
-          style={{
-            position: "absolute",
-            top: "5px",
-            left: isDrawerOpen ? "10px" : "50%",
-            transform: isDrawerOpen ? "none" : "translateX(-50%)",
-            zIndex: 10,
-            width: isDrawerOpen ? "calc(100vw - 320px)" : "auto",
-            maxWidth: "900px",
-            padding: "8px",
-            transition: "all 0.3s ease-in-out"
-          }}
+        <Box
+          position="absolute"
+          top="5px"
+          left={isDrawerOpen ? "10px" : "50%"}
+          transform={isDrawerOpen ? "none" : "translateX(-50%)"}
+          zIndex={10}
+          width={isDrawerOpen ? "calc(100vw - 320px)" : "auto"}
+          maxWidth="900px"
+          p={2}
+          transition="all 0.3s ease-in-out"
         >
           <LocationForm onLocationAdd={handleLocationAdd} />
           {loading && (
@@ -154,7 +129,7 @@ function App() {
               Loading locations...
             </Text>
           )}
-        </motion.div>
+        </Box>
 
         {/* 3D Canvas */}
         <Box
@@ -215,8 +190,7 @@ function App() {
           onDeleteLocation={handleDeleteLocation}
           hiddenLocations={hiddenLocations}
         />
-        </Box>
-      </motion.div>
+      </Box>
     </ChakraProvider>
   );
 }
