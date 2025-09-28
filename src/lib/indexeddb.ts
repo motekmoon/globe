@@ -47,9 +47,16 @@ class IndexedDBStorage {
         const locations = request.result.sort((a, b) => 
           new Date(b.created_at).getTime() - new Date(a.created_at).getTime()
         )
+        console.log('🗄️ IndexedDB: Retrieved', locations.length, 'locations from database')
+        if (locations.length > 0) {
+          console.log('🗄️ IndexedDB: Sample location:', locations[0])
+        }
         resolve(locations)
       }
-      request.onerror = () => reject(request.error)
+      request.onerror = () => {
+        console.error('❌ IndexedDB: Error retrieving locations:', request.error)
+        reject(request.error)
+      }
     })
   }
 
@@ -68,8 +75,14 @@ class IndexedDBStorage {
       const store = transaction.objectStore(STORE_NAME)
       const request = store.add(newLocation)
 
-      request.onsuccess = () => resolve(newLocation)
-      request.onerror = () => reject(request.error)
+      request.onsuccess = () => {
+        console.log('💾 IndexedDB: Successfully saved location:', newLocation.name, 'with ID:', newLocation.id)
+        resolve(newLocation)
+      }
+      request.onerror = () => {
+        console.error('❌ IndexedDB: Error saving location:', request.error)
+        reject(request.error)
+      }
     })
   }
 

@@ -21,9 +21,9 @@ interface DrawerProps {
   onSortChange: (sort: "name" | "date" | "distance") => void;
   editingLocation: Location | null;
   onEditLocation: (location: Location) => void;
-  onSaveLocation: (location: Location) => void;
+  onSaveLocation: (location: Location) => Promise<void>;
   onHideLocation: (id: string) => void;
-  onDeleteLocation: (id: string) => void;
+  onDeleteLocation: (id: string) => Promise<void>;
   hiddenLocations: Set<string>;
 }
 

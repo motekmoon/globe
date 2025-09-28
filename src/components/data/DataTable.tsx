@@ -166,7 +166,7 @@ const DataTable: React.FC<DataTableProps> = ({
             <Button
               size="sm"
               variant="outline"
-              onClick={() => handleExport('csv')}
+              onClick={() => handleExport("csv")}
               disabled={loading}
             >
               Export CSV
@@ -174,7 +174,7 @@ const DataTable: React.FC<DataTableProps> = ({
             <Button
               size="sm"
               variant="outline"
-              onClick={() => handleExport('json')}
+              onClick={() => handleExport("json")}
               disabled={loading}
             >
               Export JSON
@@ -223,9 +223,9 @@ const DataTable: React.FC<DataTableProps> = ({
             <Button
               size="sm"
               variant="outline"
-              onClick={() => setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc')}
+              onClick={() => setSortOrder(sortOrder === "asc" ? "desc" : "asc")}
             >
-              {sortOrder === 'asc' ? '↑' : '↓'}
+              {sortOrder === "asc" ? "↑" : "↓"}
             </Button>
           </HStack>
         </HStack>
@@ -244,11 +244,7 @@ const DataTable: React.FC<DataTableProps> = ({
             >
               Delete Selected
             </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={clearSelection}
-            >
+            <Button size="sm" variant="outline" onClick={clearSelection}>
               Clear Selection
             </Button>
           </HStack>
@@ -262,8 +258,15 @@ const DataTable: React.FC<DataTableProps> = ({
             <TableRow>
               <TableColumnHeader>
                 <CheckboxRoot
-                  isChecked={selectedLocations.size === filteredAndSortedLocations.length && filteredAndSortedLocations.length > 0}
-                  isIndeterminate={selectedLocations.size > 0 && selectedLocations.size < filteredAndSortedLocations.length}
+                  checked={
+                    selectedLocations.size ===
+                      filteredAndSortedLocations.length &&
+                    filteredAndSortedLocations.length > 0
+                  }
+                  indeterminate={
+                    selectedLocations.size > 0 &&
+                    selectedLocations.size < filteredAndSortedLocations.length
+                  }
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     if (e.target.checked) {
                       selectAllLocations();
@@ -286,7 +289,7 @@ const DataTable: React.FC<DataTableProps> = ({
               <TableRow key={location.id}>
                 <TableCell>
                   <CheckboxRoot
-                    isChecked={selectedLocations.has(location.id)}
+                    checked={selectedLocations.has(location.id)}
                     onChange={() => toggleLocationSelection(location.id)}
                   />
                 </TableCell>
@@ -295,14 +298,18 @@ const DataTable: React.FC<DataTableProps> = ({
                 </TableCell>
                 <TableCell>
                   <Text fontSize="sm" color="gray.600">
-                    {location.latitude.toFixed(4)}, {location.longitude.toFixed(4)}
+                    {location.latitude.toFixed(4)},{" "}
+                    {location.longitude.toFixed(4)}
                   </Text>
                 </TableCell>
                 <TableCell>
-                  {location.quantity !== undefined && location.quantity !== null ? (
+                  {location.quantity !== undefined &&
+                  location.quantity !== null ? (
                     <Badge colorScheme="blue">{location.quantity}</Badge>
                   ) : (
-                    <Text fontSize="sm" color="gray.400">—</Text>
+                    <Text fontSize="sm" color="gray.400">
+                      —
+                    </Text>
                   )}
                 </TableCell>
                 <TableCell>
@@ -343,10 +350,9 @@ const DataTable: React.FC<DataTableProps> = ({
       {filteredAndSortedLocations.length === 0 && (
         <Box textAlign="center" py={8}>
           <Text color="gray.500">
-            {searchQuery || filterBy !== 'all' 
-              ? 'No locations match your filters'
-              : 'No locations found'
-            }
+            {searchQuery || filterBy !== "all"
+              ? "No locations match your filters"
+              : "No locations found"}
           </Text>
         </Box>
       )}

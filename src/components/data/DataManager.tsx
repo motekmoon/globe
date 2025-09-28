@@ -29,7 +29,7 @@ import {
 import { Location } from '../../lib/supabase';
 import { useDataManager } from '../../hooks/useDataManager';
 import DataTable from './DataTable';
-import { datasetImporter } from '../../lib/datasetImport';
+import { flexibleDatasetImporter } from "../../lib/flexibleDatasetImporter";
 
 interface DataManagerProps {
   isOpen: boolean;
@@ -44,7 +44,8 @@ const DataManager: React.FC<DataManagerProps> = ({
   onLocationSelect,
   onLocationEdit,
 }) => {
-  const { locations, loading, error, refreshData, importLocations } = useDataManager();
+  const { locations, loading, error, refreshData, importLocations } =
+    useDataManager();
 
   const [activeTab, setActiveTab] = useState("table");
   const [importFile, setImportFile] = useState<File | null>(null);
@@ -83,22 +84,40 @@ const DataManager: React.FC<DataManagerProps> = ({
     setImportSuccess(null);
 
     try {
-      const result = await datasetImporter.importFromFile(importFile);
-      
-      if (result.imported.length > 0) {
+      const result = await flexibleDatasetImporter.importFromFile(importFile);
+
+      if (result.success && result.parsedLocations.length > 0) {
+        console.log(
+          "🔄 Starting import of",
+          result.parsedLocations.length,
+          "locations"
+        );
+
         // Import the locations using the data manager
-        await importLocations(result.imported);
-        setImportSuccess(`Successfully imported ${result.imported.length} locations`);
+        const importResult = await importLocations(result.parsedLocations);
+        console.log("✅ Import result:", importResult);
+
+        setImportSuccess(
+          `Successfully imported ${importResult.success} locations`
+        );
         setImportFile(null);
         if (fileInputRef.current) {
-          fileInputRef.current.value = '';
+          fileInputRef.current.value = "";
         }
-        refreshData(); // Refresh the data table
+
+        // Add a small delay to ensure database is updated, then refresh
+        console.log("🔄 Refreshing data...");
+        setTimeout(async () => {
+          await refreshData();
+          console.log("✅ Data refresh completed");
+        }, 100);
       } else {
-        setImportError('No valid locations found in the file');
+        setImportError(
+          "No valid locations found in the file. Try using the Dynamic Visualization feature for advanced data mapping."
+        );
       }
     } catch (err) {
-      setImportError(err instanceof Error ? err.message : 'Import failed');
+      setImportError(err instanceof Error ? err.message : "Import failed");
     } finally {
       setImportLoading(false);
     }
@@ -109,7 +128,7 @@ const DataManager: React.FC<DataManagerProps> = ({
     setImportError(null);
     setImportSuccess(null);
     if (fileInputRef.current) {
-      fileInputRef.current.value = '';
+      fileInputRef.current.value = "";
     }
   };
 
@@ -158,30 +177,30 @@ const DataManager: React.FC<DataManagerProps> = ({
             <TabsRoot
               value={activeTab}
               onValueChange={(value: string) => {
-                console.log('Tab change:', value);
+                console.log("Tab change:", value);
                 setActiveTab(value);
               }}
             >
               <TabsList>
-                <TabsTrigger 
+                <TabsTrigger
                   value="table"
                   onClick={() => setActiveTab("table")}
                 >
                   Data Table
                 </TabsTrigger>
-                <TabsTrigger 
+                <TabsTrigger
                   value="analytics"
                   onClick={() => setActiveTab("analytics")}
                 >
                   Analytics
                 </TabsTrigger>
-                <TabsTrigger 
+                <TabsTrigger
                   value="import"
                   onClick={() => setActiveTab("import")}
                 >
                   Import
                 </TabsTrigger>
-                <TabsTrigger 
+                <TabsTrigger
                   value="export"
                   onClick={() => setActiveTab("export")}
                 >
@@ -229,9 +248,16 @@ const DataManager: React.FC<DataManagerProps> = ({
 
                     {/* File Preview */}
                     {importFile && (
-                      <HStack justify="space-between" align="center" p={3} bg="gray.100" borderRadius="md">
+                      <HStack
+                        justify="space-between"
+                        align="center"
+                        p={3}
+                        bg="gray.100"
+                        borderRadius="md"
+                      >
                         <Text fontSize="sm" fontWeight="medium">
-                          {importFile.name} ({Math.round(importFile.size / 1024)} KB)
+                          {importFile.name} (
+                          {Math.round(importFile.size / 1024)} KB)
                         </Text>
                         <Button size="xs" onClick={resetImport}>
                           Remove
@@ -246,7 +272,7 @@ const DataManager: React.FC<DataManagerProps> = ({
                       disabled={!importFile || importLoading}
                       loading={importLoading}
                     >
-                      {importLoading ? 'Importing...' : 'Import Data'}
+                      {importLoading ? "Importing..." : "Import Data"}
                     </Button>
                   </VStack>
 
@@ -294,7 +320,6 @@ const DataManager: React.FC<DataManagerProps> = ({
           </Button>
         </DialogFooter>
       </DialogContent>
-
     </DialogRoot>
   );
 };

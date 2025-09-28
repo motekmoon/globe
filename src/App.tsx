@@ -15,10 +15,12 @@ import LocationForm from "./components/location/LocationForm";
 import Drawer from "./components/layout/Drawer";
 import AnimationControl from "./components/controls/AnimationControl";
 import DataManager from "./components/data/DataManager";
+import { LocationProvider } from "./contexts/LocationContext";
 import { useLocations } from "./hooks/useLocations";
 import { useDrawer } from "./hooks/useDrawer";
 import { useAnimation } from "./hooks/useAnimation";
 import { filterAndSortLocations } from "./utils/locationUtils";
+import { Location } from "./lib/supabase";
 
 // Create a system for Chakra UI
 const system = createSystem(defaultConfig);
@@ -264,4 +266,13 @@ function App() {
   );
 }
 
-export default App;
+// Main App component wrapped with LocationProvider
+const AppWithProvider = () => {
+  return (
+    <LocationProvider>
+      <App />
+    </LocationProvider>
+  );
+};
+
+export default AppWithProvider;
