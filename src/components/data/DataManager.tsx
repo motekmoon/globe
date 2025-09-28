@@ -46,7 +46,6 @@ const DataManager: React.FC<DataManagerProps> = ({
   const { locations, loading, error, refreshData } = useDataManager();
 
   const [activeTab, setActiveTab] = useState("table");
-  const [showImport, setShowImport] = useState(false);
 
   // Load data on mount
   useEffect(() => {
@@ -54,7 +53,6 @@ const DataManager: React.FC<DataManagerProps> = ({
   }, [refreshData]);
 
   const handleImportSuccess = () => {
-    setShowImport(false);
     refreshData(); // Refresh the data table
   };
 
@@ -86,13 +84,6 @@ const DataManager: React.FC<DataManagerProps> = ({
                 </Text>
               </VStack>
               <HStack gap={2}>
-                <Button
-                  size="sm"
-                  colorScheme="blue"
-                  onClick={() => setShowImport(true)}
-                >
-                  Import Data
-                </Button>
                 <Badge colorScheme="blue" fontSize="sm">
                   {locations.length} locations
                 </Badge>
@@ -126,6 +117,12 @@ const DataManager: React.FC<DataManagerProps> = ({
                   Data Table
                 </TabsTrigger>
                 <TabsTrigger 
+                  value="import"
+                  onClick={() => setActiveTab("import")}
+                >
+                  Import
+                </TabsTrigger>
+                <TabsTrigger 
                   value="analytics"
                   onClick={() => setActiveTab("analytics")}
                 >
@@ -143,6 +140,13 @@ const DataManager: React.FC<DataManagerProps> = ({
                 <DataTable
                   onLocationSelect={onLocationSelect}
                   onLocationEdit={handleLocationEdit}
+                />
+              </TabsContent>
+
+              <TabsContent value="import">
+                <DataImport
+                  isOpen={true}
+                  onClose={() => {}}
                 />
               </TabsContent>
 
@@ -179,8 +183,6 @@ const DataManager: React.FC<DataManagerProps> = ({
         </DialogFooter>
       </DialogContent>
 
-      {/* Import Modal */}
-      <DataImport isOpen={showImport} onClose={() => setShowImport(false)} />
     </DialogRoot>
   );
 };

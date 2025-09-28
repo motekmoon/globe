@@ -14,7 +14,6 @@ import Globe from "./components/globe/Globe";
 import LocationForm from "./components/location/LocationForm";
 import Drawer from "./components/layout/Drawer";
 import AnimationControl from "./components/controls/AnimationControl";
-import DatasetImport from "./components/import/DatasetImport";
 import DataManager from "./components/data/DataManager";
 import { useLocations } from "./hooks/useLocations";
 import { useDrawer } from "./hooks/useDrawer";
@@ -51,9 +50,6 @@ function App() {
 
   const { isPlaying, toggleAnimation } = useAnimation();
 
-  // Import modal state
-  const [isImportModalOpen, setIsImportModalOpen] = React.useState(false);
-
   // Data Management modal state
   const [isDataManagerOpen, setIsDataManagerOpen] = React.useState(false);
 
@@ -68,17 +64,7 @@ function App() {
     sortBy
   );
 
-  // Handle bulk import
-  const handleImportLocations = async (importedLocations: any[]) => {
-    try {
-      const result = await handleBulkImport(importedLocations);
-      console.log(
-        `Import completed: ${result.success} successful, ${result.failed} failed`
-      );
-    } catch (error) {
-      console.error("Bulk import failed:", error);
-    }
-  };
+  // Import functionality moved to Data Manager
 
   return (
     <ChakraProvider value={system}>
@@ -138,19 +124,6 @@ function App() {
             p="0"
             alignItems="center"
           >
-            <Button
-              onClick={() => setIsImportModalOpen(true)}
-              size="sm"
-              h="25px"
-              colorScheme="green"
-              variant="outline"
-              fontWeight="600"
-              fontSize="0.7rem"
-              borderRadius="md"
-              whiteSpace="nowrap"
-            >
-              Import
-            </Button>
             <Button
               onClick={() => setIsDataManagerOpen(true)}
               size="sm"
@@ -279,13 +252,6 @@ function App() {
           onHideLocation={handleHideLocation}
           onDeleteLocation={handleDeleteLocation}
           hiddenLocations={hiddenLocations}
-        />
-
-        {/* Dataset Import Modal */}
-        <DatasetImport
-          isOpen={isImportModalOpen}
-          onClose={() => setIsImportModalOpen(false)}
-          onImport={handleImportLocations}
         />
 
         {/* Data Management Modal */}
