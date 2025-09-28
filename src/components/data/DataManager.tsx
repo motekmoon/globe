@@ -168,7 +168,7 @@ const DataManager: React.FC<DataManagerProps> = ({
   return (
     <DialogRoot open={isOpen} onOpenChange={onClose}>
       <DialogBackdrop />
-      <DialogContent maxW="100vw" maxH="100vh" w="100%" h="100vh">
+      <DialogContent maxW="100vw" maxH="100vh" w="100%" h="100vh" borderRadius="0px">
         <DialogHeader>
           <Text fontSize="xl" fontWeight="bold">
             Data Management
