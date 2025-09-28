@@ -1,0 +1,52 @@
+[
+  {
+    "name": "Silicon Valley",
+    "latitude": 37.4419,
+    "longitude": -122.1430
+  },
+  {
+    "name": "Seattle",
+    "latitude": 47.6062,
+    "longitude": -122.3321
+  },
+  {
+    "name": "Austin",
+    "latitude": 30.2672,
+    "longitude": -97.7431
+  },
+  {
+    "name": "Boston",
+    "latitude": 42.3601,
+    "longitude": -71.0589
+  },
+  {
+    "name": "Denver",
+    "latitude": 39.7392,
+    "longitude": -104.9903
+  },
+  {
+    "name": "Tel Aviv",
+    "latitude": 32.0853,
+    "longitude": 34.7818
+  },
+  {
+    "name": "Bangalore",
+    "latitude": 12.9716,
+    "longitude": 77.5946
+  },
+  {
+    "name": "Singapore",
+    "latitude": 1.3521,
+    "longitude": 103.8198
+  },
+  {
+    "name": "Shanghai",
+    "latitude": 31.2304,
+    "longitude": 121.4737
+  },
+  {
+    "name": "Shenzhen",
+    "latitude": 22.5431,
+    "longitude": 114.0579
+  }
+]

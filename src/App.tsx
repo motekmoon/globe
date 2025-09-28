@@ -14,6 +14,7 @@ import Globe from "./components/globe/Globe";
 import LocationForm from "./components/location/LocationForm";
 import Drawer from "./components/layout/Drawer";
 import AnimationControl from "./components/controls/AnimationControl";
+import DatasetImport from "./components/import/DatasetImport";
 import { useLocations } from "./hooks/useLocations";
 import { useDrawer } from "./hooks/useDrawer";
 import { useAnimation } from "./hooks/useAnimation";
@@ -35,6 +36,7 @@ function App() {
     handleSaveLocation,
     handleHideLocation,
     handleDeleteLocation,
+    handleBulkImport,
   } = useLocations();
 
   const {
@@ -52,8 +54,21 @@ function App() {
     toggleAnimation,
   } = useAnimation();
 
+  // Import modal state
+  const [isImportModalOpen, setIsImportModalOpen] = React.useState(false);
+
   // Filter and sort locations using utility function
   const filteredLocations = filterAndSortLocations(locations, searchQuery, sortBy);
+
+  // Handle bulk import
+  const handleImportLocations = async (importedLocations: any[]) => {
+    try {
+      const result = await handleBulkImport(importedLocations);
+      console.log(`Import completed: ${result.success} successful, ${result.failed} failed`);
+    } catch (error) {
+      console.error("Bulk import failed:", error);
+    }
+  };
 
   return (
     <ChakraProvider value={system}>
@@ -96,19 +111,32 @@ function App() {
           </Heading>
         </Box>
 
-        {/* Locations drawer button */}
+        {/* Top right buttons */}
         {!isDrawerOpen && (
-          <Button
+          <Box
             position="absolute"
             top="5px"
             right="5px"
             zIndex={10}
-            onClick={openDrawer}
-            size="sm"
-            colorScheme="blue"
+            display="flex"
+            gap="8px"
           >
-            Locations ({locations.length})
-          </Button>
+            <Button
+              onClick={() => setIsImportModalOpen(true)}
+              size="sm"
+              colorScheme="green"
+              variant="outline"
+            >
+              Import
+            </Button>
+            <Button
+              onClick={openDrawer}
+              size="sm"
+              colorScheme="blue"
+            >
+              Locations ({locations.length})
+            </Button>
+          </Box>
         )}
 
         {/* Input controls */}
@@ -189,6 +217,13 @@ function App() {
           onHideLocation={handleHideLocation}
           onDeleteLocation={handleDeleteLocation}
           hiddenLocations={hiddenLocations}
+        />
+
+        {/* Dataset Import Modal */}
+        <DatasetImport
+          isOpen={isImportModalOpen}
+          onClose={() => setIsImportModalOpen(false)}
+          onImport={handleImportLocations}
         />
       </Box>
     </ChakraProvider>

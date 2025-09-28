@@ -109,6 +109,44 @@ export const useLocations = () => {
     }
   };
 
+  const handleBulkImport = async (importedLocations: Location[]) => {
+    try {
+      const newLocations: Location[] = [];
+      
+      // Add each location to database
+      for (const location of importedLocations) {
+        try {
+          const newLocation = await locationService.addLocation({
+            name: location.name,
+            latitude: location.latitude,
+            longitude: location.longitude,
+          });
+          
+          if (newLocation) {
+            newLocations.push(newLocation);
+          }
+        } catch (error) {
+          console.error(`Error importing location ${location.name}:`, error);
+          // Continue with other locations even if one fails
+        }
+      }
+
+      // Update local state with all successfully imported locations
+      if (newLocations.length > 0) {
+        setLocations((prev) => [...newLocations, ...prev]);
+      }
+
+      return {
+        success: newLocations.length,
+        failed: importedLocations.length - newLocations.length,
+        total: importedLocations.length
+      };
+    } catch (error) {
+      console.error("Error during bulk import:", error);
+      throw error;
+    }
+  };
+
   return {
     locations,
     loading,
@@ -120,5 +158,6 @@ export const useLocations = () => {
     handleSaveLocation,
     handleHideLocation,
     handleDeleteLocation,
+    handleBulkImport,
   };
 };
