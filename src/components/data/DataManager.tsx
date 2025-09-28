@@ -161,6 +161,7 @@ const DataManager: React.FC<DataManagerProps> = ({
   if (!isOpen) return null;
 
   return (
+    <>
     <Box
       position="fixed"
       top="0"
@@ -373,6 +374,7 @@ const DataManager: React.FC<DataManagerProps> = ({
             </TabsRoot>
           </VStack>
         </Box>
+      </Box>
 
       {/* Edit Location Modal */}
       {editingLocation && (
@@ -479,7 +481,7 @@ const DataManager: React.FC<DataManagerProps> = ({
           </Box>
         )}
       </Box>
-    </Box>
+    </>
   );
 };
 
