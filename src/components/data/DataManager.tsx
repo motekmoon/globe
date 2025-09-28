@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   VStack,
   HStack,
   Text,
   Button,
+  Input,
   Tabs,
   TabsContent,
   TabsList,
@@ -28,6 +29,7 @@ import {
 import { Location } from '../../lib/supabase';
 import { useDataManager } from '../../hooks/useDataManager';
 import DataTable from './DataTable';
+import { datasetImporter } from '../../lib/datasetImport';
 
 interface DataManagerProps {
   isOpen: boolean;
@@ -42,9 +44,14 @@ const DataManager: React.FC<DataManagerProps> = ({
   onLocationSelect,
   onLocationEdit,
 }) => {
-  const { locations, loading, error, refreshData } = useDataManager();
+  const { locations, loading, error, refreshData, importLocations } = useDataManager();
 
   const [activeTab, setActiveTab] = useState("table");
+  const [importFile, setImportFile] = useState<File | null>(null);
+  const [importLoading, setImportLoading] = useState(false);
+  const [importError, setImportError] = useState<string | null>(null);
+  const [importSuccess, setImportSuccess] = useState<string | null>(null);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load data on mount
   useEffect(() => {
@@ -57,6 +64,53 @@ const DataManager: React.FC<DataManagerProps> = ({
 
   const handleLocationEdit = (location: Location) => {
     onLocationEdit?.(location);
+  };
+
+  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setImportFile(file);
+      setImportError(null);
+      setImportSuccess(null);
+    }
+  };
+
+  const handleImport = async () => {
+    if (!importFile) return;
+
+    setImportLoading(true);
+    setImportError(null);
+    setImportSuccess(null);
+
+    try {
+      const result = await datasetImporter.importFromFile(importFile);
+      
+      if (result.imported.length > 0) {
+        // Import the locations using the data manager
+        await importLocations(result.imported);
+        setImportSuccess(`Successfully imported ${result.imported.length} locations`);
+        setImportFile(null);
+        if (fileInputRef.current) {
+          fileInputRef.current.value = '';
+        }
+        refreshData(); // Refresh the data table
+      } else {
+        setImportError('No valid locations found in the file');
+      }
+    } catch (err) {
+      setImportError(err instanceof Error ? err.message : 'Import failed');
+    } finally {
+      setImportLoading(false);
+    }
+  };
+
+  const resetImport = () => {
+    setImportFile(null);
+    setImportError(null);
+    setImportSuccess(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = '';
+    }
   };
 
   return (
@@ -155,23 +209,69 @@ const DataManager: React.FC<DataManagerProps> = ({
               </TabsContent>
 
               <TabsContent value="import">
-                <Box p={6}>
-                  <Text fontSize="lg" fontWeight="semibold" mb={4}>
+                <VStack align="stretch" gap={4} p={6}>
+                  <Text fontSize="lg" fontWeight="semibold">
                     Import Data
                   </Text>
-                  <Text color="gray.600" mb={4}>
-                    Import functionality will be available here. For now, use the main import feature.
+                  <Text color="gray.600">
+                    Upload a CSV or JSON file to import location data.
                   </Text>
-                  <Button
-                    colorScheme="blue"
-                    onClick={() => {
-                      // TODO: Implement inline import functionality
-                      console.log('Import clicked');
-                    }}
-                  >
-                    Import Data
-                  </Button>
-                </Box>
+
+                  {/* File Upload */}
+                  <VStack align="stretch" gap={3}>
+                    <Input
+                      ref={fileInputRef}
+                      type="file"
+                      accept=".csv,.json"
+                      onChange={handleFileSelect}
+                      size="sm"
+                    />
+
+                    {/* File Preview */}
+                    {importFile && (
+                      <HStack justify="space-between" align="center" p={3} bg="gray.100" borderRadius="md">
+                        <Text fontSize="sm" fontWeight="medium">
+                          {importFile.name} ({Math.round(importFile.size / 1024)} KB)
+                        </Text>
+                        <Button size="xs" onClick={resetImport}>
+                          Remove
+                        </Button>
+                      </HStack>
+                    )}
+
+                    {/* Import Button */}
+                    <Button
+                      colorScheme="blue"
+                      onClick={handleImport}
+                      disabled={!importFile || importLoading}
+                      loading={importLoading}
+                    >
+                      {importLoading ? 'Importing...' : 'Import Data'}
+                    </Button>
+                  </VStack>
+
+                  {/* Success Message */}
+                  {importSuccess && (
+                    <AlertRoot status="success">
+                      <AlertIndicator />
+                      <AlertContent>
+                        <AlertTitle>Import Successful!</AlertTitle>
+                        <AlertDescription>{importSuccess}</AlertDescription>
+                      </AlertContent>
+                    </AlertRoot>
+                  )}
+
+                  {/* Error Message */}
+                  {importError && (
+                    <AlertRoot status="error">
+                      <AlertIndicator />
+                      <AlertContent>
+                        <AlertTitle>Import Failed</AlertTitle>
+                        <AlertDescription>{importError}</AlertDescription>
+                      </AlertContent>
+                    </AlertRoot>
+                  )}
+                </VStack>
               </TabsContent>
 
               <TabsContent value="export">
