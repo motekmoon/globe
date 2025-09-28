@@ -282,7 +282,37 @@ export const locationService = {
         // Clear localStorage
         localStorage.removeItem(STORAGE_KEY)
         
+        // Clear any other potential storage keys
+        const keysToRemove = []
+        for (let i = 0; i < localStorage.length; i++) {
+          const key = localStorage.key(i)
+          if (key && (key.includes('globe') || key.includes('location') || key.includes('GlobeLocationsDB'))) {
+            keysToRemove.push(key)
+          }
+        }
+        keysToRemove.forEach(key => localStorage.removeItem(key))
+        
+        // Clear IndexedDB completely
+        try {
+          const deleteRequest = indexedDB.deleteDatabase('GlobeLocationsDB')
+          deleteRequest.onsuccess = () => {
+            console.log('✅ IndexedDB database deleted completely')
+          }
+          deleteRequest.onerror = () => {
+            console.log('⚠️ Could not delete IndexedDB database, but data cleared')
+          }
+        } catch (error) {
+          console.log('⚠️ IndexedDB deletion failed, but data cleared')
+        }
+        
         console.log('✅ All data purged successfully')
+        console.log('🔄 Please refresh the page to see the changes')
+        
+        // Suggest page refresh
+        setTimeout(() => {
+          console.log('🔄 Data purged! Please refresh the page to see the changes.')
+        }, 1000)
+        
         return true
       } catch (error) {
         console.error('Error purging data:', error)
