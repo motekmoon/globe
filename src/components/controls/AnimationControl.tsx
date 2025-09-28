@@ -16,14 +16,18 @@ const AnimationControl: React.FC<AnimationControlProps> = ({ isPlaying, onToggle
       zIndex={10}
       onClick={onToggle}
       size="md"
-      colorScheme="blue"
+      bg="rgba(255, 255, 255, 0.2)"
+      color="white"
+      border="1px solid rgba(255, 255, 255, 0.3)"
       borderRadius="full"
       aria-label={isPlaying ? "Pause globe animation" : "Play globe animation"}
       _hover={{
+        bg: "rgba(255, 255, 255, 0.3)",
         transform: "scale(1.05)",
-        transition: "transform 0.2s ease-in-out"
+        transition: "all 0.2s ease-in-out"
       }}
       _active={{
+        bg: "rgba(255, 255, 255, 0.4)",
         transform: "scale(0.95)"
       }}
     >
