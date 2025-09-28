@@ -117,16 +117,16 @@ const DataManager: React.FC<DataManagerProps> = ({
                   Data Table
                 </TabsTrigger>
                 <TabsTrigger 
-                  value="import"
-                  onClick={() => setActiveTab("import")}
-                >
-                  Import
-                </TabsTrigger>
-                <TabsTrigger 
                   value="analytics"
                   onClick={() => setActiveTab("analytics")}
                 >
                   Analytics
+                </TabsTrigger>
+                <TabsTrigger 
+                  value="import"
+                  onClick={() => setActiveTab("import")}
+                >
+                  Import
                 </TabsTrigger>
                 <TabsTrigger 
                   value="export"
@@ -143,13 +143,6 @@ const DataManager: React.FC<DataManagerProps> = ({
                 />
               </TabsContent>
 
-              <TabsContent value="import">
-                <DataImport
-                  isOpen={true}
-                  onClose={() => {}}
-                />
-              </TabsContent>
-
               <TabsContent value="analytics">
                 <Box p={6} textAlign="center">
                   <Text fontSize="lg" fontWeight="semibold" mb={2}>
@@ -160,6 +153,13 @@ const DataManager: React.FC<DataManagerProps> = ({
                     location data.
                   </Text>
                 </Box>
+              </TabsContent>
+
+              <TabsContent value="import">
+                <DataImport
+                  isOpen={true}
+                  onClose={() => {}}
+                />
               </TabsContent>
 
               <TabsContent value="export">
