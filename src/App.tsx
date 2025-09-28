@@ -169,7 +169,7 @@ function App() {
           transform={isDrawerOpen ? "none" : "translateX(-50%)"}
           zIndex={10}
           width={isDrawerOpen ? "calc(100vw - 320px)" : "auto"}
-          maxWidth="900px"
+          maxWidth="1400px"
           p="0"
           transition="all 0.3s ease-in-out"
         >
