@@ -209,6 +209,7 @@ const DataManager: React.FC<DataManagerProps> = ({
           <VStack align="stretch" gap={4}>
             {/* Header */}
             <HStack justify="space-between">
+              <Box></Box>
               <HStack gap={2}>
                 <Badge colorScheme="blue" fontSize="sm">
                   {locations.length} locations
