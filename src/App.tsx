@@ -216,41 +216,40 @@ function App() {
         )}
 
         {/* 3D Canvas */}
-        <Box
-          position="absolute"
-          top={0}
-          left={0}
-          width="100%"
-          height="100%"
-          className={`globe-container ${isGlobeReady ? 'ready' : ''}`}
-          style={{
-            filter: "grayscale(100%)",
-          }}
-        >
-          <Canvas
-            camera={{ position: [0, 0, 5], fov: 50 }}
-            onCreated={() => {
-              // Globe is ready when Canvas is created
-              setTimeout(() => setIsGlobeReady(true), 100);
-            }}
+        <div className={`data-visualization ${isDataVisualizationReady ? 'ready' : ''}`}>
+          <Box
+            position="absolute"
+            top={0}
+            left={0}
+            width="100%"
+            height="100%"
+            className={`globe-container ${isGlobeReady ? 'ready' : ''}`}
             style={{
-              background:
-                "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)",
+              filter: "grayscale(100%)",
             }}
           >
+            <Canvas
+              camera={{ position: [0, 0, 5], fov: 50 }}
+              onCreated={() => {
+                // Globe is ready when Canvas is created
+                setTimeout(() => setIsGlobeReady(true), 100);
+              }}
+              style={{
+                background:
+                  "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)",
+              }}
+            >
             <Suspense fallback={null}>
               <ambientLight intensity={1.2} />
               <directionalLight position={[10, 10, 5]} intensity={2.0} />
               <pointLight position={[-10, -10, -5]} intensity={1.0} />
 
-              <div className={`data-visualization ${isDataVisualizationReady ? 'ready' : ''}`}>
-                <Globe
-                  locations={locations}
-                  hiddenLocations={hiddenLocations}
-                  isPlaying={isPlaying && !isGlobePaused}
-                  showQuantityVisualization={showQuantityVisualization}
-                />
-              </div>
+              <Globe
+                locations={locations}
+                hiddenLocations={hiddenLocations}
+                isPlaying={isPlaying && !isGlobePaused}
+                showQuantityVisualization={showQuantityVisualization}
+              />
 
               <OrbitControls
                 enablePan={false}
@@ -261,7 +260,8 @@ function App() {
               />
             </Suspense>
           </Canvas>
-        </Box>
+          </Box>
+        </div>
 
         {/* Animation Control Button */}
         <AnimationControl isPlaying={isPlaying} onToggle={toggleAnimation} />
