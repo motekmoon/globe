@@ -209,14 +209,6 @@ const DataManager: React.FC<DataManagerProps> = ({
           <VStack align="stretch" gap={4}>
             {/* Header */}
             <HStack justify="space-between">
-              <VStack align="start" gap={1}>
-                <Text fontSize="lg" fontWeight="semibold">
-                  Manage all your location data
-                </Text>
-                <Text fontSize="sm" color="gray.600">
-                  Full CRUD operations, import/export, and data analysis
-                </Text>
-              </VStack>
               <HStack gap={2}>
                 <Badge colorScheme="blue" fontSize="sm">
                   {locations.length} locations
