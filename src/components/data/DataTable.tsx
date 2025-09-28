@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useMemo, useEffect, useCallback } from "react";
 import {
   Box,
   VStack,
@@ -12,13 +12,7 @@ import {
   TableRow,
   TableColumnHeader,
   TableCell,
-  CheckboxRoot,
   Badge,
-  IconButton,
-  Menu,
-  MenuTrigger,
-  MenuContent,
-  MenuItem,
   AlertRoot,
   AlertIndicator,
   AlertContent,
@@ -27,11 +21,11 @@ import {
   NativeSelectRoot,
   NativeSelectField,
   NativeSelectIndicator,
-  TooltipRoot,
-} from '@chakra-ui/react';
+} from "@chakra-ui/react";
 // Icons removed
-import { Location } from '../../lib/supabase';
-import { useDataManager } from '../../hooks/useDataManager';
+import { Location } from "../../lib/supabase";
+import { useDataManager } from "../../hooks/useDataManager";
+import ColumnSelector from "./ColumnSelector";
 
 interface DataTableProps {
   onLocationSelect?: (location: Location) => void;
@@ -61,25 +55,66 @@ const DataTable: React.FC<DataTableProps> = ({
     deleteLocation,
     deleteLocations,
     exportLocations,
+    exportSelectedLocations,
+    columnMapping,
+    availableColumns,
+    setColumnMapping,
+    clearColumnMapping,
+    updateAvailableColumns,
   } = useDataManager();
 
-  const [editingLocation, setEditingLocation] = useState<Location | null>(null);
+  // Get all available columns from the data
+  const getAllColumns = useCallback(() => {
+    if (locations.length === 0) return [];
+
+    // Get all unique keys from all locations
+    const allKeys = new Set<string>();
+    locations.forEach((location) => {
+      Object.keys(location).forEach((key) => {
+        if (key !== "id" && key !== "created_at" && key !== "updated_at") {
+          allKeys.add(key);
+        }
+      });
+    });
+
+    const columns = Array.from(allKeys).sort();
+    return columns;
+  }, [locations]);
+
+  // Update available columns when locations change
+  useEffect(() => {
+    const columns = getAllColumns();
+    console.log("🔍 DataTable Debug:", {
+      locationsCount: locations.length,
+      detectedColumns: columns,
+      currentAvailableColumns: availableColumns,
+      sampleLocation: locations[0],
+    });
+
+    if (
+      columns.length > 0 &&
+      JSON.stringify(columns) !== JSON.stringify(availableColumns)
+    ) {
+      console.log("📊 Updating available columns:", columns);
+      updateAvailableColumns(columns);
+    }
+  }, [locations, getAllColumns, availableColumns, updateAvailableColumns]);
 
   // Filter and sort locations
   const filteredAndSortedLocations = useMemo(() => {
-    let filtered = locations.filter(location => {
+    let filtered = locations.filter((location) => {
       // Search filter
       if (searchQuery) {
         const query = searchQuery.toLowerCase();
-        if (!location.name.toLowerCase().includes(query)) {
+        if (!location.name?.toLowerCase().includes(query)) {
           return false;
         }
       }
 
       // Quantity filter
-      if (filterBy === 'with_quantity') {
+      if (filterBy === "with_quantity") {
         return location.quantity !== undefined && location.quantity !== null;
-      } else if (filterBy === 'without_quantity') {
+      } else if (filterBy === "without_quantity") {
         return location.quantity === undefined || location.quantity === null;
       }
 
@@ -89,17 +124,17 @@ const DataTable: React.FC<DataTableProps> = ({
     // Sort locations
     filtered.sort((a, b) => {
       let aValue: any, bValue: any;
-      
+
       switch (sortBy) {
-        case 'name':
-          aValue = a.name.toLowerCase();
-          bValue = b.name.toLowerCase();
+        case "name":
+          aValue = a.name?.toLowerCase() || "";
+          bValue = b.name?.toLowerCase() || "";
           break;
-        case 'created_at':
+        case "created_at":
           aValue = new Date(a.created_at).getTime();
           bValue = new Date(b.created_at).getTime();
           break;
-        case 'updated_at':
+        case "updated_at":
           aValue = new Date(a.updated_at).getTime();
           bValue = new Date(b.updated_at).getTime();
           break;
@@ -107,8 +142,8 @@ const DataTable: React.FC<DataTableProps> = ({
           return 0;
       }
 
-      if (aValue < bValue) return sortOrder === 'asc' ? -1 : 1;
-      if (aValue > bValue) return sortOrder === 'asc' ? 1 : -1;
+      if (aValue < bValue) return sortOrder === "asc" ? -1 : 1;
+      if (aValue > bValue) return sortOrder === "asc" ? 1 : -1;
       return 0;
     });
 
@@ -116,29 +151,82 @@ const DataTable: React.FC<DataTableProps> = ({
   }, [locations, searchQuery, sortBy, sortOrder, filterBy]);
 
   const handleDeleteLocation = async (id: string) => {
-    if (window.confirm('Are you sure you want to delete this location?')) {
+    if (window.confirm("Are you sure you want to delete this location?")) {
       try {
         await deleteLocation(id);
       } catch (err) {
-        console.error('Failed to delete location:', err);
+        console.error("Failed to delete location:", err);
       }
     }
   };
 
-  const handleBulkDelete = async () => {
+  const handleBulkDelete = useCallback(async () => {
     if (selectedLocations.size === 0) return;
-    
-    if (window.confirm(`Are you sure you want to delete ${selectedLocations.size} locations?`)) {
+
+    if (
+      window.confirm(
+        `Are you sure you want to delete ${selectedLocations.size} locations?`
+      )
+    ) {
       try {
         await deleteLocations(Array.from(selectedLocations));
         clearSelection();
       } catch (err) {
-        console.error('Failed to delete locations:', err);
+        console.error("Failed to delete locations:", err);
       }
     }
-  };
+  }, [selectedLocations, deleteLocations, clearSelection]);
 
-  const handleExport = (format: 'csv' | 'json') => {
+  // Keyboard shortcuts for bulk operations
+  useEffect(() => {
+    const handleKeyDown = (event: KeyboardEvent) => {
+      // Only handle shortcuts when not typing in input fields
+      if (
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement
+      ) {
+        return;
+      }
+
+      // Ctrl+A or Cmd+A: Select all
+      if ((event.ctrlKey || event.metaKey) && event.key === "a") {
+        event.preventDefault();
+        selectAllLocations();
+      }
+
+      // Delete: Delete selected (if any selected)
+      if (event.key === "Delete" && selectedLocations.size > 0) {
+        event.preventDefault();
+        handleBulkDelete();
+      }
+
+      // Escape: Clear selection
+      if (event.key === "Escape") {
+        clearSelection();
+      }
+
+      // Ctrl+E or Cmd+E: Export selected
+      if (
+        (event.ctrlKey || event.metaKey) &&
+        event.key === "e" &&
+        selectedLocations.size > 0
+      ) {
+        event.preventDefault();
+        exportSelectedLocations("csv");
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [
+    selectedLocations.size,
+    selectAllLocations,
+    clearSelection,
+    handleBulkDelete,
+    exportSelectedLocations,
+  ]);
+
+  const handleExport = (format: "csv" | "json") => {
     exportLocations(format);
   };
 
@@ -230,23 +318,67 @@ const DataTable: React.FC<DataTableProps> = ({
           </HStack>
         </HStack>
 
-        {/* Bulk actions */}
+        {/* Enhanced Bulk actions */}
         {selectedLocations.size > 0 && (
-          <HStack gap={2} p={3} bg="red.50" borderRadius="md">
-            <Text fontSize="sm" color="red.700">
-              {selectedLocations.size} selected
+          <HStack
+            gap={3}
+            p={4}
+            bg="blue.50"
+            borderRadius="md"
+            border="1px solid"
+            borderColor="blue.200"
+          >
+            <HStack gap={2}>
+              <Text fontSize="sm" fontWeight="medium" color="blue.700">
+                {selectedLocations.size} selected
+              </Text>
+              <Badge colorScheme="blue" variant="subtle">
+                {Math.round(
+                  (selectedLocations.size / filteredAndSortedLocations.length) *
+                    100
+                )}
+                %
+              </Badge>
+            </HStack>
+
+            <HStack gap={2}>
+              <Button
+                size="sm"
+                colorScheme="red"
+                variant="outline"
+                onClick={handleBulkDelete}
+              >
+                🗑️ Delete
+              </Button>
+
+              <HStack gap={1}>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  colorScheme="blue"
+                  onClick={() => exportSelectedLocations("csv")}
+                >
+                  📄 CSV
+                </Button>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  colorScheme="blue"
+                  onClick={() => exportSelectedLocations("json")}
+                >
+                  📋 JSON
+                </Button>
+              </HStack>
+
+              <Button size="sm" variant="outline" onClick={clearSelection}>
+                ✖️ Clear
+              </Button>
+            </HStack>
+
+            <Text fontSize="xs" color="blue.600" opacity={0.8}>
+              💡 Ctrl+A: Select All | Delete: Delete | Ctrl+E: Export | Esc:
+              Clear
             </Text>
-            <Button
-              size="sm"
-              colorScheme="red"
-              variant="outline"
-              onClick={handleBulkDelete}
-            >
-              Delete Selected
-            </Button>
-            <Button size="sm" variant="outline" onClick={clearSelection}>
-              Clear Selection
-            </Button>
           </HStack>
         )}
       </VStack>
@@ -257,16 +389,21 @@ const DataTable: React.FC<DataTableProps> = ({
           <TableHeader>
             <TableRow>
               <TableColumnHeader>
-                <CheckboxRoot
+                <input
+                  type="checkbox"
                   checked={
                     selectedLocations.size ===
                       filteredAndSortedLocations.length &&
                     filteredAndSortedLocations.length > 0
                   }
-                  indeterminate={
-                    selectedLocations.size > 0 &&
-                    selectedLocations.size < filteredAndSortedLocations.length
-                  }
+                  ref={(input) => {
+                    if (input) {
+                      input.indeterminate =
+                        selectedLocations.size > 0 &&
+                        selectedLocations.size <
+                          filteredAndSortedLocations.length;
+                    }
+                  }}
                   onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                     if (e.target.checked) {
                       selectAllLocations();
@@ -276,11 +413,27 @@ const DataTable: React.FC<DataTableProps> = ({
                   }}
                 />
               </TableColumnHeader>
-              <TableColumnHeader>Name</TableColumnHeader>
-              <TableColumnHeader>Coordinates</TableColumnHeader>
-              <TableColumnHeader>Quantity</TableColumnHeader>
-              <TableColumnHeader>Created</TableColumnHeader>
-              <TableColumnHeader>Updated</TableColumnHeader>
+              {/* Dynamic column headers */}
+              {availableColumns.map((column) => (
+                <TableColumnHeader key={column}>
+                  <VStack gap={1} align="start">
+                    <Text fontSize="sm" fontWeight="semibold">
+                      {column}
+                    </Text>
+                    <ColumnSelector
+                      columnName={column}
+                      currentMapping={columnMapping[column] || ""}
+                      onMappingChange={(col, param) => {
+                        if (param === "") {
+                          clearColumnMapping(col);
+                        } else {
+                          setColumnMapping(col, param);
+                        }
+                      }}
+                    />
+                  </VStack>
+                </TableColumnHeader>
+              ))}
               <TableColumnHeader>Actions</TableColumnHeader>
             </TableRow>
           </TableHeader>
@@ -288,40 +441,40 @@ const DataTable: React.FC<DataTableProps> = ({
             {filteredAndSortedLocations.map((location) => (
               <TableRow key={location.id}>
                 <TableCell>
-                  <CheckboxRoot
+                  <input
+                    type="checkbox"
                     checked={selectedLocations.has(location.id)}
                     onChange={() => toggleLocationSelection(location.id)}
                   />
                 </TableCell>
-                <TableCell>
-                  <Text fontWeight="medium">{location.name}</Text>
-                </TableCell>
-                <TableCell>
-                  <Text fontSize="sm" color="gray.600">
-                    {location.latitude.toFixed(4)},{" "}
-                    {location.longitude.toFixed(4)}
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  {location.quantity !== undefined &&
-                  location.quantity !== null ? (
-                    <Badge colorScheme="blue">{location.quantity}</Badge>
-                  ) : (
-                    <Text fontSize="sm" color="gray.400">
-                      —
-                    </Text>
-                  )}
-                </TableCell>
-                <TableCell>
-                  <Text fontSize="sm" color="gray.600">
-                    {new Date(location.created_at).toLocaleDateString()}
-                  </Text>
-                </TableCell>
-                <TableCell>
-                  <Text fontSize="sm" color="gray.600">
-                    {new Date(location.updated_at).toLocaleDateString()}
-                  </Text>
-                </TableCell>
+                {/* Dynamic column cells */}
+                {availableColumns.map((column) => {
+                  const value = (location as any)[column];
+                  const isMapped = columnMapping[column];
+
+                  return (
+                    <TableCell key={column}>
+                      {value !== undefined && value !== null ? (
+                        <Box>
+                          <Text fontSize="sm">
+                            {typeof value === "number"
+                              ? value.toFixed(2)
+                              : String(value)}
+                          </Text>
+                          {isMapped && (
+                            <Badge size="sm" colorScheme="green" mt={1}>
+                              {isMapped}
+                            </Badge>
+                          )}
+                        </Box>
+                      ) : (
+                        <Text fontSize="sm" color="gray.400">
+                          —
+                        </Text>
+                      )}
+                    </TableCell>
+                  );
+                })}
                 <TableCell>
                   <HStack gap={1}>
                     <Button

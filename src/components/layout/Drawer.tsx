@@ -196,7 +196,7 @@ const Drawer: React.FC<DrawerProps> = ({
                         w="80px"
                       />
                     ) : (
-                      location.latitude.toFixed(4)
+                      location.latitude?.toFixed(4) || "N/A"
                     )}
                   </Text>
                   <Text fontSize="xs" color="gray.300">
@@ -219,7 +219,7 @@ const Drawer: React.FC<DrawerProps> = ({
                         w="80px"
                       />
                     ) : (
-                      location.longitude.toFixed(4)
+                      location.longitude?.toFixed(4) || "N/A"
                     )}
                   </Text>
                   <Text fontSize="xs" color="gray.300">

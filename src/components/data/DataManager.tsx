@@ -37,6 +37,7 @@ interface DataManagerProps {
   onClose: () => void;
   onLocationSelect?: (location: Location) => void;
   onLocationEdit?: (location: Location) => void;
+  onGlobePause?: (paused: boolean) => void;
 }
 
 const DataManager: React.FC<DataManagerProps> = ({
@@ -44,9 +45,16 @@ const DataManager: React.FC<DataManagerProps> = ({
   onClose,
   onLocationSelect,
   onLocationEdit,
+  onGlobePause,
 }) => {
-  const { locations, loading, error, refreshData, importLocations, updateLocation } =
-    useDataManager();
+  const {
+    locations,
+    loading,
+    error,
+    refreshData,
+    importLocations,
+    updateLocation,
+  } = useDataManager();
 
   const [activeTab, setActiveTab] = useState("table");
   const [importFile, setImportFile] = useState<File | null>(null);
@@ -61,6 +69,13 @@ const DataManager: React.FC<DataManagerProps> = ({
     refreshData();
   }, [refreshData]);
 
+  // Pause globe rotation when data manager is open
+  useEffect(() => {
+    if (onGlobePause) {
+      onGlobePause(isOpen);
+    }
+  }, [isOpen, onGlobePause]);
+
   const handleImportSuccess = () => {
     refreshData(); // Refresh the data table
   };
@@ -71,13 +86,13 @@ const DataManager: React.FC<DataManagerProps> = ({
 
   const handleSaveEdit = async () => {
     if (!editingLocation) return;
-    
+
     try {
       await updateLocation(editingLocation.id, editingLocation);
       setEditingLocation(null);
       refreshData();
     } catch (error) {
-      console.error('Error updating location:', error);
+      console.error("Error updating location:", error);
     }
   };
 
@@ -153,7 +168,7 @@ const DataManager: React.FC<DataManagerProps> = ({
   return (
     <DialogRoot open={isOpen} onOpenChange={onClose}>
       <DialogBackdrop />
-      <DialogContent maxW="1200px" maxH="90vh" w="100%">
+      <DialogContent maxW="100vw" maxH="100vh" w="100%" h="100vh">
         <DialogHeader>
           <Text fontSize="xl" fontWeight="bold">
             Data Management
@@ -341,7 +356,10 @@ const DataManager: React.FC<DataManagerProps> = ({
 
       {/* Edit Location Modal */}
       {editingLocation && (
-        <DialogRoot open={!!editingLocation} onOpenChange={() => setEditingLocation(null)}>
+        <DialogRoot
+          open={!!editingLocation}
+          onOpenChange={() => setEditingLocation(null)}
+        >
           <DialogContent>
             <DialogHeader>
               <DialogTitle>Edit Location</DialogTitle>
@@ -354,10 +372,12 @@ const DataManager: React.FC<DataManagerProps> = ({
                   </Text>
                   <Input
                     value={editingLocation.name}
-                    onChange={(e) => setEditingLocation({
-                      ...editingLocation,
-                      name: e.target.value
-                    })}
+                    onChange={(e) =>
+                      setEditingLocation({
+                        ...editingLocation,
+                        name: e.target.value,
+                      })
+                    }
                     placeholder="Location name"
                   />
                 </Box>
@@ -369,10 +389,12 @@ const DataManager: React.FC<DataManagerProps> = ({
                     <Input
                       type="number"
                       value={editingLocation.latitude}
-                      onChange={(e) => setEditingLocation({
-                        ...editingLocation,
-                        latitude: parseFloat(e.target.value) || 0
-                      })}
+                      onChange={(e) =>
+                        setEditingLocation({
+                          ...editingLocation,
+                          latitude: parseFloat(e.target.value) || 0,
+                        })
+                      }
                       placeholder="Latitude"
                     />
                   </Box>
@@ -383,10 +405,12 @@ const DataManager: React.FC<DataManagerProps> = ({
                     <Input
                       type="number"
                       value={editingLocation.longitude}
-                      onChange={(e) => setEditingLocation({
-                        ...editingLocation,
-                        longitude: parseFloat(e.target.value) || 0
-                      })}
+                      onChange={(e) =>
+                        setEditingLocation({
+                          ...editingLocation,
+                          longitude: parseFloat(e.target.value) || 0,
+                        })
+                      }
                       placeholder="Longitude"
                     />
                   </Box>
@@ -397,11 +421,15 @@ const DataManager: React.FC<DataManagerProps> = ({
                   </Text>
                   <Input
                     type="number"
-                    value={editingLocation.quantity || ''}
-                    onChange={(e) => setEditingLocation({
-                      ...editingLocation,
-                      quantity: e.target.value ? parseFloat(e.target.value) : undefined
-                    })}
+                    value={editingLocation.quantity || ""}
+                    onChange={(e) =>
+                      setEditingLocation({
+                        ...editingLocation,
+                        quantity: e.target.value
+                          ? parseFloat(e.target.value)
+                          : undefined,
+                      })
+                    }
                     placeholder="Quantity"
                   />
                 </Box>
@@ -411,9 +439,7 @@ const DataManager: React.FC<DataManagerProps> = ({
               <Button variant="outline" onClick={handleCancelEdit}>
                 Cancel
               </Button>
-              <Button onClick={handleSaveEdit}>
-                Save Changes
-              </Button>
+              <Button onClick={handleSaveEdit}>Save Changes</Button>
             </DialogFooter>
           </DialogContent>
         </DialogRoot>

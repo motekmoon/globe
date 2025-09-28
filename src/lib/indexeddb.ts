@@ -5,11 +5,14 @@ const STORE_NAME = 'locations'
 
 export interface Location {
   id: string
-  name: string
-  latitude: number
-  longitude: number
+  name?: string
+  latitude?: number
+  longitude?: number
+  quantity?: number
   created_at: string
   updated_at: string
+  // Allow additional dynamic columns
+  [key: string]: any
 }
 
 class IndexedDBStorage {

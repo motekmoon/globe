@@ -55,6 +55,9 @@ function App() {
   // Data Management modal state
   const [isDataManagerOpen, setIsDataManagerOpen] = React.useState(false);
 
+  // Globe pause state when data manager is open
+  const [isGlobePaused, setIsGlobePaused] = React.useState(false);
+
   // Quantity visualization toggle
   const [showQuantityVisualization, setShowQuantityVisualization] =
     React.useState(false);
@@ -200,7 +203,7 @@ function App() {
               <Globe
                 locations={locations}
                 hiddenLocations={hiddenLocations}
-                isPlaying={isPlaying}
+                isPlaying={isPlaying && !isGlobePaused}
                 showQuantityVisualization={showQuantityVisualization}
               />
 
@@ -260,6 +263,7 @@ function App() {
         <DataManager
           isOpen={isDataManagerOpen}
           onClose={() => setIsDataManagerOpen(false)}
+          onGlobePause={setIsGlobePaused}
         />
       </Box>
     </ChakraProvider>

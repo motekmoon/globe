@@ -16,6 +16,7 @@ export const useDataManager = () => {
     deleteLocations,
     importLocations,
     exportLocations,
+    exportSelectedLocations,
     selectLocation,
     selectAllLocations,
     clearSelection,
@@ -25,6 +26,11 @@ export const useDataManager = () => {
     setSortOrder,
     setFilterBy,
     refreshData,
+    columnMapping,
+    availableColumns,
+    setColumnMapping,
+    clearColumnMapping,
+    updateAvailableColumns,
   } = useLocationContext();
 
   return {
@@ -45,6 +51,7 @@ export const useDataManager = () => {
     deleteLocations,
     importLocations,
     exportLocations,
+    exportSelectedLocations,
     selectLocation,
     selectAllLocations,
     clearSelection,
@@ -54,5 +61,10 @@ export const useDataManager = () => {
     setSortOrder,
     setFilterBy,
     refreshData,
+    columnMapping,
+    availableColumns,
+    setColumnMapping,
+    clearColumnMapping,
+    updateAvailableColumns,
   };
 };

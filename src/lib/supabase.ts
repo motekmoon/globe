@@ -28,12 +28,14 @@ export { supabase }
 // Database types
 export interface Location {
   id: string
-  name: string
-  latitude: number
-  longitude: number
+  name?: string
+  latitude?: number
+  longitude?: number
   quantity?: number  // New field for dynamic visualization
   created_at: string
   updated_at: string
+  // Allow additional dynamic columns
+  [key: string]: any
 }
 
 // Local storage fallback for development

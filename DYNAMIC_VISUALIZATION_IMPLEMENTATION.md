@@ -207,3 +207,36 @@ The Dynamic Visualization System is now fully operational and ready for producti
 This system transforms the Globe application from a simple location viewer into a powerful data visualization platform capable of handling any geographic dataset with intelligent analysis and mapping.
 
 **🚀 Ready for Phase 4: Enhanced Globe Visualization!**
+
+---
+
+## 🆕 **NEW ENHANCEMENT: Column Selection System**
+
+### **Status**: Planning Phase
+### **Priority**: High
+### **Documentation**: `/Documentation/Column-Selection-Enhancement-Plan.md`
+
+#### **Enhancement Overview**
+- **Dynamic Column Display**: Show all imported columns in data table
+- **Column Mapping Interface**: Dropdown system for visualization parameters
+- **User Control**: Let users specify which columns to use for globe visualization
+- **Future Extensibility**: Ready for advanced visualization parameters
+
+#### **Key Features**
+1. **All Columns Visible**: Table displays complete dataset structure
+2. **Interactive Dropdowns**: Column headers with mapping options
+3. **Visualization Integration**: Mapped columns control globe animation
+4. **Extensible Design**: Easy to add new visualization parameters
+
+#### **Implementation Status**
+- ✅ **Planning Complete**: Detailed technical specification
+- 🚧 **Ready for Development**: Core infrastructure phase
+- ⏳ **Testing Phase**: Comprehensive test strategy defined
+- ⏳ **Integration Phase**: Globe visualization updates planned
+
+#### **Next Steps**
+1. **Phase 1**: Core infrastructure (LocationContext, DataTable updates)
+2. **Phase 2**: Visualization integration (Globe component updates)
+3. **Phase 3**: Enhancement & polish (UX improvements, performance)
+
+**🎯 This enhancement will significantly improve user experience and data visualization capabilities!**

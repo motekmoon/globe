@@ -29,17 +29,20 @@ const GlobeMarkers: React.FC<GlobeMarkersProps> = ({ locations, hiddenLocations 
           return null;
         }
         
-        const position = latLngToVector3(location.latitude, location.longitude);
+        const position = latLngToVector3(
+          location.latitude || 0,
+          location.longitude || 0
+        );
         return (
           <group key={location.id}>
             <MarkerDot
               position={[position.x, position.y, position.z]}
-              name={location.name}
+              name={location.name || "Unknown"}
             />
             <MarkerLine
               start={[0, 0, 0]}
               end={[position.x, position.y, position.z]}
-              label={location.name}
+              label={location.name || "Unknown"}
               quantity={location.quantity}
             />
           </group>

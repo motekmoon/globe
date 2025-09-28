@@ -38,15 +38,18 @@ const QuantityMarkers: React.FC<QuantityMarkersProps> = ({ locations, hiddenLoca
           return null;
         }
         
-        const position = latLngToVector3(location.latitude, location.longitude);
+        const position = latLngToVector3(
+          location.latitude || 0,
+          location.longitude || 0
+        );
         const direction = getDirectionVector(position);
-        
+
         return (
           <QuantityLine
             key={`quantity-${location.id}`}
             start={[position.x, position.y, position.z]}
             direction={direction}
-            label={location.name}
+            label={location.name || "Unknown"}
             quantity={location.quantity}
           />
         );
