@@ -158,3 +158,6 @@ MAPBOX_TOKEN=*
 *.backup
 *.bak
 *.tmp
+
+# Personal notes
+Documentation/Mo_Globe_Notes
