@@ -368,6 +368,10 @@ const DataTable: React.FC<DataTableProps> = ({
               <TableColumnHeader>
                 <input
                   type="checkbox"
+                  style={{
+                    outline: '3px solid #3182ce',
+                    outlineOffset: '1px'
+                  }}
                   checked={
                     selectedLocations.size ===
                       filteredAndSortedLocations.length &&
