@@ -366,33 +366,35 @@ const DataTable: React.FC<DataTableProps> = ({
           <TableHeader>
             <TableRow>
               <TableColumnHeader>
-                <input
-                  type="checkbox"
-                  style={{
-                    border: '3px solid #000',
-                    transform: 'scale(1.2)'
-                  }}
-                  checked={
-                    selectedLocations.size ===
-                      filteredAndSortedLocations.length &&
-                    filteredAndSortedLocations.length > 0
-                  }
-                  ref={(input) => {
-                    if (input) {
-                      input.indeterminate =
-                        selectedLocations.size > 0 &&
-                        selectedLocations.size <
-                          filteredAndSortedLocations.length;
+                <Box display="flex" justifyContent="center" alignItems="center">
+                  <input
+                    type="checkbox"
+                    style={{
+                      border: '5px solid #000',
+                      transform: 'scale(1.2)'
+                    }}
+                    checked={
+                      selectedLocations.size ===
+                        filteredAndSortedLocations.length &&
+                      filteredAndSortedLocations.length > 0
                     }
-                  }}
-                  onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-                    if (e.target.checked) {
-                      selectAllLocations();
-                    } else {
-                      clearSelection();
-                    }
-                  }}
-                />
+                    ref={(input) => {
+                      if (input) {
+                        input.indeterminate =
+                          selectedLocations.size > 0 &&
+                          selectedLocations.size <
+                            filteredAndSortedLocations.length;
+                      }
+                    }}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+                      if (e.target.checked) {
+                        selectAllLocations();
+                      } else {
+                        clearSelection();
+                      }
+                    }}
+                  />
+                </Box>
               </TableColumnHeader>
               {/* Dynamic column headers */}
               {availableColumns.map((column) => (
