@@ -246,10 +246,7 @@ const DataTable: React.FC<DataTableProps> = ({
     <Box>
       {/* Header with controls */}
       <VStack align="stretch" gap={4} mb={6}>
-        <HStack justify="space-between">
-          <Text fontSize="lg" fontWeight="bold">
-            Data Management ({locations.length} locations)
-          </Text>
+        <HStack justify="flex-end">
           <HStack gap={2}>
             <Button
               size="sm"
