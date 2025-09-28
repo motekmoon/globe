@@ -28,7 +28,6 @@ import {
 import { Location } from '../../lib/supabase';
 import { useDataManager } from '../../hooks/useDataManager';
 import DataTable from './DataTable';
-import DataImport from './DataImport';
 
 interface DataManagerProps {
   isOpen: boolean;
@@ -156,10 +155,23 @@ const DataManager: React.FC<DataManagerProps> = ({
               </TabsContent>
 
               <TabsContent value="import">
-                <DataImport
-                  isOpen={true}
-                  onClose={() => {}}
-                />
+                <Box p={6}>
+                  <Text fontSize="lg" fontWeight="semibold" mb={4}>
+                    Import Data
+                  </Text>
+                  <Text color="gray.600" mb={4}>
+                    Import functionality will be available here. For now, use the main import feature.
+                  </Text>
+                  <Button
+                    colorScheme="blue"
+                    onClick={() => {
+                      // TODO: Implement inline import functionality
+                      console.log('Import clicked');
+                    }}
+                  >
+                    Import Data
+                  </Button>
+                </Box>
               </TabsContent>
 
               <TabsContent value="export">
