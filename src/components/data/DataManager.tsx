@@ -46,6 +46,7 @@ const DataManager: React.FC<DataManagerProps> = ({
     refreshData,
     importLocations,
     updateLocation,
+    exportLocations,
   } = useDataManager();
 
   const [activeTab, setActiveTab] = useState("table");
@@ -91,6 +92,10 @@ const DataManager: React.FC<DataManagerProps> = ({
 
   const handleCancelEdit = () => {
     setEditingLocation(null);
+  };
+
+  const handleExport = (format: "csv" | "json") => {
+    exportLocations(format);
   };
 
   const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -199,13 +204,31 @@ const DataManager: React.FC<DataManagerProps> = ({
                 {locations.length} locations
               </Badge>
             </HStack>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={onClose}
-            >
-              ✕
-            </Button>
+            <HStack gap={2} align="center">
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleExport("csv")}
+                disabled={loading}
+              >
+                Export CSV
+              </Button>
+              <Button
+                size="sm"
+                variant="outline"
+                onClick={() => handleExport("json")}
+                disabled={loading}
+              >
+                Export JSON
+              </Button>
+              <Button
+                size="sm"
+                variant="ghost"
+                onClick={onClose}
+              >
+                ✕
+              </Button>
+            </HStack>
           </HStack>
         </Box>
 

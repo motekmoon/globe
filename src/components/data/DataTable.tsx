@@ -246,26 +246,6 @@ const DataTable: React.FC<DataTableProps> = ({
     <Box>
       {/* Header with controls */}
       <VStack align="stretch" gap={4} mb={6}>
-        <HStack justify="flex-end">
-          <HStack gap={2}>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => handleExport("csv")}
-              disabled={loading}
-            >
-              Export CSV
-            </Button>
-            <Button
-              size="sm"
-              variant="outline"
-              onClick={() => handleExport("json")}
-              disabled={loading}
-            >
-              Export JSON
-            </Button>
-          </HStack>
-        </HStack>
 
         {/* Search and filters */}
         <HStack gap={4} wrap="wrap">
