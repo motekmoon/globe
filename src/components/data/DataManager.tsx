@@ -372,26 +372,34 @@ const DataManager: React.FC<DataManagerProps> = ({
               </TabsContent>
             </TabsRoot>
           </VStack>
-        </DialogBody>
-
-        <DialogFooter>
-          <Button variant="outline" onClick={onClose}>
-            Close
-          </Button>
-        </DialogFooter>
-      </DialogContent>
+        </Box>
 
       {/* Edit Location Modal */}
       {editingLocation && (
-        <DialogRoot
-          open={!!editingLocation}
-          onOpenChange={() => setEditingLocation(null)}
+        <Box
+          position="fixed"
+          top="0"
+          left="0"
+          right="0"
+          bottom="0"
+          bg="rgba(0, 0, 0, 0.8)"
+          zIndex={3000}
+          display="flex"
+          alignItems="center"
+          justifyContent="center"
+          p={4}
         >
-          <DialogContent>
-            <DialogHeader>
-              <DialogTitle>Edit Location</DialogTitle>
-            </DialogHeader>
-            <DialogBody>
+          <Box
+            bg="white"
+            borderRadius="lg"
+            boxShadow="xl"
+            maxW="500px"
+            w="100%"
+          >
+            <Box p={4} borderBottom="1px solid" borderColor="gray.200">
+              <Text fontSize="lg" fontWeight="semibold">Edit Location</Text>
+            </Box>
+            <Box p={4}>
               <VStack gap={4}>
                 <Box>
                   <Text fontSize="sm" fontWeight="medium" mb={2}>
