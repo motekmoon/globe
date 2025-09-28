@@ -234,10 +234,6 @@ function App() {
                 // Globe is ready when Canvas is created
                 setTimeout(() => setIsGlobeReady(true), 100);
               }}
-              style={{
-                background:
-                  "linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)",
-              }}
             >
             <Suspense fallback={null}>
               <ambientLight intensity={1.2} />
