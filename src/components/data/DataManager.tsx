@@ -480,6 +480,7 @@ const DataManager: React.FC<DataManagerProps> = ({
               <Button onClick={handleSaveEdit}>Save Changes</Button>
             </HStack>
           </Box>
+        </Box>
         )}
     </Box>
   );
