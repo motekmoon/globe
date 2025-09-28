@@ -10,7 +10,7 @@ import {
   createSystem,
   defaultConfig,
 } from "@chakra-ui/react";
-import Globe from "./components/Globe";
+import Globe from "./components/globe/Globe";
 import LocationForm from "./components/location/LocationForm";
 import Drawer from "./components/layout/Drawer";
 import { locationService, Location } from "./lib/supabase";
