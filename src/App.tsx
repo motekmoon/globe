@@ -171,7 +171,7 @@ function App() {
           sortBy={sortBy}
           onSortChange={setSortBy}
           editingLocation={editingLocation}
-          onEditLocation={setEditingLocation}
+          onEditLocation={handleEditLocation}
           onSaveLocation={handleSaveLocation}
           onHideLocation={handleHideLocation}
           onDeleteLocation={handleDeleteLocation}
