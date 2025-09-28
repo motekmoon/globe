@@ -18,7 +18,6 @@ const AnimationControl: React.FC<AnimationControlProps> = ({ isPlaying, onToggle
       size="md"
       bg="rgba(255, 255, 255, 0.2)"
       color="white"
-      border="1px solid rgba(255, 255, 255, 0.3)"
       borderRadius="full"
       aria-label={isPlaying ? "Pause globe animation" : "Play globe animation"}
       _hover={{
