@@ -11,7 +11,7 @@ import {
   defaultConfig,
 } from "@chakra-ui/react";
 import Globe from "./components/Globe";
-import LocationInput from "./components/LocationInput";
+import LocationForm from "./components/location/LocationForm";
 import Drawer from "./components/layout/Drawer";
 import { locationService, Location } from "./lib/supabase";
 
@@ -220,7 +220,7 @@ function App() {
           p={2}
           transition="all 0.3s ease-in-out"
         >
-          <LocationInput onLocationAdd={handleLocationAdd} />
+          <LocationForm onLocationAdd={handleLocationAdd} />
           {loading && (
             <Text color="white" textAlign="center" mt={2}>
               Loading locations...
