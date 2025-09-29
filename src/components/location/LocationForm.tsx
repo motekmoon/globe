@@ -144,13 +144,10 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             id="latitude-input"
             name="latitude"
             autoComplete="off"
-            type="number"
+            type="text"
             placeholder="Latitude"
             value={lat}
             onChange={(e) => setLat(e.target.value)}
-            step="any"
-            min="-90"
-            max="90"
             size="sm"
             h="25px"
             variant="flushed"
@@ -164,13 +161,10 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             id="longitude-input"
             name="longitude"
             autoComplete="off"
-            type="number"
+            type="text"
             placeholder="Longitude"
             value={lng}
             onChange={(e) => setLng(e.target.value)}
-            step="any"
-            min="-180"
-            max="180"
             size="sm"
             h="25px"
             variant="flushed"
