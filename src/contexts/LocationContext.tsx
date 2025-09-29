@@ -100,8 +100,27 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
   const [filterBy, setFilterBy] = useState<
     "all" | "with_quantity" | "without_quantity"
   >("all");
-  const [columnMapping, setColumnMappingState] = useState<ColumnMapping>({});
+  const [columnMapping, setColumnMappingState] = useState<ColumnMapping>(() => {
+    // Load from localStorage on initialization
+    try {
+      const saved = localStorage.getItem('globe-column-mapping');
+      return saved ? JSON.parse(saved) : {};
+    } catch (error) {
+      console.warn('Failed to load column mapping from localStorage:', error);
+      return {};
+    }
+  });
   const [availableColumns, setAvailableColumns] = useState<string[]>([]);
+
+  // Save column mapping to localStorage whenever it changes
+  useEffect(() => {
+    try {
+      localStorage.setItem('globe-column-mapping', JSON.stringify(columnMapping));
+      console.log('💾 Saved column mapping to localStorage:', columnMapping);
+    } catch (error) {
+      console.warn('Failed to save column mapping to localStorage:', error);
+    }
+  }, [columnMapping]);
 
   // Load all locations
   const refreshData = useCallback(async () => {
@@ -128,6 +147,37 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
   useEffect(() => {
     refreshData();
   }, [refreshData]);
+
+  // Apply saved column mapping to locations when both are loaded
+  useEffect(() => {
+    if (locations.length > 0 && Object.keys(columnMapping).length > 0) {
+      console.log('🔄 Applying saved column mapping to locations:', columnMapping);
+      
+      // Find quantity mapping
+      const quantityColumn = Object.entries(columnMapping).find(([_, param]) => param === 'quantity');
+      
+      if (quantityColumn) {
+        const [columnName] = quantityColumn;
+        console.log(`🔄 Restoring quantity mapping: ${columnName} → quantity`);
+        
+        setLocations((prevLocations) =>
+          prevLocations.map((location) => {
+            const mappedValue = (location as any)[columnName];
+            if (mappedValue !== undefined && mappedValue !== null) {
+              const numericValue = parseFloat(mappedValue);
+              if (!isNaN(numericValue)) {
+                return {
+                  ...location,
+                  quantity: numericValue,
+                };
+              }
+            }
+            return location;
+          })
+        );
+      }
+    }
+  }, [locations, columnMapping]);
 
   // Add a single location
   const addLocation = useCallback(
