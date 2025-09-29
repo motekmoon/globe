@@ -95,7 +95,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             fontSize="0.7rem"
             _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
             flex={1}
-            minW="40px"
+            minW="35px"
             w="fit-content"
           />
           <Input
@@ -113,7 +113,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             color="white"
             fontSize="0.7rem"
             _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
-            minW="40px"
+            minW="35px"
             w="fit-content"
           />
           <Button
@@ -158,7 +158,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             color="white"
             fontSize="0.7rem"
             _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
-            minW="40px"
+            minW="35px"
             w="fit-content"
           />
           <Input
@@ -177,7 +177,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             color="white"
             fontSize="0.7rem"
             _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
-            minW="40px"
+            minW="35px"
             w="fit-content"
           />
           <Input
@@ -194,7 +194,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             color="white"
             fontSize="0.7rem"
             _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
-            minW="40px"
+            minW="35px"
             w="fit-content"
           />
           <Button
