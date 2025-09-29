@@ -27,11 +27,12 @@ const QuantityLine: React.FC<QuantityLineProps> = ({
   // Calculate line length based on quantity (use scaled value if provided)
   const effectiveQuantity =
     scaledQuantity !== undefined ? scaledQuantity : quantity;
-  const normalizedQuantity = Math.max(
-    0.2,
-    Math.min(2.5, (effectiveQuantity || 1) / 50)
-  );
-  const targetLength = normalizedQuantity;
+  
+  // If we have a scaled quantity, use it directly (already scaled)
+  // If not, apply the old scaling logic
+  const targetLength = scaledQuantity !== undefined 
+    ? Math.max(0.2, Math.min(2.5, effectiveQuantity))
+    : Math.max(0.2, Math.min(2.5, (effectiveQuantity || 1) / 50));
 
   // Create line geometry - starts at dot position, extends outward
   const [lineGeometry] = useState(() =>

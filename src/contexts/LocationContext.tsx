@@ -473,7 +473,7 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
         );
       }
     },
-    []
+    [locations]
   );
 
   const clearColumnMapping = useCallback(
