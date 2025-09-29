@@ -434,21 +434,69 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
   // Column mapping actions
   const setColumnMapping = useCallback(
     (columnName: string, parameter: string) => {
+      console.log(`🔧 setColumnMapping called: ${columnName} → ${parameter}`);
       setColumnMappingState((prev) => ({
         ...prev,
         [columnName]: parameter,
       }));
+
+      // If mapping to quantity, update location.quantity field
+      if (parameter === "quantity") {
+        console.log(`🔄 Mapping column '${columnName}' to quantity field`);
+        console.log(`📊 Sample location data:`, locations[0]);
+        setLocations((prevLocations) =>
+          prevLocations.map((location) => {
+            const mappedValue = (location as any)[columnName];
+            console.log(
+              `🔍 Processing ${location.name}: ${columnName} = ${mappedValue}`
+            );
+            if (mappedValue !== undefined && mappedValue !== null) {
+              const numericValue = parseFloat(mappedValue);
+              if (!isNaN(numericValue)) {
+                console.log(
+                  `📊 Updated ${location.name}: ${mappedValue} → quantity: ${numericValue}`
+                );
+                return {
+                  ...location,
+                  quantity: numericValue,
+                };
+              } else {
+                console.log(`❌ Invalid numeric value: ${mappedValue}`);
+              }
+            } else {
+              console.log(
+                `❌ No value found for ${columnName} in ${location.name}`
+              );
+            }
+            return location;
+          })
+        );
+      }
     },
     []
   );
 
-  const clearColumnMapping = useCallback((columnName: string) => {
-    setColumnMappingState((prev) => {
-      const newMapping = { ...prev };
-      delete newMapping[columnName];
-      return newMapping;
-    });
-  }, []);
+  const clearColumnMapping = useCallback(
+    (columnName: string) => {
+      setColumnMappingState((prev) => {
+        const newMapping = { ...prev };
+        delete newMapping[columnName];
+        return newMapping;
+      });
+
+      // If clearing a quantity mapping, reset quantity field to undefined
+      const currentMapping = columnMapping[columnName];
+      if (currentMapping === "quantity") {
+        setLocations((prevLocations) =>
+          prevLocations.map((location) => ({
+            ...location,
+            quantity: undefined,
+          }))
+        );
+      }
+    },
+    [columnMapping]
+  );
 
   const updateAvailableColumns = useCallback((columns: string[]) => {
     setAvailableColumns(columns);

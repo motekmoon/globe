@@ -6,18 +6,23 @@ import { Location } from '../../lib/supabase';
 interface GlobeMarkersProps {
   locations: Location[];
   hiddenLocations: Set<string>;
+  showQuantityVisualization?: boolean;
 }
 
-const GlobeMarkers: React.FC<GlobeMarkersProps> = ({ locations, hiddenLocations }) => {
+const GlobeMarkers: React.FC<GlobeMarkersProps> = ({
+  locations,
+  hiddenLocations,
+  showQuantityVisualization = false,
+}) => {
   // Convert lat/lng to 3D coordinates on sphere
   const latLngToVector3 = (lat: number, lng: number, radius: number = 2.01) => {
     const phi = (90 - lat) * (Math.PI / 180);
     const theta = (lng + 180) * (Math.PI / 180);
-    
+
     return {
       x: -(radius * Math.sin(phi) * Math.cos(theta)), // Fixed: Added negative sign
       y: radius * Math.cos(phi),
-      z: radius * Math.sin(phi) * Math.sin(theta)
+      z: radius * Math.sin(phi) * Math.sin(theta),
     };
   };
 
@@ -28,7 +33,7 @@ const GlobeMarkers: React.FC<GlobeMarkersProps> = ({ locations, hiddenLocations 
         if (hiddenLocations.has(location.id)) {
           return null;
         }
-        
+
         const position = latLngToVector3(
           location.latitude || 0,
           location.longitude || 0
@@ -39,12 +44,15 @@ const GlobeMarkers: React.FC<GlobeMarkersProps> = ({ locations, hiddenLocations 
               position={[position.x, position.y, position.z]}
               name={location.name || "Unknown"}
             />
-            <MarkerLine
-              start={[0, 0, 0]}
-              end={[position.x, position.y, position.z]}
-              label={location.name || "Unknown"}
-              quantity={location.quantity}
-            />
+            {/* Only show location labels when quantity visualization is OFF */}
+            {!showQuantityVisualization && (
+              <MarkerLine
+                start={[0, 0, 0]}
+                end={[position.x, position.y, position.z]}
+                label={location.name || "Unknown"}
+                quantity={location.quantity}
+              />
+            )}
           </group>
         );
       })}

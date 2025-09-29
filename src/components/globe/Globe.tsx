@@ -47,7 +47,11 @@ const Globe: React.FC<GlobeProps> = ({
           emissiveIntensity={0.3}
         />
       </mesh>
-      <GlobeMarkers locations={locations} hiddenLocations={hiddenLocations} />
+      <GlobeMarkers
+        locations={locations}
+        hiddenLocations={hiddenLocations}
+        showQuantityVisualization={showQuantityVisualization}
+      />
       <QuantityVisualization
         locations={locations}
         hiddenLocations={hiddenLocations}

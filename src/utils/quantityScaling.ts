@@ -18,8 +18,8 @@ export interface ScalingResult {
  */
 export function scaleQuantities(
   quantities: number[],
-  maxAllowedLength: number = 1.5,
-  minLength: number = 0.1
+  maxAllowedLength: number = 2.5,
+  minLength: number = 0.2
 ): ScalingResult {
   if (quantities.length === 0) {
     return {
@@ -45,13 +45,13 @@ export function scaleQuantities(
   const maxOriginalValue = Math.max(...validQuantities);
   
   // If the maximum value would result in a reasonable line length, no scaling needed
-  const directMaxLength = Math.max(minLength, Math.min(maxAllowedLength, maxOriginalValue / 20));
+  const directMaxLength = Math.max(minLength, Math.min(maxAllowedLength, maxOriginalValue / 50));
   
-  if (directMaxLength <= maxAllowedLength * 0.8) {
+  if (directMaxLength <= maxAllowedLength * 0.9) {
     return {
       scaledValues: quantities.map(q => 
         q != null && q > 0 
-          ? Math.max(minLength, Math.min(maxAllowedLength, q / 20))
+          ? Math.max(minLength, Math.min(maxAllowedLength, q / 50))
           : minLength
       ),
       scaleFactor: 1,
@@ -61,12 +61,12 @@ export function scaleQuantities(
   }
 
   // Calculate scale factor to bring the maximum value down to maxAllowedLength
-  const scaleFactor = (maxAllowedLength * 20) / maxOriginalValue;
+  const scaleFactor = (maxAllowedLength * 50) / maxOriginalValue;
   
   // Apply scaling to all quantities
   const scaledValues = quantities.map(q => {
     if (q == null || q <= 0) return minLength;
-    const scaled = (q * scaleFactor) / 20;
+    const scaled = (q * scaleFactor) / 50;
     return Math.max(minLength, Math.min(maxAllowedLength, scaled));
   });
 

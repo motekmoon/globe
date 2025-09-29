@@ -29,7 +29,7 @@ const QuantityLine: React.FC<QuantityLineProps> = ({
     scaledQuantity !== undefined ? scaledQuantity : quantity;
   const normalizedQuantity = Math.max(
     0.2,
-    Math.min(1.5, (effectiveQuantity || 1) / 20)
+    Math.min(2.5, (effectiveQuantity || 1) / 50)
   );
   const targetLength = normalizedQuantity;
 
