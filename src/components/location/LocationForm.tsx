@@ -118,11 +118,16 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             disabled={isLoading}
             size="sm"
             h="25px"
-            colorScheme="blue"
+            bg="rgba(255, 255, 255, 0.8)"
+            color="black"
             fontWeight="600"
             fontSize="0.7rem"
             borderRadius="md"
             whiteSpace="nowrap"
+            border="none"
+            _hover={{
+              bg: "rgba(255, 255, 255, 0.9)"
+            }}
           >
             {isLoading ? "Searching..." : "Add Location"}
           </Button>
@@ -196,11 +201,16 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             onClick={handleCoordinateSubmit}
             size="sm"
             h="25px"
-            colorScheme="blue"
+            bg="rgba(255, 255, 255, 0.8)"
+            color="black"
             fontWeight="600"
             fontSize="0.7rem"
             borderRadius="md"
             whiteSpace="nowrap"
+            border="none"
+            _hover={{
+              bg: "rgba(255, 255, 255, 0.9)"
+            }}
           >
             Add Coordinates
           </Button>
