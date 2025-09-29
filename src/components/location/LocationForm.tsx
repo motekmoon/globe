@@ -111,7 +111,6 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             color="white"
             fontSize="0.7rem"
             _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
-            w="100px"
             step="any"
             min="0"
           />
@@ -195,7 +194,6 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             color="white"
             fontSize="0.7rem"
             _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
-            w="100px"
             step="any"
             min="0"
           />
