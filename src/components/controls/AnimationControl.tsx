@@ -12,7 +12,7 @@ const AnimationControl: React.FC<AnimationControlProps> = ({ isPlaying, onToggle
     <Button
       position="absolute"
       bottom="20px"
-      left="20px"
+      left="140px"
       zIndex={10}
       onClick={onToggle}
       size="md"
@@ -23,14 +23,18 @@ const AnimationControl: React.FC<AnimationControlProps> = ({ isPlaying, onToggle
       _hover={{
         bg: "rgba(255, 255, 255, 0.2)",
         transform: "scale(1.05)",
-        transition: "all 0.2s ease-in-out"
+        transition: "all 0.2s ease-in-out",
       }}
       _active={{
         bg: "rgba(255, 255, 255, 0.3)",
-        transform: "scale(0.95)"
+        transform: "scale(0.95)",
       }}
     >
-      {isPlaying ? <PauseIcon className="h-4 w-4" /> : <PlayIcon className="h-4 w-4" />}
+      {isPlaying ? (
+        <PauseIcon className="h-4 w-4" />
+      ) : (
+        <PlayIcon className="h-4 w-4" />
+      )}
     </Button>
   );
 };

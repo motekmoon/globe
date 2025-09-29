@@ -1,6 +1,7 @@
 import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
+import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
 import {
   ChakraProvider,
   Box,
@@ -66,7 +67,8 @@ function App() {
 
   // Globe rendering state
   const [isGlobeReady, setIsGlobeReady] = React.useState(false);
-  const [isDataVisualizationReady, setIsDataVisualizationReady] = React.useState(false);
+  const [isDataVisualizationReady, setIsDataVisualizationReady] =
+    React.useState(false);
 
   // Trigger data visualization animation after globe is ready
   React.useEffect(() => {
@@ -96,11 +98,11 @@ function App() {
         height="100vh"
         // bg="linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)"
       >
-        {/* Logo and title positioned in upper left */}
+        {/* Logo and title positioned in bottom left */}
         <Box
           position="absolute"
-          top="10px"
-          left="10px"
+          bottom="20px"
+          left="20px"
           zIndex={10}
           display="flex"
           alignItems="center"
@@ -133,64 +135,100 @@ function App() {
           </Heading>
         </Box>
 
-        {/* Top right buttons */}
-        {!isDrawerOpen && (
-          <Box
-            position="absolute"
-            top="10px"
-            right="10px"
-            zIndex={10}
-            display="flex"
-            gap="8px"
-            h="25px"
-            p="0"
-            alignItems="center"
-          >
-            <Button
-              onClick={() => setIsDataManagerOpen(true)}
-              size="sm"
-              h="25px"
-              bg="rgba(255, 255, 255, 0.8)"
-              color="black"
-              fontWeight="600"
-              fontSize="0.7rem"
-              borderRadius="md"
-              whiteSpace="nowrap"
-              border="none"
-              _hover={{
-                bg: "rgba(255, 255, 255, 0.9)"
-              }}
-            >
-              Data Manager
-            </Button>
-            <Button
-              onClick={openDrawer}
-              size="sm"
-              h="25px"
-              colorScheme="blue"
-              fontWeight="600"
-              fontSize="0.7rem"
-              borderRadius="md"
-              whiteSpace="nowrap"
-            >
-              Locations ({locations.length})
-            </Button>
-          </Box>
-        )}
-
-        {/* Input controls */}
+        {/* Navigation Container */}
         <Box
           position="absolute"
-          top="10px"
-          left={isDrawerOpen ? "10px" : "50%"}
-          transform={isDrawerOpen ? "none" : "translateX(-50%)"}
-          zIndex={10}
-          width={isDrawerOpen ? "calc(100vw - 320px)" : "auto"}
-          maxWidth="1400px"
-          p="0"
-          transition="all 0.3s ease-in-out"
+          top="15px"
+          left="15px"
+          right="15px"
+          zIndex={30}
+          display="flex"
+          justifyContent="space-between"
+          alignItems="flex-start"
+          gap="10px"
+          minWidth="1200px"
+          overflow="visible"
+          bg="transparent"
+          pointerEvents="none"
         >
-          <LocationForm onLocationAdd={handleLocationAdd} />
+          {/* Left side - LocationForm */}
+          <Box
+            flex="1"
+            minWidth="0"
+            maxWidth="calc(100vw - 200px)"
+            pointerEvents="auto"
+            bg="rgba(0, 0, 0, 0.1)"
+            borderRadius="md"
+            zIndex={31}
+          >
+            <LocationForm onLocationAdd={handleLocationAdd} />
+          </Box>
+
+          {/* Right side - Buttons */}
+          {!isDrawerOpen && (
+            <Box
+              display="flex"
+              gap="12px"
+              alignItems="center"
+              flexShrink={0}
+              minWidth="fit-content"
+              pointerEvents="auto"
+            >
+              <Button
+                onClick={() => setIsDataManagerOpen(true)}
+                size="sm"
+                h="25px"
+                bg="rgba(255, 255, 255, 0.8)"
+                color="black"
+                fontWeight="600"
+                fontSize="0.7rem"
+                borderRadius="md"
+                whiteSpace="nowrap"
+                border="none"
+                _hover={{
+                  bg: "rgba(255, 255, 255, 0.9)",
+                }}
+              >
+                Data Manager
+              </Button>
+              <Button
+                onClick={() =>
+                  setShowQuantityVisualization(!showQuantityVisualization)
+                }
+                size="sm"
+                h="25px"
+                bg="rgba(255, 255, 255, 0.8)"
+                color="black"
+                fontWeight="600"
+                fontSize="0.7rem"
+                borderRadius="md"
+                whiteSpace="nowrap"
+                border="none"
+                title="Show/Hide Visualization"
+                _hover={{
+                  bg: "rgba(255, 255, 255, 0.9)",
+                }}
+              >
+                {showQuantityVisualization ? (
+                  <EyeSlashIcon className="h-4 w-4" />
+                ) : (
+                  <EyeIcon className="h-4 w-4" />
+                )}
+              </Button>
+              <Button
+                onClick={openDrawer}
+                size="sm"
+                h="25px"
+                colorScheme="blue"
+                fontWeight="600"
+                fontSize="0.7rem"
+                borderRadius="md"
+                whiteSpace="nowrap"
+              >
+                Live Edit ({locations.length})
+              </Button>
+            </Box>
+          )}
         </Box>
 
         {/* Loading Indicator */}
@@ -216,14 +254,18 @@ function App() {
         )}
 
         {/* 3D Canvas */}
-        <div className={`data-visualization ${isDataVisualizationReady ? 'ready' : ''}`}>
+        <div
+          className={`data-visualization ${
+            isDataVisualizationReady ? "ready" : ""
+          }`}
+        >
           <Box
             position="absolute"
             top={0}
             left={0}
             width="100%"
             height="100%"
-            className={`globe-container ${isGlobeReady ? 'ready' : ''}`}
+            className={`globe-container ${isGlobeReady ? "ready" : ""}`}
             style={{
               filter: "grayscale(100%)",
             }}
@@ -235,56 +277,32 @@ function App() {
                 setTimeout(() => setIsGlobeReady(true), 100);
               }}
             >
-            <Suspense fallback={null}>
-              <ambientLight intensity={1.2} />
-              <directionalLight position={[10, 10, 5]} intensity={2.0} />
-              <pointLight position={[-10, -10, -5]} intensity={1.0} />
+              <Suspense fallback={null}>
+                <ambientLight intensity={1.2} />
+                <directionalLight position={[10, 10, 5]} intensity={2.0} />
+                <pointLight position={[-10, -10, -5]} intensity={1.0} />
 
-              <Globe
-                locations={locations}
-                hiddenLocations={hiddenLocations}
-                isPlaying={isPlaying && !isGlobePaused}
-                showQuantityVisualization={showQuantityVisualization}
-              />
+                <Globe
+                  locations={locations}
+                  hiddenLocations={hiddenLocations}
+                  isPlaying={isPlaying && !isGlobePaused}
+                  showQuantityVisualization={showQuantityVisualization}
+                />
 
-              <OrbitControls
-                enablePan={false}
-                enableZoom={true}
-                enableRotate={true}
-                minDistance={3}
-                maxDistance={10}
-              />
-            </Suspense>
-          </Canvas>
+                <OrbitControls
+                  enablePan={false}
+                  enableZoom={true}
+                  enableRotate={true}
+                  minDistance={3}
+                  maxDistance={10}
+                />
+              </Suspense>
+            </Canvas>
           </Box>
         </div>
 
         {/* Animation Control Button */}
         <AnimationControl isPlaying={isPlaying} onToggle={toggleAnimation} />
-
-        {/* Quantity Visualization Toggle Button */}
-        <Button
-          position="absolute"
-          bottom="20px"
-          right="20px"
-          size="sm"
-          h="25px"
-          bg="rgba(255, 255, 255, 0.8)"
-          color="black"
-          fontWeight="600"
-          fontSize="0.7rem"
-          borderRadius="md"
-          whiteSpace="nowrap"
-          border="none"
-          onClick={() =>
-            setShowQuantityVisualization(!showQuantityVisualization)
-          }
-          _hover={{
-            bg: "rgba(255, 255, 255, 0.9)"
-          }}
-        >
-          {showQuantityVisualization ? "Hide Qty" : "Show Qty"}
-        </Button>
 
         {/* Location Manager Drawer */}
         <Drawer

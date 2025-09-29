@@ -61,7 +61,7 @@ const Drawer: React.FC<DrawerProps> = ({
     >
       <HStack justify="space-between" align="center" mb={4}>
         <Heading size="md" color="white" fontFamily="'SUSE Mono', monospace">
-          Location Manager
+          Live Edit
         </Heading>
         <Button
           size="sm"
@@ -195,10 +195,11 @@ const Drawer: React.FC<DrawerProps> = ({
                         _placeholder={{ color: "gray.400" }}
                         w="80px"
                       />
+                    ) : typeof location.latitude === "number" &&
+                      !isNaN(location.latitude) ? (
+                      location.latitude.toFixed(4)
                     ) : (
-                      typeof location.latitude === 'number' && !isNaN(location.latitude)
-                        ? location.latitude.toFixed(4) 
-                        : "N/A"
+                      "N/A"
                     )}
                   </Text>
                   <Text fontSize="xs" color="gray.300">
@@ -220,10 +221,11 @@ const Drawer: React.FC<DrawerProps> = ({
                         _placeholder={{ color: "gray.400" }}
                         w="80px"
                       />
+                    ) : typeof location.longitude === "number" &&
+                      !isNaN(location.longitude) ? (
+                      location.longitude.toFixed(4)
                     ) : (
-                      typeof location.longitude === 'number' && !isNaN(location.longitude)
-                        ? location.longitude.toFixed(4) 
-                        : "N/A"
+                      "N/A"
                     )}
                   </Text>
                   <Text fontSize="xs" color="gray.300">
