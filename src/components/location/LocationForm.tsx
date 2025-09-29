@@ -99,7 +99,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
           <Input
             id="quantity-input"
             name="quantity"
-            type="number"
+            type="text"
             placeholder="Quantity"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
@@ -111,8 +111,6 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             color="white"
             fontSize="0.7rem"
             _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
-            step="any"
-            min="0"
           />
           <Button
             onClick={handleAddressSubmit}
@@ -177,7 +175,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
           <Input
             id="quantity-coord-input"
             name="quantity"
-            type="number"
+            type="text"
             placeholder="Quantity"
             value={quantity}
             onChange={(e) => setQuantity(e.target.value)}
@@ -188,8 +186,6 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             color="white"
             fontSize="0.7rem"
             _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
-            step="any"
-            min="0"
           />
           <Button
             onClick={handleCoordinateSubmit}
