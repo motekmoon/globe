@@ -27,3 +27,4 @@ const QuantityVisualization: React.FC<QuantityVisualizationProps> = ({
 };
 
 export default QuantityVisualization;
+

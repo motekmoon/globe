@@ -8,6 +8,7 @@ interface QuantityLineProps {
   direction: [number, number, number]; // Direction vector from center to dot
   label: string;
   quantity?: number; // Value to determine line length
+  scaledQuantity?: number; // Pre-scaled quantity value (optional)
 }
 
 const QuantityLine: React.FC<QuantityLineProps> = ({
@@ -15,6 +16,7 @@ const QuantityLine: React.FC<QuantityLineProps> = ({
   direction,
   label,
   quantity = 1,
+  scaledQuantity,
 }) => {
   const lineRef = useRef<THREE.Line>(null);
   const textRef = useRef<THREE.Mesh>(null);
@@ -22,8 +24,13 @@ const QuantityLine: React.FC<QuantityLineProps> = ({
   const [lineLength, setLineLength] = useState(0);
   const [showLabel, setShowLabel] = useState(false);
 
-  // Calculate line length based on quantity (normalize to 0.2-1.0 range)
-  const normalizedQuantity = Math.max(0.2, Math.min(1.0, (quantity || 1) / 20));
+  // Calculate line length based on quantity (use scaled value if provided)
+  const effectiveQuantity =
+    scaledQuantity !== undefined ? scaledQuantity : quantity;
+  const normalizedQuantity = Math.max(
+    0.2,
+    Math.min(1.5, (effectiveQuantity || 1) / 20)
+  );
   const targetLength = normalizedQuantity;
 
   // Create line geometry - starts at dot position, extends outward
@@ -111,3 +118,4 @@ const QuantityLine: React.FC<QuantityLineProps> = ({
 };
 
 export default QuantityLine;
+

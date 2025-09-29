@@ -12,7 +12,7 @@ const AnimationControl: React.FC<AnimationControlProps> = ({ isPlaying, onToggle
     <Button
       position="absolute"
       bottom="20px"
-      left="140px"
+      left="145px"
       zIndex={10}
       onClick={onToggle}
       size="md"

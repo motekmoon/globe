@@ -184,24 +184,26 @@ const DataManager: React.FC<DataManagerProps> = ({
               <HStack gap={2} align="center">
                 {/* Import Section */}
                 <HStack gap={2} align="center">
-                  <FileUpload.Root
-                    accept={[".csv", ".json"]}
-                    maxFiles={1}
-                    onFileChange={(details: any) => {
-                      if (details.acceptedFiles.length > 0) {
-                        setImportFile(details.acceptedFiles[0]);
-                        setImportError(null);
-                        setImportSuccess(null);
-                      }
-                    }}
-                  >
-                    <FileUpload.HiddenInput />
-                    <FileUpload.Trigger asChild>
-                      <Button variant="outline" size="sm">
-                        Import Data
-                      </Button>
-                    </FileUpload.Trigger>
-                  </FileUpload.Root>
+                  {!importFile && (
+                    <FileUpload.Root
+                      accept={[".csv", ".json"]}
+                      maxFiles={1}
+                      onFileChange={(details: any) => {
+                        if (details.acceptedFiles.length > 0) {
+                          setImportFile(details.acceptedFiles[0]);
+                          setImportError(null);
+                          setImportSuccess(null);
+                        }
+                      }}
+                    >
+                      <FileUpload.HiddenInput />
+                      <FileUpload.Trigger asChild>
+                        <Button variant="outline" size="sm">
+                          Import Data
+                        </Button>
+                      </FileUpload.Trigger>
+                    </FileUpload.Root>
+                  )}
 
                   {importFile && (
                     <HStack gap={1} align="center">

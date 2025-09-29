@@ -124,14 +124,14 @@ function App() {
           </Box>
           <Heading
             color="white"
-            fontSize="1.2rem"
+            fontSize="1.8rem"
             fontWeight="600"
-            fontFamily="'SUSE Mono', monospace"
+            fontFamily="'Alumni Sans Pinstripe', cursive, sans-serif"
             margin="0"
-            h="45px"
-            lineHeight="45px"
+            h="40px"
+            lineHeight="40px"
           >
-            Globe
+            O R B O
           </Heading>
         </Box>
 

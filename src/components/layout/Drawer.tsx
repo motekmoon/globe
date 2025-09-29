@@ -60,7 +60,7 @@ const Drawer: React.FC<DrawerProps> = ({
       boxShadow="lg"
     >
       <HStack justify="space-between" align="center" mb={4}>
-        <Heading size="md" color="white" fontFamily="'SUSE Mono', monospace">
+        <Heading size="md" color="white">
           Live Edit
         </Heading>
         <Button
@@ -183,7 +183,7 @@ const Drawer: React.FC<DrawerProps> = ({
                         size="xs"
                         variant="flushed"
                         type="number"
-                        value={editingLocation.latitude}
+                        value={editingLocation.latitude || ""}
                         onChange={(e) =>
                           onEditLocation({
                             ...editingLocation,
@@ -195,9 +195,13 @@ const Drawer: React.FC<DrawerProps> = ({
                         _placeholder={{ color: "gray.400" }}
                         w="80px"
                       />
-                    ) : typeof location.latitude === "number" &&
-                      !isNaN(location.latitude) ? (
-                      location.latitude.toFixed(4)
+                    ) : location.latitude !== undefined &&
+                      location.latitude !== null ? (
+                      typeof location.latitude === "number" ? (
+                        location.latitude.toFixed(4)
+                      ) : (
+                        parseFloat(location.latitude).toFixed(4)
+                      )
                     ) : (
                       "N/A"
                     )}
@@ -209,7 +213,7 @@ const Drawer: React.FC<DrawerProps> = ({
                         size="xs"
                         variant="flushed"
                         type="number"
-                        value={editingLocation.longitude}
+                        value={editingLocation.longitude || ""}
                         onChange={(e) =>
                           onEditLocation({
                             ...editingLocation,
@@ -221,9 +225,13 @@ const Drawer: React.FC<DrawerProps> = ({
                         _placeholder={{ color: "gray.400" }}
                         w="80px"
                       />
-                    ) : typeof location.longitude === "number" &&
-                      !isNaN(location.longitude) ? (
-                      location.longitude.toFixed(4)
+                    ) : location.longitude !== undefined &&
+                      location.longitude !== null ? (
+                      typeof location.longitude === "number" ? (
+                        location.longitude.toFixed(4)
+                      ) : (
+                        parseFloat(location.longitude).toFixed(4)
+                      )
                     ) : (
                       "N/A"
                     )}
@@ -256,7 +264,7 @@ const Drawer: React.FC<DrawerProps> = ({
                   </Text>
                 </VStack>
 
-                <HStack gap={2}>
+                <VStack gap={1}>
                   {editingLocation?.id === location.id ? (
                     <Button
                       size="sm"
@@ -267,6 +275,7 @@ const Drawer: React.FC<DrawerProps> = ({
                       fontSize="0.7rem"
                       borderRadius="md"
                       whiteSpace="nowrap"
+                      w="100%"
                     >
                       Save
                     </Button>
@@ -280,6 +289,7 @@ const Drawer: React.FC<DrawerProps> = ({
                       fontSize="0.7rem"
                       borderRadius="md"
                       whiteSpace="nowrap"
+                      w="100%"
                     >
                       Edit
                     </Button>
@@ -295,6 +305,7 @@ const Drawer: React.FC<DrawerProps> = ({
                     fontSize="0.7rem"
                     borderRadius="md"
                     whiteSpace="nowrap"
+                    w="100%"
                   >
                     {hiddenLocations.has(location.id) ? "Show" : "Hide"}
                   </Button>
@@ -307,10 +318,11 @@ const Drawer: React.FC<DrawerProps> = ({
                     fontSize="0.7rem"
                     borderRadius="md"
                     whiteSpace="nowrap"
+                    w="100%"
                   >
                     Delete
                   </Button>
-                </HStack>
+                </VStack>
               </HStack>
             </Box>
           ))

@@ -120,3 +120,4 @@ components/visualization/
 - **Cleaner architecture** with logical feature grouping
 - **Easier testing** with isolated components
 - **Independent development** of each module
+

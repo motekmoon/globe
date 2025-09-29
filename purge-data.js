@@ -48,3 +48,4 @@ clearIndexedDB();
 
 console.log('🎯 Data purge completed!');
 console.log('📝 Note: Refresh the page to see the changes');
+

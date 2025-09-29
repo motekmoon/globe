@@ -70,3 +70,4 @@ This fix enables the full dynamic visualization system to work as intended:
 - `ColumnSelector.tsx` - Provides column mapping UI
 - `LocationContext.tsx` - Manages column mapping state
 - `useDataManager.ts` - Exposes column management functions
+

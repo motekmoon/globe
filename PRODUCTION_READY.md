@@ -221,3 +221,4 @@ The Globe application is fully production-ready with:
 - Documentation
 
 **Ready for Vercel deployment and Supabase integration!** 🌍✨
+
