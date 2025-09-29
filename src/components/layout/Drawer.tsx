@@ -232,7 +232,7 @@ const Drawer: React.FC<DrawerProps> = ({
                       <Input
                         size="xs"
                         variant="flushed"
-                        type="number"
+                        type="text"
                         value={editingLocation.quantity || ""}
                         onChange={(e) =>
                           onEditLocation({
