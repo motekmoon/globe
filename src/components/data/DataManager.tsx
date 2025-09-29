@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Box,
   VStack,
@@ -6,7 +6,6 @@ import {
   Text,
   Button,
   Input,
-  Tabs,
   TabsContent,
   TabsList,
   TabsRoot,
@@ -17,11 +16,12 @@ import {
   AlertContent,
   AlertTitle,
   AlertDescription,
+  FileUpload,
 } from "@chakra-ui/react";
 // Icons removed
-import { Location } from '../../lib/supabase';
-import { useDataManager } from '../../hooks/useDataManager';
-import DataTable from './DataTable';
+import { Location } from "../../lib/supabase";
+import { useDataManager } from "../../hooks/useDataManager";
+import DataTable from "./DataTable";
 import { flexibleDatasetImporter } from "../../lib/flexibleDatasetImporter";
 
 interface DataManagerProps {
@@ -55,7 +55,6 @@ const DataManager: React.FC<DataManagerProps> = ({
   const [importError, setImportError] = useState<string | null>(null);
   const [importSuccess, setImportSuccess] = useState<string | null>(null);
   const [editingLocation, setEditingLocation] = useState<Location | null>(null);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Load data on mount
   useEffect(() => {
@@ -68,7 +67,6 @@ const DataManager: React.FC<DataManagerProps> = ({
       onGlobePause(isOpen);
     }
   }, [isOpen, onGlobePause]);
-
 
   const handleImportSuccess = () => {
     refreshData(); // Refresh the data table
@@ -98,15 +96,6 @@ const DataManager: React.FC<DataManagerProps> = ({
     exportLocations(format);
   };
 
-  const handleFileSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0];
-    if (file) {
-      setImportFile(file);
-      setImportError(null);
-      setImportSuccess(null);
-    }
-  };
-
   const handleImport = async () => {
     if (!importFile) return;
 
@@ -132,9 +121,6 @@ const DataManager: React.FC<DataManagerProps> = ({
           `Successfully imported ${importResult.success} locations`
         );
         setImportFile(null);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
-        }
 
         // Add a small delay to ensure database is updated, then refresh
         console.log("🔄 Refreshing data...");
@@ -158,9 +144,6 @@ const DataManager: React.FC<DataManagerProps> = ({
     setImportFile(null);
     setImportError(null);
     setImportSuccess(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
-    }
   };
 
   if (!isOpen) return null;
@@ -178,215 +161,179 @@ const DataManager: React.FC<DataManagerProps> = ({
         zIndex={2000}
         overflow="auto"
       >
-        <Box
-          position="relative"
-          w="100%"
-          h="100vh"
-          bg="white"
-          overflow="auto"
-        >
-        {/* Header */}
-        <Box
-          position="sticky"
-          top="0"
-          bg="white"
-          borderBottom="1px solid"
-          borderColor="gray.200"
-          p={4}
-          zIndex={10}
-        >
-          <HStack justify="space-between" align="center">
-            <HStack gap={3} align="center">
-              <Text fontSize="xl" fontWeight="bold">
-                Data Management
-              </Text>
-              <Badge colorScheme="blue" fontSize="sm">
-                {locations.length} locations
-              </Badge>
-            </HStack>
-            <HStack gap={2} align="center">
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handleExport("csv")}
-                disabled={loading}
-              >
-                Export CSV
-              </Button>
-              <Button
-                size="sm"
-                variant="outline"
-                onClick={() => handleExport("json")}
-                disabled={loading}
-              >
-                Export JSON
-              </Button>
-              <Button
-                size="sm"
-                variant="ghost"
-                onClick={onClose}
-              >
-                ✕
-              </Button>
-            </HStack>
-          </HStack>
-        </Box>
+        <Box position="relative" w="100%" h="100vh" bg="white" overflow="auto">
+          {/* Header */}
+          <Box
+            position="sticky"
+            top="0"
+            bg="white"
+            borderBottom="1px solid"
+            borderColor="gray.200"
+            p={4}
+            zIndex={10}
+          >
+            <HStack justify="space-between" align="center">
+              <HStack gap={3} align="center">
+                <Text fontSize="xl" fontWeight="bold">
+                  Data Management
+                </Text>
+                <Badge colorScheme="blue" fontSize="sm">
+                  {locations.length} locations
+                </Badge>
+              </HStack>
+              <HStack gap={2} align="center">
+                {/* Import Section */}
+                <HStack gap={2} align="center">
+                  <FileUpload.Root
+                    accept={[".csv", ".json"]}
+                    maxFiles={1}
+                    onFileChange={(details: any) => {
+                      if (details.acceptedFiles.length > 0) {
+                        setImportFile(details.acceptedFiles[0]);
+                        setImportError(null);
+                        setImportSuccess(null);
+                      }
+                    }}
+                  >
+                    <FileUpload.HiddenInput />
+                    <FileUpload.Trigger asChild>
+                      <Button variant="outline" size="sm">
+                        Import Data
+                      </Button>
+                    </FileUpload.Trigger>
+                  </FileUpload.Root>
 
-        {/* Body */}
-        <Box p={4}>
-          <VStack align="stretch" gap={4}>
+                  {importFile && (
+                    <HStack gap={1} align="center">
+                      <Text fontSize="xs" color="gray.600">
+                        {importFile.name}
+                      </Text>
+                      <Button size="xs" variant="ghost" onClick={resetImport}>
+                        ✕
+                      </Button>
+                    </HStack>
+                  )}
 
-            {/* Error Display */}
-            {error && (
-              <AlertRoot status="error">
-                <AlertIndicator />
-                <AlertContent>
-                  <AlertTitle>Error</AlertTitle>
-                  <AlertDescription>{error}</AlertDescription>
-                </AlertContent>
-              </AlertRoot>
-            )}
-
-            {/* Main Content */}
-            <TabsRoot
-              value={activeTab}
-              onValueChange={(value: string) => {
-                console.log("Tab change:", value);
-                setActiveTab(value);
-              }}
-            >
-              <TabsList>
-                <TabsTrigger
-                  value="table"
-                  onClick={() => setActiveTab("table")}
-                >
-                  Data Table
-                </TabsTrigger>
-                <TabsTrigger
-                  value="analytics"
-                  onClick={() => setActiveTab("analytics")}
-                >
-                  Analytics
-                </TabsTrigger>
-                <TabsTrigger
-                  value="import"
-                  onClick={() => setActiveTab("import")}
-                >
-                  Import
-                </TabsTrigger>
-                <TabsTrigger
-                  value="export"
-                  onClick={() => setActiveTab("export")}
-                >
-                  Export
-                </TabsTrigger>
-              </TabsList>
-
-              <TabsContent value="table">
-                <DataTable
-                  onLocationSelect={onLocationSelect}
-                  onLocationEdit={handleLocationEdit}
-                />
-              </TabsContent>
-
-              <TabsContent value="analytics">
-                <Box p={6} textAlign="center">
-                  <Text fontSize="lg" fontWeight="semibold" mb={2}>
-                    Analytics Dashboard
-                  </Text>
-                  <Text color="gray.600">
-                    Coming soon: Data insights, charts, and analytics for your
-                    location data.
-                  </Text>
-                </Box>
-              </TabsContent>
-
-              <TabsContent value="import">
-                <VStack align="stretch" gap={4} p={6}>
-                  <Text fontSize="lg" fontWeight="semibold">
-                    Import Data
-                  </Text>
-                  <Text color="gray.600">
-                    Upload a CSV or JSON file to import location data.
-                  </Text>
-
-                  {/* File Upload */}
-                  <VStack align="stretch" gap={3}>
-                    <Input
-                      ref={fileInputRef}
-                      type="file"
-                      accept=".csv,.json"
-                      onChange={handleFileSelect}
-                      size="sm"
-                    />
-
-                    {/* File Preview */}
-                    {importFile && (
-                      <HStack
-                        justify="space-between"
-                        align="center"
-                        p={3}
-                        bg="gray.100"
-                        borderRadius="md"
-                      >
-                        <Text fontSize="sm" fontWeight="medium">
-                          {importFile.name} (
-                          {Math.round(importFile.size / 1024)} KB)
-                        </Text>
-                        <Button size="xs" onClick={resetImport}>
-                          Remove
-                        </Button>
-                      </HStack>
-                    )}
-
-                    {/* Import Button */}
+                  {importFile && (
                     <Button
+                      size="sm"
                       colorScheme="blue"
                       onClick={handleImport}
-                      disabled={!importFile || importLoading}
+                      disabled={importLoading}
                       loading={importLoading}
                     >
-                      {importLoading ? "Importing..." : "Import Data"}
+                      {importLoading ? "Importing..." : "Import"}
                     </Button>
-                  </VStack>
-
-                  {/* Success Message */}
-                  {importSuccess && (
-                    <AlertRoot status="success">
-                      <AlertIndicator />
-                      <AlertContent>
-                        <AlertTitle>Import Successful!</AlertTitle>
-                        <AlertDescription>{importSuccess}</AlertDescription>
-                      </AlertContent>
-                    </AlertRoot>
                   )}
+                </HStack>
 
-                  {/* Error Message */}
-                  {importError && (
-                    <AlertRoot status="error">
-                      <AlertIndicator />
-                      <AlertContent>
-                        <AlertTitle>Import Failed</AlertTitle>
-                        <AlertDescription>{importError}</AlertDescription>
-                      </AlertContent>
-                    </AlertRoot>
-                  )}
-                </VStack>
-              </TabsContent>
+                {/* Export Section */}
+                <HStack gap={2} align="center">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleExport("csv")}
+                    disabled={loading}
+                  >
+                    Export CSV
+                  </Button>
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={() => handleExport("json")}
+                    disabled={loading}
+                  >
+                    Export JSON
+                  </Button>
+                </HStack>
 
-              <TabsContent value="export">
-                <Box p={6} textAlign="center">
-                  <Text fontSize="lg" fontWeight="semibold" mb={2}>
-                    Export Options
-                  </Text>
-                  <Text color="gray.600">
-                    Export functionality is available in the Data Table tab.
-                  </Text>
-                </Box>
-              </TabsContent>
-            </TabsRoot>
-          </VStack>
-        </Box>
+                <Button size="sm" variant="ghost" onClick={onClose}>
+                  ✕
+                </Button>
+              </HStack>
+            </HStack>
+          </Box>
+
+          {/* Body */}
+          <Box p={4}>
+            <VStack align="stretch" gap={4}>
+              {/* Error Display */}
+              {error && (
+                <AlertRoot status="error">
+                  <AlertIndicator />
+                  <AlertContent>
+                    <AlertTitle>Error</AlertTitle>
+                    <AlertDescription>{error}</AlertDescription>
+                  </AlertContent>
+                </AlertRoot>
+              )}
+
+              {/* Import Success Message */}
+              {importSuccess && (
+                <AlertRoot status="success">
+                  <AlertIndicator />
+                  <AlertContent>
+                    <AlertTitle>Import Successful!</AlertTitle>
+                    <AlertDescription>{importSuccess}</AlertDescription>
+                  </AlertContent>
+                </AlertRoot>
+              )}
+
+              {/* Import Error Message */}
+              {importError && (
+                <AlertRoot status="error">
+                  <AlertIndicator />
+                  <AlertContent>
+                    <AlertTitle>Import Failed</AlertTitle>
+                    <AlertDescription>{importError}</AlertDescription>
+                  </AlertContent>
+                </AlertRoot>
+              )}
+
+              {/* Main Content */}
+              <TabsRoot
+                value={activeTab}
+                onValueChange={(value: string) => {
+                  console.log("Tab change:", value);
+                  setActiveTab(value);
+                }}
+              >
+                <TabsList>
+                  <TabsTrigger
+                    value="table"
+                    onClick={() => setActiveTab("table")}
+                  >
+                    Data Table
+                  </TabsTrigger>
+                  <TabsTrigger
+                    value="analytics"
+                    onClick={() => setActiveTab("analytics")}
+                  >
+                    Analytics
+                  </TabsTrigger>
+                </TabsList>
+
+                <TabsContent value="table">
+                  <DataTable
+                    onLocationSelect={onLocationSelect}
+                    onLocationEdit={handleLocationEdit}
+                  />
+                </TabsContent>
+
+                <TabsContent value="analytics">
+                  <Box p={6} textAlign="center">
+                    <Text fontSize="lg" fontWeight="semibold" mb={2}>
+                      Analytics Dashboard
+                    </Text>
+                    <Text color="gray.600">
+                      Coming soon: Data insights, charts, and analytics for your
+                      location data.
+                    </Text>
+                  </Box>
+                </TabsContent>
+              </TabsRoot>
+            </VStack>
+          </Box>
         </Box>
       </Box>
 
@@ -413,7 +360,9 @@ const DataManager: React.FC<DataManagerProps> = ({
             w="100%"
           >
             <Box p={4} borderBottom="1px solid" borderColor="gray.200">
-              <Text fontSize="lg" fontWeight="semibold">Edit Location</Text>
+              <Text fontSize="lg" fontWeight="semibold">
+                Edit Location
+              </Text>
             </Box>
             <Box p={4}>
               <VStack gap={4}>
@@ -486,7 +435,13 @@ const DataManager: React.FC<DataManagerProps> = ({
                 </Box>
               </VStack>
             </Box>
-            <HStack justify="flex-end" gap={2} p={4} borderTop="1px solid" borderColor="gray.200">
+            <HStack
+              justify="flex-end"
+              gap={2}
+              p={4}
+              borderTop="1px solid"
+              borderColor="gray.200"
+            >
               <Button variant="outline" onClick={handleCancelEdit}>
                 Cancel
               </Button>
@@ -494,7 +449,7 @@ const DataManager: React.FC<DataManagerProps> = ({
             </HStack>
           </Box>
         </Box>
-        )}
+      )}
     </Box>
   );
 };
