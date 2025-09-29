@@ -67,7 +67,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
 
   return (
     <Box
-      bg="rgba(0, 0, 0, 0.5)"
+      // bg="rgba(0, 0, 0, 0.5)"
       p={4}
       maxH="70px"
       maxW="1400px"
