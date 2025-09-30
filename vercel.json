@@ -1,5 +1,6 @@
 {
   "version": 2,
+  "name": "globe-application",
   "builds": [
     {
       "src": "package.json",
@@ -15,13 +16,81 @@
       "dest": "/static/$1"
     },
     {
+      "src": "/favicon.ico",
+      "dest": "/favicon.ico"
+    },
+    {
+      "src": "/logo.PNG",
+      "dest": "/logo.PNG"
+    },
+    {
+      "src": "/logo192.PNG",
+      "dest": "/logo192.PNG"
+    },
+    {
+      "src": "/logo512.PNG",
+      "dest": "/logo512.PNG"
+    },
+    {
+      "src": "/nasa-blue-marble.jpg",
+      "dest": "/nasa-blue-marble.jpg"
+    },
+    {
+      "src": "/world-map.png",
+      "dest": "/world-map.png"
+    },
+    {
+      "src": "/manifest.json",
+      "dest": "/manifest.json"
+    },
+    {
+      "src": "/robots.txt",
+      "dest": "/robots.txt"
+    },
+    {
       "src": "/(.*)",
       "dest": "/index.html"
     }
   ],
   "env": {
-    "REACT_APP_SUPABASE_URL": "@react_app_supabase_url",
-    "REACT_APP_SUPABASE_ANON_KEY": "@react_app_supabase_anon_key",
-    "REACT_APP_MAPBOX_TOKEN": "@react_app_mapbox_token"
-  }
+    "NODE_ENV": "production"
+  },
+  "build": {
+    "env": {
+      "NODE_ENV": "production"
+    }
+  },
+  "functions": {
+    "app/api/**/*.js": {
+      "runtime": "nodejs18.x"
+    }
+  },
+  "headers": [
+    {
+      "source": "/static/(.*)",
+      "headers": [
+        {
+          "key": "Cache-Control",
+          "value": "public, max-age=31536000, immutable"
+        }
+      ]
+    },
+    {
+      "source": "/(.*)",
+      "headers": [
+        {
+          "key": "X-Content-Type-Options",
+          "value": "nosniff"
+        },
+        {
+          "key": "X-Frame-Options",
+          "value": "DENY"
+        },
+        {
+          "key": "X-XSS-Protection",
+          "value": "1; mode=block"
+        }
+      ]
+    }
+  ]
 }

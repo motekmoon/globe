@@ -121,3 +121,5 @@ components/visualization/
 - **Easier testing** with isolated components
 - **Independent development** of each module
 
+
+

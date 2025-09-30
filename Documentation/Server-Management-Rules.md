@@ -16,16 +16,26 @@ This document defines the server management protocol for the Globe project to en
 - Start servers on ports 3000-3002
 - Interfere with Skip project operations
 
+### 🚫 RESTRICTED PORTS (Zinchiang.tech Project)
+**DO NOT USE - Reserved for Zinchiang.tech Project:**
+- **Port 3006** - Zinchiang.tech primary development server
+- **Port 3007** - Zinchiang.tech additional services (if needed)
+
+**Globe Agent MUST NEVER:**
+- Kill processes on ports 3006-3007
+- Start servers on ports 3006-3007
+- Interfere with Zinchiang.tech project operations
+
 ### ✅ AVAILABLE PORTS FOR GLOBE
 **Globe Project Ports:**
 - **Port 3003** - Globe primary development server (default)
 - **Port 3004** - Globe additional services (if needed)
-- **Port 3005+** - Globe additional services (first come, first serve)
+- **Port 3005** - Globe additional services (if needed)
 
 **Available for Globe:**
-- Any port 3003 and above
+- Ports 3003-3005 (Globe assigned)
+- Ports 3008+ (first come, first serve)
 - Any port not in use by other projects
-- First come, first serve basis
 
 ## Globe Agent Protocol
 
@@ -83,6 +93,8 @@ curl -s http://localhost:3003 > /dev/null && echo "Globe server running" || echo
 pkill -f "port.*3000"  # Would kill Skip servers
 pkill -f "port.*3001"  # Would kill Skip servers
 pkill -f "port.*3002"  # Would kill Skip servers
+pkill -f "port.*3006"  # Would kill Zinchiang.tech servers
+pkill -f "port.*3007"  # Would kill Zinchiang.tech servers
 ```
 
 ## Project Boundaries
@@ -93,9 +105,15 @@ pkill -f "port.*3002"  # Would kill Skip servers
 - **Status**: Protected - Globe Agent cannot interfere
 - **Purpose**: Skip project development and testing
 
+### Zinchiang.tech Project (Protected)
+- **Location**: `/Users/zinchiang/zinchiang.tech/`
+- **Ports**: 3006, 3007
+- **Status**: Protected - Globe Agent cannot interfere
+- **Purpose**: Interactive 3D orb website
+
 ### Globe Project (Managed)
 - **Location**: `/Users/zinchiang/DJ HEL1X Website/interactive-globe/`
-- **Ports**: 3003+
+- **Ports**: 3003, 3004, 3005
 - **Status**: Managed by Globe Agent
 - **Purpose**: Interactive 3D globe application
 
