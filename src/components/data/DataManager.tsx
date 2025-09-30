@@ -68,16 +68,19 @@ const DataManager: React.FC<DataManagerProps> = ({
     }
   }, [isOpen, onGlobePause]);
 
-  const handleImportSuccess = () => {
-    refreshData(); // Refresh the data table
-  };
+  // const handleImportSuccess = () => {
+  //   refreshData(); // Refresh the data table
+  // };
 
   const handleLocationEdit = (location: Location) => {
     setEditingLocation(location);
   };
 
   const handleSaveEdit = async () => {
-    if (!editingLocation) return;
+    if (!editingLocation || !editingLocation.id) {
+      console.error("Cannot update location without ID");
+      return;
+    }
 
     try {
       await updateLocation(editingLocation.id, editingLocation);

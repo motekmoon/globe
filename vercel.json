@@ -1,6 +1,5 @@
 {
   "version": 2,
-  "name": "globe-application",
   "builds": [
     {
       "src": "package.json",
@@ -10,56 +9,12 @@
       }
     }
   ],
-  "routes": [
+  "rewrites": [
     {
-      "src": "/static/(.*)",
-      "dest": "/static/$1"
-    },
-    {
-      "src": "/favicon.ico",
-      "dest": "/favicon.ico"
-    },
-    {
-      "src": "/logo.PNG",
-      "dest": "/logo.PNG"
-    },
-    {
-      "src": "/logo192.PNG",
-      "dest": "/logo192.PNG"
-    },
-    {
-      "src": "/logo512.PNG",
-      "dest": "/logo512.PNG"
-    },
-    {
-      "src": "/nasa-blue-marble.jpg",
-      "dest": "/nasa-blue-marble.jpg"
-    },
-    {
-      "src": "/world-map.png",
-      "dest": "/world-map.png"
-    },
-    {
-      "src": "/manifest.json",
-      "dest": "/manifest.json"
-    },
-    {
-      "src": "/robots.txt",
-      "dest": "/robots.txt"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/index.html"
+      "source": "/(.*)",
+      "destination": "/index.html"
     }
   ],
-  "env": {
-    "NODE_ENV": "production"
-  },
-  "build": {
-    "env": {
-      "NODE_ENV": "production"
-    }
-  },
   "headers": [
     {
       "source": "/static/(.*)",
