@@ -27,13 +27,13 @@ export { supabase }
 
 // Database types
 export interface Location {
-  id: string
+  id?: string  // Optional for new locations (Supabase will generate UUID)
   name?: string
   latitude?: number
   longitude?: number
   quantity?: number  // New field for dynamic visualization
-  created_at: string
-  updated_at: string
+  created_at?: string
+  updated_at?: string
   // Allow additional dynamic columns
   [key: string]: any
 }
@@ -113,33 +113,51 @@ export const locationService = {
       }
     }
 
-    const newLocation: Location = {
-      id: Date.now().toString(),
-      ...location,
-      created_at: new Date().toISOString(),
-      updated_at: new Date().toISOString()
-    }
-
     try {
+      // Clean the location data before sending to Supabase
+      // Remove any fields that should be auto-generated
+      const cleanLocation = {
+        name: location.name,
+        latitude: Number(location.latitude),
+        longitude: Number(location.longitude),
+        quantity: location.quantity ? Number(location.quantity) : null
+        // Remove: id, created_at, updated_at - let Supabase handle these
+      }
+
+      console.log('🔍 Supabase: Attempting to insert location:', cleanLocation)
       const { data, error } = await supabase
         .from('locations')
-        .insert([location])
+        .insert([cleanLocation])
         .select()
         .single()
       
       if (error) {
-        console.error('Error adding location:', error)
+        console.error('❌ Supabase Error adding location:', error)
+        console.error('❌ Error details:', JSON.stringify(error, null, 2))
         // Fallback to localStorage
+        const newLocation: Location = {
+          id: Date.now().toString(),
+          ...location,
+          created_at: new Date().toISOString(),
+          updated_at: new Date().toISOString()
+        }
         const locations = getStoredLocations()
         locations.unshift(newLocation)
         storeLocations(locations)
         return newLocation
       }
       
+      console.log('✅ Supabase: Successfully added location:', data)
       return data
     } catch (error) {
       console.error('Database connection error:', error)
       // Fallback to localStorage
+      const newLocation: Location = {
+        id: Date.now().toString(),
+        ...location,
+        created_at: new Date().toISOString(),
+        updated_at: new Date().toISOString()
+      }
       const locations = getStoredLocations()
       locations.unshift(newLocation)
       storeLocations(locations)
@@ -172,9 +190,17 @@ export const locationService = {
     }
 
     try {
+      // Clean the update data before sending to Supabase
+      const cleanUpdates: any = {}
+      if (updates.name !== undefined) cleanUpdates.name = updates.name
+      if (updates.latitude !== undefined) cleanUpdates.latitude = Number(updates.latitude)
+      if (updates.longitude !== undefined) cleanUpdates.longitude = Number(updates.longitude)
+      if (updates.quantity !== undefined) cleanUpdates.quantity = updates.quantity ? Number(updates.quantity) : null
+      // Remove: id, created_at, updated_at - let Supabase handle these
+
       const { data, error } = await supabase
         .from('locations')
-        .update(updates)
+        .update(cleanUpdates)
         .eq('id', id)
         .select()
         .single()

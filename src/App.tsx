@@ -23,10 +23,14 @@ import { useLocations } from "./hooks/useLocations";
 import { useDrawer } from "./hooks/useDrawer";
 import { useAnimation } from "./hooks/useAnimation";
 import { filterAndSortLocations } from "./utils/locationUtils";
-import { Location } from "./lib/supabase";
+import { logEnvironmentStatus } from "./utils/envValidation";
+// import { Location } from "./lib/supabase";
 
 // Create a system for Chakra UI
 const system = createSystem(defaultConfig);
+
+// Validate environment variables on app startup
+logEnvironmentStatus();
 
 function App() {
   // Use custom hooks for state management
@@ -40,7 +44,7 @@ function App() {
     handleSaveLocation,
     handleHideLocation,
     handleDeleteLocation,
-    handleBulkImport,
+    // handleBulkImport,
   } = useLocations();
 
   const {

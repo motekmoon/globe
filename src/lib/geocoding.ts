@@ -11,7 +11,7 @@ export interface GeocodingError {
 }
 
 // Mapbox API configuration
-const MAPBOX_TOKEN = "pk.eyJ1IjoibHVtaWFyaWEiLCJhIjoiY2o4b25kbzYyMDVucTMzcnp2emxhMG1sYiJ9.4V9px9CLMCy6oyNWtKWb6A";
+const MAPBOX_TOKEN = process.env.REACT_APP_MAPBOX_ACCESS_TOKEN || "your-mapbox-token";
 
 // Mock coordinates for demo/fallback
 const getMockCoordinates = (address: string): GeocodingResult => {

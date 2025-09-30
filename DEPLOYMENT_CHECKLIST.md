@@ -7,9 +7,9 @@
 ## ✅ **Pre-Deployment Status**
 
 ### **Environment Variables Ready** ✅
-- **Supabase URL**: `https://okptgjyjfrpgdvrothuc.supabase.co`
-- **Supabase Anon Key**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9rcHRnanlqZnJwZ2R2cm90aHVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNjE0ODIsImV4cCI6MjA3NDgzNzQ4Mn0.BVGWqZh39riE1_sV9FLNeLb-Tl_1rlUXyzYK5CkJxso`
-- **Mapbox Token**: `pk.eyJ1IjoibHVtaWFyaWEiLCJhIjoiY2o4b25kbzYyMDVucTMzcnp2emxhMG1sYiJ9.4V9px9CLMCy6oyNWtKWb6A`
+- **Supabase URL**: `https://your-project-id.supabase.co`
+- **Supabase Anon Key**: `your-supabase-anon-key`
+- **Mapbox Token**: `pk.your-mapbox-token`
 
 ### **Project IDs** ✅
 - **Vercel Project ID**: `prj_HGZtul7oirIEDAUBkWcp7jvYz9DC`
@@ -22,11 +22,11 @@ Go to your Vercel project settings and add these environment variables:
 
 ```bash
 # Supabase Configuration
-REACT_APP_SUPABASE_URL=https://okptgjyjfrpgdvrothuc.supabase.co
-REACT_APP_SUPABASE_ANON_KEY=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9rcHRnanlqZnJwZ2R2cm90aHVjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTkyNjE0ODIsImV4cCI6MjA3NDgzNzQ4Mn0.BVGWqZh39riE1_sV9FLNeLb-Tl_1rlUXyzYK5CkJxso
+REACT_APP_SUPABASE_URL=https://your-project-id.supabase.co
+REACT_APP_SUPABASE_ANON_KEY=your-supabase-anon-key
 
 # Mapbox Configuration
-REACT_APP_MAPBOX_ACCESS_TOKEN=pk.eyJ1IjoibHVtaWFyaWEiLCJhIjoiY2o4b25kbzYyMDVucTMzcnp2emxhMG1sYiJ9.4V9px9CLMCy6oyNWtKWb6A
+REACT_APP_MAPBOX_ACCESS_TOKEN=pk.your-mapbox-token
 
 # Build Configuration
 NODE_ENV=production

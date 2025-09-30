@@ -22,6 +22,8 @@ A stunning interactive 3D globe built with React, TypeScript, and Three.js featu
 
 - Node.js (v16 or higher)
 - npm or yarn
+- Mapbox API token (free)
+- Supabase account (for data persistence)
 
 ### Installation
 
@@ -36,13 +38,27 @@ A stunning interactive 3D globe built with React, TypeScript, and Three.js featu
    npm install
    ```
 
-3. **Start the development server**
+3. **Configure environment variables**
+   ```bash
+   cp env.example .env.local
+   # Edit .env.local with your API tokens
+   ```
+
+4. **Start the development server**
    ```bash
    npm start
    ```
 
-4. **Open your browser**
+5. **Open your browser**
    Navigate to `http://localhost:3000`
+
+### Environment Variables
+Create a `.env.local` file with:
+```env
+REACT_APP_SUPABASE_URL=https://your-project-id.supabase.co
+REACT_APP_SUPABASE_ANON_KEY=your-supabase-anon-key
+REACT_APP_MAPBOX_ACCESS_TOKEN=your_mapbox_token_here
+```
 
 ## 🎮 Usage
 
@@ -145,6 +161,21 @@ const MAPBOX_TOKEN = 'your_actual_token_here';
 1. Run `npm run build`
 2. Deploy the `build` folder to GitHub Pages
 3. Configure the repository settings
+
+## 📚 Documentation
+
+### **Project Wiki**
+For comprehensive documentation, see the [Project Wiki](Documentation/Project-Wiki/):
+- **[Architecture](Documentation/Project-Wiki/Architecture/)** - System design and data flow
+- **[Deployment](Documentation/Project-Wiki/Deployment/)** - Complete deployment guides
+- **[Features](Documentation/Project-Wiki/Features/)** - Feature documentation
+- **[Troubleshooting](Documentation/Project-Wiki/Troubleshooting/)** - Common issues and solutions
+- **[Releases](Documentation/Project-Wiki/Releases/)** - Release notes and status
+
+### **Quick Deployment**
+- **[Deployment Guide](DEPLOYMENT.md)** - Quick start deployment
+- **[Environment Setup](env.example)** - Environment configuration
+- **[Live Preview](https://globe-git-research-mos-projects-04ee8a86.vercel.app/)** - See it in action
 
 ## 🤝 Contributing
 
