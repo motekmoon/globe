@@ -20,9 +20,6 @@ const ColumnSelector: React.FC<ColumnSelectorProps> = ({
     { value: "", label: "Inactive" },
     { value: "quantity", label: "Quantity" },
     { value: "flightPath", label: "Flight Path (Date)" },
-    { value: "color", label: "Color (Future)" },
-    { value: "size", label: "Size (Future)" },
-    { value: "animationSpeed", label: "Animation Speed (Future)" },
   ];
 
   const handleChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
