@@ -105,7 +105,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
 
   return (
     <DialogRoot open={isOpen} onOpenChange={handleClose}>
-      <DialogContent maxW="400px" position="relative">
+      <DialogContent maxW="400px" position="relative" zIndex={9999}>
         {/* Close Button - Upper Right */}
         <Button
           position="absolute"
@@ -197,7 +197,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
               <VStack gap={2} align="stretch">
                 <Input
                   type="password"
-                  placeholder="New password (leave blank to keep current)"
+                  placeholder="New password"
                   value={newPassword}
                   onChange={(e) => setNewPassword(e.target.value)}
                   disabled={isUpdating}
