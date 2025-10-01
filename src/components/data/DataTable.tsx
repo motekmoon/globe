@@ -38,6 +38,7 @@ const DataTable: React.FC<DataTableProps> = ({
 }) => {
   const {
     locations,
+    error,
     selectedLocations,
     searchQuery,
     sortBy,
