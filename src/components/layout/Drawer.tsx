@@ -115,12 +115,16 @@ const Drawer: React.FC<DrawerProps> = ({
       bottom="0"
       width="300px"
       bg="rgba(0, 0, 0, 0.5)"
-      p={4}
-      overflow="auto"
       zIndex={1000}
       boxShadow="lg"
-      ref={scrollContainerRef}
     >
+      {/* Scrollable Content Container */}
+      <Box
+        p={4}
+        overflow="auto"
+        height="100%"
+        ref={scrollContainerRef}
+      >
       <HStack justify="space-between" align="center" mb={4}>
         <Heading size="md" color="white">
           Live Edit
@@ -390,8 +394,9 @@ const Drawer: React.FC<DrawerProps> = ({
           ))
         )}
       </VStack>
+      </Box>
 
-      {/* Smart Scroll Down Indicator */}
+      {/* Sticky Smart Scroll Down Indicator */}
       {showScrollIndicator && (
         <Box
           position="absolute"
@@ -419,7 +424,7 @@ const Drawer: React.FC<DrawerProps> = ({
             as={ChevronDownIcon}
             boxSize={4}
             color="rgba(255, 255, 255, 0.6)"
-            animation="bounce 2s infinite"
+            animation="bounce 3s infinite"
             css={{
               "@keyframes bounce": {
                 "0%, 20%, 50%, 80%, 100%": {
