@@ -168,7 +168,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
                 <AlertTitle>Profile Updated</AlertTitle>
                 <AlertDescription>
                   {email !== user?.email 
-                    ? "Your settings have been saved. Please check your email and click the confirmation link to complete the email change."
+                    ? "Your settings have been saved. Please check BOTH your old and new email inboxes for confirmation links. You must click the confirmation link in BOTH emails to complete the email change."
                     : "Your settings have been saved successfully."
                   }
                 </AlertDescription>
