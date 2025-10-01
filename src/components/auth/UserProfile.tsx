@@ -19,12 +19,10 @@ import {
 } from "@chakra-ui/react";
 import { UserIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "../../contexts/AuthContext";
-import UserAnalytics from "./UserAnalytics";
 
 const UserProfile: React.FC = () => {
   const { user, signOut, loading, error } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
-  const [showAnalytics, setShowAnalytics] = useState(false);
 
   if (!user) {
     return null;
@@ -89,23 +87,12 @@ const UserProfile: React.FC = () => {
             <Text fontSize="xs" color="gray.500">
               {user.email}
             </Text>
-            <Text fontSize="xs" color="gray.400">
-              Member since {new Date(user.created_at).toLocaleDateString()}
-            </Text>
           </VStack>
 
           <MenuSeparator />
 
           <MenuItem onClick={() => console.log("Profile settings")}>
             <Text fontSize="sm">Profile Settings</Text>
-          </MenuItem>
-
-          <MenuItem onClick={() => setShowAnalytics(!showAnalytics)}>
-            <Text fontSize="sm">Usage Analytics</Text>
-          </MenuItem>
-
-          <MenuItem onClick={() => console.log("Export data")}>
-            <Text fontSize="sm">Export Data</Text>
           </MenuItem>
 
           <MenuSeparator />
@@ -121,37 +108,6 @@ const UserProfile: React.FC = () => {
           </MenuItem>
         </MenuContent>
       </MenuRoot>
-
-      {/* Analytics Modal */}
-      {showAnalytics && (
-        <Box
-          position="fixed"
-          top="50%"
-          left="50%"
-          transform="translate(-50%, -50%)"
-          zIndex={1000}
-          bg="white"
-          p={6}
-          borderRadius="lg"
-          boxShadow="xl"
-          maxW="md"
-          w="90%"
-        >
-          <HStack justify="space-between" mb={4}>
-            <Text fontSize="lg" fontWeight="semibold">
-              Your Analytics
-            </Text>
-            <Button
-              size="sm"
-              variant="ghost"
-              onClick={() => setShowAnalytics(false)}
-            >
-              ×
-            </Button>
-          </HStack>
-          <UserAnalytics />
-        </Box>
-      )}
     </Box>
   );
 };
