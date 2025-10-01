@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   HStack,
@@ -7,7 +7,9 @@ import {
   Button,
   Input,
   Text,
+  Icon,
 } from "@chakra-ui/react";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import { Location } from "../../lib/supabase";
 
 interface DrawerProps {
@@ -43,6 +45,61 @@ const Drawer: React.FC<DrawerProps> = ({
   onDeleteLocation,
   hiddenLocations,
 }) => {
+  const [showScrollDownIndicator, setShowScrollDownIndicator] = useState(false);
+  const [showScrollUpIndicator, setShowScrollUpIndicator] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+
+  // Check if content overflows and show indicators accordingly
+  const checkOverflow = () => {
+    if (!scrollContainerRef.current) return;
+    
+    const container = scrollContainerRef.current;
+    const hasOverflow = container.scrollHeight > container.clientHeight;
+    const isAtTop = container.scrollTop <= 5;
+    const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 5;
+    
+    setShowScrollDownIndicator(hasOverflow && !isAtBottom);
+    setShowScrollUpIndicator(hasOverflow && !isAtTop);
+  };
+
+  // Handle scroll events
+  const handleScroll = () => {
+    checkOverflow();
+  };
+
+  // Scroll to top function
+  const scrollToTop = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  };
+
+  // Set up scroll listener and initial check
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    container.addEventListener('scroll', handleScroll);
+    checkOverflow(); // Initial check
+    
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+    };
+  }, [isOpen, filteredLocations.length]);
+
+  // Check overflow when filtered locations change
+  useEffect(() => {
+    if (isOpen) {
+      // Small delay to ensure DOM is updated
+      setTimeout(checkOverflow, 100);
+    }
+  }, [filteredLocations.length, isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -50,15 +107,57 @@ const Drawer: React.FC<DrawerProps> = ({
       data-drawer="location-manager"
       position="fixed"
       right="0"
-      top="0"
+      top="70px"
       bottom="0"
       width="300px"
       bg="rgba(0, 0, 0, 0.5)"
-      p={4}
-      overflow="auto"
       zIndex={1000}
       boxShadow="lg"
     >
+      {/* Clickable Scroll Up Indicator */}
+      {showScrollUpIndicator && (
+        <Box
+          position="absolute"
+          top="10px"
+          left="50%"
+          transform="translateX(-50%)"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          gap={1}
+          pointerEvents="auto"
+          zIndex={1001}
+          cursor="pointer"
+          onClick={scrollToTop}
+          _hover={{
+            transform: "translateX(-50%) scale(1.05)",
+            transition: "transform 0.2s ease-in-out"
+          }}
+          transition="transform 0.2s ease-in-out"
+        >
+          <Text
+            fontSize="xs"
+            color="rgba(255, 255, 255, 0.8)"
+            fontWeight="500"
+            textAlign="center"
+          >
+            Back to top
+          </Text>
+          <Icon
+            as={ChevronUpIcon}
+            boxSize={4}
+            color="rgba(255, 255, 255, 0.8)"
+          />
+        </Box>
+      )}
+
+      {/* Scrollable Content Container */}
+      <Box
+        p={4}
+        overflow="auto"
+        height="100%"
+        ref={scrollContainerRef}
+      >
       <HStack justify="space-between" align="center" mb={4}>
         <Heading size="md" color="white">
           Live Edit
@@ -328,6 +427,37 @@ const Drawer: React.FC<DrawerProps> = ({
           ))
         )}
       </VStack>
+      </Box>
+
+      {/* Scroll Down Indicator */}
+      {showScrollDownIndicator && (
+        <Box
+          position="absolute"
+          bottom="10px"
+          left="50%"
+          transform="translateX(-50%)"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          gap={1}
+          pointerEvents="none"
+          zIndex={1001}
+        >
+          <Text
+            fontSize="xs"
+            color="rgba(255, 255, 255, 0.6)"
+            fontWeight="500"
+            textAlign="center"
+          >
+            Scroll down
+          </Text>
+          <Icon
+            as={ChevronDownIcon}
+            boxSize={4}
+            color="rgba(255, 255, 255, 0.6)"
+          />
+        </Box>
+      )}
     </Box>
   );
 };

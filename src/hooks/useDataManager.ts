@@ -31,6 +31,8 @@ export const useDataManager = () => {
     setColumnMapping,
     clearColumnMapping,
     updateAvailableColumns,
+    exportCompleteBackup,
+    importBackupData,
   } = useLocationContext();
 
   return {
@@ -66,5 +68,7 @@ export const useDataManager = () => {
     setColumnMapping,
     clearColumnMapping,
     updateAvailableColumns,
+    exportCompleteBackup,
+    importBackupData,
   };
 };

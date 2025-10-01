@@ -69,16 +69,15 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
     <Box
       // bg="rgba(0, 0, 0, 0.5)"
       pt="0px"
-      pb={4}
+      pb="0px"
       px={4}
       maxH="70px"
-      maxW="1400px"
       w="100%"
       overflow="hidden"
     >
       <HStack gap={3} align="center">
-        {/* Address Input */}
-        <HStack gap={3} flex={1}>
+        {/* Address Input - Primary, takes most space */}
+        <HStack gap={3} flex="3">
           <Input
             id="address-input"
             name="address"
@@ -96,7 +95,6 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
             flex={1}
             minW="35px"
-            w="fit-content"
           />
           <Input
             id="quantity-input"
@@ -113,8 +111,8 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             color="white"
             fontSize="0.7rem"
             _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
+            flex={1}
             minW="15px"
-            w="fit-content"
           />
           <Button
             onClick={handleAddressSubmit}
@@ -129,7 +127,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             whiteSpace="nowrap"
             border="none"
             _hover={{
-              bg: "rgba(255, 255, 255, 0.9)"
+              bg: "rgba(255, 255, 255, 0.9)",
             }}
           >
             {isLoading ? "Searching..." : "Add Location"}
@@ -140,8 +138,8 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
           OR
         </Text>
 
-        {/* Coordinate Inputs */}
-        <HStack gap={3} flex={1}>
+        {/* Coordinate Inputs - Secondary, smaller */}
+        <HStack gap={3} flex="2">
           <Input
             id="latitude-input"
             name="latitude"
@@ -159,7 +157,6 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             fontSize="0.7rem"
             _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
             minW="35px"
-            w="fit-content"
           />
           <Input
             id="longitude-input"
@@ -178,7 +175,6 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             fontSize="0.7rem"
             _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
             minW="35px"
-            w="fit-content"
           />
           <Input
             id="quantity-coord-input"
@@ -194,8 +190,8 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             color="white"
             fontSize="0.7rem"
             _placeholder={{ color: "gray.400", fontSize: "0.7rem" }}
+            flex={1}
             minW="15px"
-            w="fit-content"
           />
           <Button
             onClick={handleCoordinateSubmit}
@@ -209,7 +205,7 @@ const LocationForm: React.FC<LocationFormProps> = ({ onLocationAdd }) => {
             whiteSpace="nowrap"
             border="none"
             _hover={{
-              bg: "rgba(255, 255, 255, 0.9)"
+              bg: "rgba(255, 255, 255, 0.9)",
             }}
           >
             Add Coordinates

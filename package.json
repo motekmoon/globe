@@ -7,6 +7,7 @@
     "@emotion/react": "^11.14.0",
     "@emotion/styled": "^11.14.1",
     "@heroicons/react": "^2.2.0",
+    "@linear/cli": "^0.0.5",
     "@react-three/drei": "^10.7.6",
     "@react-three/fiber": "^9.3.0",
     "@supabase/supabase-js": "^2.58.0",

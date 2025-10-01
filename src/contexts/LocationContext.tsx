@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useCallback, useEffect, ReactNode } from 'react';
 import { Location, locationService } from '../lib/supabase';
+import { exportAllData, importData, saveBackupInfo } from "../utils/backup";
 
 // Column mapping interface
 interface ColumnMapping {
@@ -20,6 +21,24 @@ interface LocationContextState {
   filterBy: "all" | "with_quantity" | "without_quantity";
   columnMapping: ColumnMapping;
   availableColumns: string[];
+  uiSettings: {
+    drawerOpen: boolean;
+    showQuantityVisualization: boolean;
+    searchQuery: string;
+    sortBy: "name" | "created_at" | "updated_at";
+    sortOrder: "asc" | "desc";
+    filterBy: "all" | "with_quantity" | "without_quantity";
+  };
+  updateUISettings: (
+    updates: Partial<{
+      drawerOpen: boolean;
+      showQuantityVisualization: boolean;
+      searchQuery: string;
+      sortBy: "name" | "created_at" | "updated_at";
+      sortOrder: "asc" | "desc";
+      filterBy: "all" | "with_quantity" | "without_quantity";
+    }>
+  ) => void;
 }
 
 // Context actions interface
@@ -63,6 +82,10 @@ interface LocationContextActions {
   setColumnMapping: (columnName: string, parameter: string) => void;
   clearColumnMapping: (columnName: string) => void;
   updateAvailableColumns: (columns: string[]) => void;
+
+  // Backup and restore
+  exportCompleteBackup: () => void;
+  importBackupData: (file: File) => Promise<void>;
 }
 
 // Combined context type
@@ -92,21 +115,52 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
   const [selectedLocations, setSelectedLocations] = useState<Set<string>>(
     new Set()
   );
-  const [searchQuery, setSearchQuery] = useState("");
+
+  // UI Settings with persistence (declared first)
+  const [uiSettings, setUiSettings] = useState(() => {
+    try {
+      const saved = localStorage.getItem("globe-ui-settings");
+      return saved
+        ? JSON.parse(saved)
+        : {
+            drawerOpen: false,
+            showQuantityVisualization: false,
+            searchQuery: "",
+            sortBy: "name",
+            sortOrder: "asc",
+            filterBy: "all",
+          };
+    } catch (error) {
+      console.warn("Failed to load UI settings from localStorage:", error);
+      return {
+        drawerOpen: false,
+        showQuantityVisualization: false,
+        searchQuery: "",
+        sortBy: "name",
+        sortOrder: "asc",
+        filterBy: "all",
+      };
+    }
+  });
+
+  // Use persistent UI settings for state
+  const [searchQuery, setSearchQuery] = useState(uiSettings.searchQuery);
   const [sortBy, setSortBy] = useState<"name" | "created_at" | "updated_at">(
-    "name"
+    uiSettings.sortBy
   );
-  const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc");
+  const [sortOrder, setSortOrder] = useState<"asc" | "desc">(
+    uiSettings.sortOrder
+  );
   const [filterBy, setFilterBy] = useState<
     "all" | "with_quantity" | "without_quantity"
-  >("all");
+  >(uiSettings.filterBy);
   const [columnMapping, setColumnMappingState] = useState<ColumnMapping>(() => {
     // Load from localStorage on initialization
     try {
-      const saved = localStorage.getItem('globe-column-mapping');
+      const saved = localStorage.getItem("globe-column-mapping");
       return saved ? JSON.parse(saved) : {};
     } catch (error) {
-      console.warn('Failed to load column mapping from localStorage:', error);
+      console.warn("Failed to load column mapping from localStorage:", error);
       return {};
     }
   });
@@ -115,12 +169,38 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
   // Save column mapping to localStorage whenever it changes
   useEffect(() => {
     try {
-      localStorage.setItem('globe-column-mapping', JSON.stringify(columnMapping));
-      console.log('💾 Saved column mapping to localStorage:', columnMapping);
+      localStorage.setItem(
+        "globe-column-mapping",
+        JSON.stringify(columnMapping)
+      );
+      console.log("💾 Saved column mapping to localStorage:", columnMapping);
     } catch (error) {
-      console.warn('Failed to save column mapping to localStorage:', error);
+      console.warn("Failed to save column mapping to localStorage:", error);
     }
   }, [columnMapping]);
+
+  // Save UI settings to localStorage whenever they change
+  useEffect(() => {
+    try {
+      localStorage.setItem("globe-ui-settings", JSON.stringify(uiSettings));
+      console.log("💾 Saved UI settings to localStorage:", uiSettings);
+    } catch (error) {
+      console.warn("Failed to save UI settings to localStorage:", error);
+    }
+  }, [uiSettings]);
+
+  // Helper functions to update UI settings
+  const updateUISettings = useCallback(
+    (updates: Partial<typeof uiSettings>) => {
+      setUiSettings((prev: typeof uiSettings) => ({ ...prev, ...updates }));
+    },
+    []
+  );
+
+  // Sync state changes with UI settings
+  useEffect(() => {
+    updateUISettings({ searchQuery, sortBy, sortOrder, filterBy });
+  }, [searchQuery, sortBy, sortOrder, filterBy]);
 
   // Load all locations
   const refreshData = useCallback(async () => {
@@ -151,15 +231,20 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
   // Apply saved column mapping to locations when both are loaded
   useEffect(() => {
     if (locations.length > 0 && Object.keys(columnMapping).length > 0) {
-      console.log('🔄 Applying saved column mapping to locations:', columnMapping);
-      
+      console.log(
+        "🔄 Applying saved column mapping to locations:",
+        columnMapping
+      );
+
       // Find quantity mapping
-      const quantityColumn = Object.entries(columnMapping).find(([_, param]) => param === 'quantity');
-      
+      const quantityColumn = Object.entries(columnMapping).find(
+        ([_, param]) => param === "quantity"
+      );
+
       if (quantityColumn) {
         const [columnName] = quantityColumn;
         console.log(`🔄 Restoring quantity mapping: ${columnName} → quantity`);
-        
+
         setLocations((prevLocations) =>
           prevLocations.map((location) => {
             const mappedValue = (location as any)[columnName];
@@ -177,7 +262,7 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
         );
       }
     }
-  }, [locations, columnMapping]);
+  }, [columnMapping]);
 
   // Add a single location
   const addLocation = useCallback(
@@ -444,6 +529,58 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
     [locations, selectedLocations]
   );
 
+  // Backup and restore functions
+  const exportCompleteBackup = useCallback(() => {
+    try {
+      exportAllData(locations, columnMapping, uiSettings);
+      saveBackupInfo(new Date().toISOString());
+      console.log("✅ Complete backup exported successfully");
+    } catch (error) {
+      console.error("❌ Failed to export backup:", error);
+      throw error;
+    }
+  }, [locations, columnMapping, uiSettings]);
+
+  const importBackupData = useCallback(
+    async (file: File) => {
+      try {
+        const backupData = await importData(file);
+
+        // Restore locations
+        if (backupData.locations && backupData.locations.length > 0) {
+          // Clear existing data using purgeAllData (development only)
+          await locationService.purgeAllData();
+
+          // Add each location individually
+          for (const location of backupData.locations) {
+            await locationService.addLocation(location);
+          }
+
+          await refreshData();
+        }
+
+        // Restore column mappings
+        if (backupData.columnMapping) {
+          setColumnMappingState(backupData.columnMapping);
+        }
+
+        // Restore UI settings
+        if (backupData.uiSettings) {
+          setUiSettings(backupData.uiSettings);
+        }
+
+        console.log("✅ Backup imported successfully:", {
+          locations: backupData.locations.length,
+          timestamp: backupData.metadata.timestamp,
+        });
+      } catch (error) {
+        console.error("❌ Failed to import backup:", error);
+        throw error;
+      }
+    },
+    [refreshData]
+  );
+
   // Selection management
   const selectLocation = useCallback((id: string) => {
     setSelectedLocations((prev) => new Set(Array.from(prev).concat(id)));
@@ -490,6 +627,8 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
         [columnName]: parameter,
       }));
 
+      console.log(`🔧 Column mapping updated: ${columnName} → ${parameter}`);
+
       // If mapping to quantity, update location.quantity field
       if (parameter === "quantity") {
         console.log(`🔄 Mapping column '${columnName}' to quantity field`);
@@ -522,6 +661,43 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
           })
         );
       }
+
+      // If mapping to flightPath, update location.date field
+      if (parameter === "flightPath") {
+        console.log(
+          `🛫 Mapping column '${columnName}' to flight path date field`
+        );
+        setLocations((prevLocations) =>
+          prevLocations.map((location) => {
+            const mappedValue = (location as any)[columnName];
+            console.log(
+              `🔍 Processing ${location.name}: ${columnName} = ${mappedValue}`
+            );
+            if (mappedValue !== undefined && mappedValue !== null) {
+              // Try to parse as date
+              const dateValue = new Date(mappedValue);
+              if (!isNaN(dateValue.getTime())) {
+                console.log(
+                  `🛫 Updated ${
+                    location.name
+                  }: ${mappedValue} → date: ${dateValue.toISOString()}`
+                );
+                return {
+                  ...location,
+                  date: mappedValue, // Keep original format for display
+                };
+              } else {
+                console.log(`❌ Invalid date value: ${mappedValue}`);
+              }
+            } else {
+              console.log(
+                `❌ No value found for ${columnName} in ${location.name}`
+              );
+            }
+            return location;
+          })
+        );
+      }
     },
     [locations]
   );
@@ -541,6 +717,16 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
           prevLocations.map((location) => ({
             ...location,
             quantity: undefined,
+          }))
+        );
+      }
+
+      // If clearing a flightPath mapping, reset date field to undefined
+      if (currentMapping === "flightPath") {
+        setLocations((prevLocations) =>
+          prevLocations.map((location) => ({
+            ...location,
+            date: undefined,
           }))
         );
       }
@@ -567,6 +753,8 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
     filterBy,
     columnMapping,
     availableColumns,
+    uiSettings,
+    updateUISettings,
 
     // Actions
     addLocation,
@@ -591,6 +779,8 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
     setColumnMapping,
     clearColumnMapping,
     updateAvailableColumns,
+    exportCompleteBackup,
+    importBackupData,
   };
 
   return (
