@@ -19,10 +19,12 @@ import {
 } from "@chakra-ui/react";
 import { UserIcon } from "@heroicons/react/24/outline";
 import { useAuth } from "../../contexts/AuthContext";
+import UserSettingsModal from "./UserSettingsModal";
 
 const UserProfile: React.FC = () => {
   const { user, signOut, loading, error } = useAuth();
   const [isSigningOut, setIsSigningOut] = useState(false);
+  const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 
   if (!user) {
     return null;
@@ -91,8 +93,8 @@ const UserProfile: React.FC = () => {
 
           <MenuSeparator />
 
-          <MenuItem onClick={() => console.log("Profile settings")}>
-            <Text fontSize="sm">Profile Settings</Text>
+          <MenuItem onClick={() => setIsSettingsOpen(true)}>
+            <Text fontSize="sm">User Settings</Text>
           </MenuItem>
 
           <MenuSeparator />
@@ -108,6 +110,12 @@ const UserProfile: React.FC = () => {
           </MenuItem>
         </MenuContent>
       </MenuRoot>
+
+      {/* User Settings Modal */}
+      <UserSettingsModal
+        isOpen={isSettingsOpen}
+        onClose={() => setIsSettingsOpen(false)}
+      />
     </Box>
   );
 };
