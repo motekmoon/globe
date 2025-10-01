@@ -76,23 +76,26 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
 
   return (
     <DialogRoot open={isOpen} onOpenChange={handleClose}>
-      <DialogContent maxW="400px">
+      <DialogContent maxW="400px" position="relative">
+        {/* Close Button - Upper Right */}
+        <Button
+          position="absolute"
+          top="12px"
+          right="12px"
+          variant="ghost"
+          size="sm"
+          onClick={handleClose}
+          p={1}
+          zIndex={10}
+        >
+          <Icon as={XMarkIcon} boxSize={4} />
+        </Button>
         <DialogHeader>
-          <HStack justify="space-between" align="center">
-            <HStack gap={3}>
-              <Icon as={UserIcon} boxSize={5} color="blue.500" />
-              <Text fontSize="lg" fontWeight="semibold">
-                User Settings
-              </Text>
-            </HStack>
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={handleClose}
-              p={1}
-            >
-              <Icon as={XMarkIcon} boxSize={4} />
-            </Button>
+          <HStack gap={3}>
+            <Icon as={UserIcon} boxSize={5} color="blue.500" />
+            <Text fontSize="lg" fontWeight="semibold">
+              User Settings
+            </Text>
           </HStack>
         </DialogHeader>
 
