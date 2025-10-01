@@ -292,6 +292,7 @@ const DataManager: React.FC<DataManagerProps> = ({
                 </AlertRoot>
               )}
 
+
               {/* Main Content */}
               <TabsRoot
                 value={activeTab}

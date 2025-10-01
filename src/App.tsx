@@ -18,6 +18,7 @@ import LocationForm from "./components/location/LocationForm";
 import Drawer from "./components/layout/Drawer";
 import AnimationControl from "./components/controls/AnimationControl";
 import DataManager from "./components/data/DataManager";
+import BackupRestore from "./components/data/BackupRestore";
 import { LocationProvider } from "./contexts/LocationContext";
 import { useLocations } from "./hooks/useLocations";
 import { useDrawer } from "./hooks/useDrawer";
@@ -42,6 +43,8 @@ function App() {
     handleDeleteLocation,
     handleBulkImport,
     columnMapping,
+    uiSettings,
+    updateUISettings,
   } = useLocations();
 
   const {
@@ -62,9 +65,11 @@ function App() {
   // Globe pause state when data manager is open
   const [isGlobePaused, setIsGlobePaused] = React.useState(false);
 
-  // Quantity visualization toggle
-  const [showQuantityVisualization, setShowQuantityVisualization] =
-    React.useState(false);
+  // Quantity visualization toggle (now persistent)
+  const showQuantityVisualization = uiSettings.showQuantityVisualization;
+  const setShowQuantityVisualization = (value: boolean) => {
+    updateUISettings({ showQuantityVisualization: value });
+  };
 
   // Globe rendering state
   const [isGlobeReady, setIsGlobeReady] = React.useState(false);
@@ -192,6 +197,12 @@ function App() {
               >
                 Data Manager
               </Button>
+
+              {/* Backup/Restore Component */}
+              <div style={{ marginLeft: "8px" }}>
+                <BackupRestore />
+              </div>
+
               <Button
                 onClick={() =>
                   setShowQuantityVisualization(!showQuantityVisualization)

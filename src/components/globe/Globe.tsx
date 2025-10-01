@@ -51,6 +51,19 @@ const Globe: React.FC<GlobeProps> = ({
           transparent={false}
           emissive="#333333"
           emissiveIntensity={0.3}
+          onBeforeCompile={(shader) => {
+            // Apply grayscale filter only to the globe
+            shader.fragmentShader = shader.fragmentShader.replace(
+              "#include <output_fragment>",
+              `
+              #include <output_fragment>
+              
+              // Apply grayscale filter to globe only
+              float gray = dot(gl_FragColor.rgb, vec3(0.299, 0.587, 0.114));
+              gl_FragColor.rgb = mix(gl_FragColor.rgb, vec3(gray), 0.8);
+              `
+            );
+          }}
         />
       </mesh>
       <GlobeMarkers
