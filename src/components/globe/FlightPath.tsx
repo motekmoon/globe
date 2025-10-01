@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 import { Line } from '@react-three/drei';
-import * as THREE from 'three';
+// import * as THREE from 'three';
 import { createChronologicalPaths, getFlightPathColor } from '../../utils/flightPath';
 
 interface FlightPathProps {

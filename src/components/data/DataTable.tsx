@@ -38,8 +38,6 @@ const DataTable: React.FC<DataTableProps> = ({
 }) => {
   const {
     locations,
-    loading,
-    error,
     selectedLocations,
     searchQuery,
     sortBy,
@@ -226,9 +224,9 @@ const DataTable: React.FC<DataTableProps> = ({
     exportSelectedLocations,
   ]);
 
-  const handleExport = (format: "csv" | "json") => {
-    exportLocations(format);
-  };
+  // const handleExport = (format: "csv" | "json") => {
+  //   exportLocations(format);
+  // };
 
   if (error) {
     return (

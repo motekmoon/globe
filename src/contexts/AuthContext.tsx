@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { AuthUser, AuthSession, AuthError, authService } from '../lib/supabase';
+import { AuthUser, AuthSession, authService } from '../lib/supabase';
 
 // Context state interface
 interface AuthContextState {

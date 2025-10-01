@@ -27,7 +27,7 @@ interface UserSettingsModalProps {
 }
 
 const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }) => {
-  const { user, loading, error, updateUserProfile } = useAuth();
+  const { user, updateUserProfile } = useAuth();
   const [isUpdating, setIsUpdating] = useState(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [updateSuccess, setUpdateSuccess] = useState(false);

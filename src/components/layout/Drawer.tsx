@@ -90,7 +90,7 @@ const Drawer: React.FC<DrawerProps> = ({
     return () => {
       container.removeEventListener('scroll', handleScroll);
     };
-  }, [isOpen, filteredLocations.length]);
+  }, [isOpen, filteredLocations.length, handleScroll]);
 
   // Check overflow when filtered locations change
   useEffect(() => {

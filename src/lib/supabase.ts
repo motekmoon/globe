@@ -1,4 +1,4 @@
-import { createClient, SupabaseClient, User, Session } from '@supabase/supabase-js'
+import { createClient, SupabaseClient } from '@supabase/supabase-js'
 import { indexedDBStorage } from './indexeddb'
 
 // Check if we have real Supabase credentials
@@ -555,7 +555,7 @@ export const authService = {
     }
 
     try {
-      const { data, error } = await supabase.auth.updateUser({
+      const { error } = await supabase.auth.updateUser({
         data: updates
       });
 
@@ -577,7 +577,7 @@ export const authService = {
     }
 
     try {
-      const { data, error } = await supabase.auth.updateUser({
+      const { error } = await supabase.auth.updateUser({
         email: newEmail
       });
 
@@ -599,7 +599,7 @@ export const authService = {
     }
 
     try {
-      const { data, error } = await supabase.auth.updateUser({
+      const { error } = await supabase.auth.updateUser({
         password: newPassword
       });
 

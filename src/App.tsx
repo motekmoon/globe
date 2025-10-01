@@ -30,7 +30,7 @@ import { useDrawer } from "./hooks/useDrawer";
 import { useAnimation } from "./hooks/useAnimation";
 import { filterAndSortLocations } from "./utils/locationUtils";
 import { logEnvironmentStatus } from "./utils/envValidation";
-import { Location } from "./lib/supabase";
+// import { Location } from "./lib/supabase";
 import AuthModal from "./components/auth/AuthModal";
 import UserProfile from "./components/auth/UserProfile";
 
@@ -42,7 +42,7 @@ logEnvironmentStatus();
 
 function App() {
   // Authentication state
-  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  const { isAuthenticated } = useAuth();
 
   // Handle email confirmation redirects
   useEffect(() => {
@@ -86,7 +86,7 @@ function App() {
     handleSaveLocation,
     handleHideLocation,
     handleDeleteLocation,
-    handleBulkImport,
+    // handleBulkImport,
     columnMapping,
     uiSettings,
     updateUISettings,
