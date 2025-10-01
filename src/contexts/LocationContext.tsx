@@ -200,7 +200,7 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
   // Sync state changes with UI settings
   useEffect(() => {
     updateUISettings({ searchQuery, sortBy, sortOrder, filterBy });
-  }, [searchQuery, sortBy, sortOrder, filterBy, updateUISettings]);
+  }, [searchQuery, sortBy, sortOrder, filterBy]);
 
   // Load all locations
   const refreshData = useCallback(async () => {
@@ -262,7 +262,7 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
         );
       }
     }
-  }, [locations, columnMapping]);
+  }, [columnMapping]);
 
   // Add a single location
   const addLocation = useCallback(

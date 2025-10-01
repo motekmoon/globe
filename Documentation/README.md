@@ -22,6 +22,7 @@ This directory contains comprehensive documentation for the Globe application, a
 
 #### **Development Resources**
 - **[Bug-Reports/TypeScript-UseCallback-Declaration-Order.md](./Bug-Reports/TypeScript-UseCallback-Declaration-Order.md)** - Bug report and fix documentation
+- **[Bug-Reports/AuthModal-Tab-Switching-Issues.md](./Bug-Reports/AuthModal-Tab-Switching-Issues.md)** - Authentication modal tab switching bugs
 - **[Development-Guides/React-Hooks-Best-Practices.md](./Development-Guides/React-Hooks-Best-Practices.md)** - React hooks best practices and patterns
 
 ## 🏗️ System Architecture

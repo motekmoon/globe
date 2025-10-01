@@ -17,12 +17,8 @@ import {
   AlertContent,
   AlertTitle,
   AlertDescription,
-  TabsRoot,
-  TabsList,
-  TabsTrigger,
-  TabsContent,
-} from '@chakra-ui/react';
-import { useAuth } from '../../contexts/AuthContext';
+} from "@chakra-ui/react";
+import { useAuth } from "../../contexts/AuthContext";
 
 interface AuthModalProps {
   isOpen: boolean;
@@ -31,19 +27,19 @@ interface AuthModalProps {
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const { signUp, signIn, loading, error, clearError } = useAuth();
-  
+
   // Form state
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [name, setName] = useState('');
-  const [activeTab, setActiveTab] = useState('signin');
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [name, setName] = useState("");
+  const [activeTab, setActiveTab] = useState<"signin" | "signup">("signin");
 
   // Handle form submission
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
-    
+
     if (!email || !password) {
       return;
     }
@@ -58,7 +54,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   const handleSignUp = async (e: React.FormEvent) => {
     e.preventDefault();
     clearError();
-    
+
     if (!email || !password || !confirmPassword) {
       return;
     }
@@ -75,11 +71,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   };
 
   const resetForm = () => {
-    setEmail('');
-    setPassword('');
-    setConfirmPassword('');
-    setName('');
-    setActiveTab('signin');
+    setEmail("");
+    setPassword("");
+    setConfirmPassword("");
+    setName("");
+    setActiveTab("signin");
     clearError();
   };
 
@@ -87,6 +83,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
     resetForm();
     onClose();
   };
+
+  // Debug current state
+  console.log("AuthModal render - activeTab:", activeTab);
 
   return (
     <DialogRoot open={isOpen} onOpenChange={handleClose}>
@@ -100,28 +99,70 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
           <Text fontSize="sm" color="gray.600" textAlign="center" mt={2}>
             Sign in to save your projects and track your progress
           </Text>
-        </DialogHeader>
-        
-        <DialogBody pb={6}>
-          <TabsRoot value={activeTab} onValueChange={setActiveTab}>
-            <TabsList>
-              <TabsTrigger value="signin">Sign In</TabsTrigger>
-              <TabsTrigger value="signup">Sign Up</TabsTrigger>
-            </TabsList>
-
-            {/* Error Display */}
-            {error && (
-              <AlertRoot status="error" mt={4}>
-                <AlertIndicator />
-                <AlertContent>
-                  <AlertTitle>Error</AlertTitle>
-                  <AlertDescription>{error}</AlertDescription>
-                </AlertContent>
-              </AlertRoot>
+          {process.env.NODE_ENV === "development" &&
+            !process.env.REACT_APP_SUPABASE_URL && (
+              <Box
+                mt={2}
+                p={2}
+                bg="yellow.50"
+                borderRadius="md"
+                border="1px solid"
+                borderColor="yellow.200"
+              >
+                <Text fontSize="xs" color="yellow.700" textAlign="center">
+                  🔧 Development Mode: Using mock authentication. Set
+                  REACT_APP_SUPABASE_URL for real accounts.
+                </Text>
+              </Box>
             )}
+        </DialogHeader>
 
-            {/* Sign In Tab */}
-            <TabsContent value="signin">
+        <DialogBody pb={6}>
+          {/* Manual Tab Navigation */}
+          <HStack gap={0} mb={4}>
+            <Button
+              variant={activeTab === "signin" ? "solid" : "ghost"}
+              colorScheme={activeTab === "signin" ? "blue" : "gray"}
+              onClick={() => {
+                console.log("Manual click - switching to signin");
+                setActiveTab("signin");
+              }}
+              flex={1}
+              borderRadius="md"
+            >
+              Sign In
+            </Button>
+            <Button
+              variant={activeTab === "signup" ? "solid" : "ghost"}
+              colorScheme={activeTab === "signup" ? "blue" : "gray"}
+              onClick={() => {
+                console.log("Manual click - switching to signup");
+                setActiveTab("signup");
+              }}
+              flex={1}
+              borderRadius="md"
+            >
+              Sign Up
+            </Button>
+          </HStack>
+
+          {/* Error Display */}
+          {error && (
+            <AlertRoot status="error" mt={4}>
+              <AlertIndicator />
+              <AlertContent>
+                <AlertTitle>Error</AlertTitle>
+                <AlertDescription>{error}</AlertDescription>
+              </AlertContent>
+            </AlertRoot>
+          )}
+
+          {/* Sign In Form */}
+          {activeTab === "signin" && (
+            <Box>
+              <Text fontSize="sm" color="gray.600" mb={4}>
+                Sign in to your existing account
+              </Text>
               <form onSubmit={handleSignIn}>
                 <VStack gap={4} mt={4}>
                   <Input
@@ -152,10 +193,15 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                   </Button>
                 </VStack>
               </form>
-            </TabsContent>
+            </Box>
+          )}
 
-            {/* Sign Up Tab */}
-            <TabsContent value="signup">
+          {/* Sign Up Form */}
+          {activeTab === "signup" && (
+            <Box>
+              <Text fontSize="sm" color="gray.600" mb={4}>
+                Create a new account to save your projects
+              </Text>
               <form onSubmit={handleSignUp}>
                 <VStack gap={4} mt={4}>
                   <Input
@@ -196,14 +242,19 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     width="100%"
                     loading={loading}
                     loadingText="Creating account..."
-                    disabled={!email || !password || !confirmPassword || password !== confirmPassword}
+                    disabled={
+                      !email ||
+                      !password ||
+                      !confirmPassword ||
+                      password !== confirmPassword
+                    }
                   >
                     Create Account
                   </Button>
                 </VStack>
               </form>
-            </TabsContent>
-          </TabsRoot>
+            </Box>
+          )}
 
           {/* Benefits Section */}
           <Box mt={6} p={4} bg="gray.50" borderRadius="md">

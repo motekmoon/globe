@@ -1,8 +1,17 @@
 import { createClient, SupabaseClient, User, Session } from '@supabase/supabase-js'
 import { indexedDBStorage } from './indexeddb'
 
-// For local development, use mock values or disable Supabase
-const isDevelopment = process.env.NODE_ENV === 'development'
+// Check if we have real Supabase credentials
+const hasSupabaseCredentials = process.env.REACT_APP_SUPABASE_URL && process.env.REACT_APP_SUPABASE_ANON_KEY
+const isDevelopment = !hasSupabaseCredentials
+
+// Debug logging
+console.log('🔧 Supabase Config Debug:')
+console.log('NODE_ENV:', process.env.NODE_ENV)
+console.log('REACT_APP_SUPABASE_URL:', process.env.REACT_APP_SUPABASE_URL ? 'SET' : 'NOT SET')
+console.log('REACT_APP_SUPABASE_ANON_KEY:', process.env.REACT_APP_SUPABASE_ANON_KEY ? 'SET' : 'NOT SET')
+console.log('hasSupabaseCredentials:', hasSupabaseCredentials)
+console.log('isDevelopment:', isDevelopment)
 
 // Mock Supabase client for development
 const mockSupabase: SupabaseClient = {
@@ -364,10 +373,7 @@ export const authService = {
     try {
       const { data, error } = await supabase.auth.signUp({
         email,
-        password,
-        options: {
-          data: metadata
-        }
+        password
       })
 
       if (error) {
@@ -493,26 +499,8 @@ export const authService = {
 
   // Track user metrics
   async trackUserAction(userId: string, action: string, metadata?: Record<string, any>): Promise<void> {
-    if (isDevelopment) {
-      console.log('📊 User action tracked:', { userId, action, metadata })
-      return
-    }
-
-    try {
-      const metrics: Omit<UserMetrics, 'id'> = {
-        user_id: userId,
-        session_id: Date.now().toString(), // Simple session ID
-        action,
-        timestamp: new Date().toISOString(),
-        metadata
-      }
-
-      // Store in user_metrics table (you'll need to create this table in Supabase)
-      await supabase
-        .from('user_metrics')
-        .insert([metrics])
-    } catch (error) {
-      console.error('Failed to track user action:', error)
-    }
+    // Temporarily disabled to isolate signup issue
+    console.log('📊 User action tracked (disabled):', { userId, action, metadata })
+    return
   }
 }

@@ -84,7 +84,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
       if (newUser) {
         setUser(newUser);
-        console.log('✅ User signed up successfully:', newUser.email);
+        console.log("✅ User signed up successfully");
+
+        // Show development mode notification
+        if (process.env.NODE_ENV === "development") {
+          console.log(
+            "🔧 Development Mode: Mock account created. Set REACT_APP_SUPABASE_URL for real authentication."
+          );
+        }
+        
         return { success: true };
       }
 
@@ -114,7 +122,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       if (signedInUser && newSession) {
         setUser(signedInUser);
         setSession(newSession);
-        console.log('✅ User signed in successfully:', signedInUser.email);
+        console.log("✅ User signed in successfully");
         
         // Track sign in action
         trackAction('user_signin', { email: signedInUser.email });
