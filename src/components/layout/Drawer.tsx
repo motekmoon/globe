@@ -7,7 +7,9 @@ import {
   Button,
   Input,
   Text,
+  Icon,
 } from "@chakra-ui/react";
+import { ChevronDownIcon } from "@heroicons/react/24/outline";
 import { Location } from "../../lib/supabase";
 
 interface DrawerProps {
@@ -328,6 +330,48 @@ const Drawer: React.FC<DrawerProps> = ({
           ))
         )}
       </VStack>
+
+      {/* Scroll Down Indicator */}
+      <Box
+        position="absolute"
+        bottom="10px"
+        left="50%"
+        transform="translateX(-50%)"
+        display="flex"
+        flexDirection="column"
+        alignItems="center"
+        gap={1}
+        pointerEvents="none"
+        zIndex={1001}
+      >
+        <Text
+          fontSize="xs"
+          color="rgba(255, 255, 255, 0.6)"
+          fontWeight="500"
+          textAlign="center"
+        >
+          Scroll down
+        </Text>
+        <Icon
+          as={ChevronDownIcon}
+          boxSize={4}
+          color="rgba(255, 255, 255, 0.6)"
+          animation="bounce 2s infinite"
+          css={{
+            "@keyframes bounce": {
+              "0%, 20%, 50%, 80%, 100%": {
+                transform: "translateY(0)",
+              },
+              "40%": {
+                transform: "translateY(-4px)",
+              },
+              "60%": {
+                transform: "translateY(-2px)",
+              },
+            },
+          }}
+        />
+      </Box>
     </Box>
   );
 };
