@@ -50,7 +50,7 @@ const Drawer: React.FC<DrawerProps> = ({
   const scrollContainerRef = useRef<HTMLDivElement>(null);
 
   // Check if content overflows and show indicators accordingly
-  const checkOverflow = () => {
+  const checkOverflow = useCallback(() => {
     if (!scrollContainerRef.current) return;
     
     const container = scrollContainerRef.current;
@@ -60,7 +60,7 @@ const Drawer: React.FC<DrawerProps> = ({
     
     setShowScrollDownIndicator(hasOverflow && !isAtBottom);
     setShowScrollUpIndicator(hasOverflow && !isAtTop);
-  };
+  }, []);
 
   // Handle scroll events
   const handleScroll = useCallback(() => {
