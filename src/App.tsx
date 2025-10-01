@@ -1,4 +1,4 @@
-import React, { Suspense } from "react";
+import React, { Suspense, useEffect } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
 import {
@@ -39,6 +39,37 @@ const system = createSystem(defaultConfig);
 function App() {
   // Authentication state
   const { user, isAuthenticated, loading: authLoading } = useAuth();
+
+  // Handle email confirmation redirects
+  useEffect(() => {
+    const handleAuthCallback = async () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const accessToken = urlParams.get('access_token');
+      const refreshToken = urlParams.get('refresh_token');
+      const type = urlParams.get('type');
+      const error = urlParams.get('error');
+      const errorDescription = urlParams.get('error_description');
+      
+      // Handle any auth-related URL parameters
+      if (accessToken || refreshToken || type || error) {
+        console.log('🔄 Auth callback detected:', { type, error, errorDescription });
+        
+        if (error) {
+          console.error('❌ Auth error:', error, errorDescription);
+        } else if (type === 'recovery' || type === 'signup') {
+          console.log('✅ Email confirmation/signup processed');
+        }
+        
+        // Clear URL parameters to clean up the address bar
+        window.history.replaceState({}, document.title, window.location.pathname);
+        
+        // The auth state change listener will handle the session update
+        console.log('✅ Auth callback processed');
+      }
+    };
+
+    handleAuthCallback();
+  }, []);
 
   // Use custom hooks for state management
   const {
