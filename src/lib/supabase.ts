@@ -1,4 +1,4 @@
-import { createClient, SupabaseClient } from '@supabase/supabase-js'
+import { createClient, SupabaseClient, User, Session, AuthError } from '@supabase/supabase-js'
 import { indexedDBStorage } from './indexeddb'
 
 // For local development, use mock values or disable Supabase
@@ -10,7 +10,14 @@ const mockSupabase: SupabaseClient = {
     select: () => ({ order: () => ({ data: [], error: null }) }),
     insert: () => ({ select: () => ({ single: () => ({ data: null, error: null }) }) }),
     delete: () => ({ eq: () => ({ error: null }) })
-  })
+  }),
+  auth: {
+    signUp: () => Promise.resolve({ data: { user: null }, error: null }),
+    signIn: () => Promise.resolve({ data: { user: null, session: null }, error: null }),
+    signOut: () => Promise.resolve({ error: null }),
+    getSession: () => Promise.resolve({ data: { session: null }, error: null }),
+    onAuthStateChange: () => ({ data: { subscription: { unsubscribe: () => {} } } })
+  }
 } as any
 
 // Only create real Supabase client if we have valid credentials
@@ -20,10 +27,40 @@ if (isDevelopment) {
 } else {
   const supabaseUrl = process.env.REACT_APP_SUPABASE_URL || 'your-supabase-url'
   const supabaseAnonKey = process.env.REACT_APP_SUPABASE_ANON_KEY || 'your-supabase-anon-key'
-  supabase = createClient(supabaseUrl, supabaseAnonKey)
+  supabase = createClient(supabaseUrl, supabaseAnonKey, {
+    auth: {
+      autoRefreshToken: true,
+      persistSession: true,
+      detectSessionInUrl: true
+    }
+  })
 }
 
 export { supabase }
+
+// Authentication types
+export interface AuthUser {
+  id: string
+  email: string
+  created_at: string
+  last_sign_in_at?: string
+  user_metadata?: {
+    name?: string
+    avatar_url?: string
+  }
+}
+
+export interface AuthSession {
+  user: AuthUser
+  access_token: string
+  refresh_token: string
+  expires_at: number
+}
+
+export interface AuthError {
+  message: string
+  status?: number
+}
 
 // Database types
 export interface Location {
@@ -34,8 +71,19 @@ export interface Location {
   quantity?: number  // New field for dynamic visualization
   created_at: string
   updated_at: string
+  user_id?: string  // Link to authenticated user
   // Allow additional dynamic columns
   [key: string]: any
+}
+
+// User metrics for analytics
+export interface UserMetrics {
+  id: string
+  user_id: string
+  session_id: string
+  action: string
+  timestamp: string
+  metadata?: Record<string, any>
 }
 
 // Local storage fallback for development
@@ -293,6 +341,177 @@ export const locationService = {
     } else {
       console.error('❌ Data purging is only available in development mode')
       return false
+    }
+  }
+}
+
+// Authentication service
+export const authService = {
+  // Sign up with email and password
+  async signUp(email: string, password: string, metadata?: { name?: string }): Promise<{ user: AuthUser | null; error: AuthError | null }> {
+    if (isDevelopment) {
+      // Mock signup for development
+      const mockUser: AuthUser = {
+        id: Date.now().toString(),
+        email,
+        created_at: new Date().toISOString(),
+        user_metadata: metadata
+      }
+      return { user: mockUser, error: null }
+    }
+
+    try {
+      const { data, error } = await supabase.auth.signUp({
+        email,
+        password,
+        options: {
+          data: metadata
+        }
+      })
+
+      if (error) {
+        return { user: null, error: { message: error.message, status: error.status } }
+      }
+
+      return { 
+        user: data.user ? {
+          id: data.user.id,
+          email: data.user.email!,
+          created_at: data.user.created_at,
+          user_metadata: data.user.user_metadata
+        } : null, 
+        error: null 
+      }
+    } catch (error) {
+      return { 
+        user: null, 
+        error: { message: error instanceof Error ? error.message : 'Signup failed' } 
+      }
+    }
+  },
+
+  // Sign in with email and password
+  async signIn(email: string, password: string): Promise<{ user: AuthUser | null; session: AuthSession | null; error: AuthError | null }> {
+    if (isDevelopment) {
+      // Mock signin for development
+      const mockUser: AuthUser = {
+        id: Date.now().toString(),
+        email,
+        created_at: new Date().toISOString(),
+        last_sign_in_at: new Date().toISOString()
+      }
+      const mockSession: AuthSession = {
+        user: mockUser,
+        access_token: 'mock-token',
+        refresh_token: 'mock-refresh-token',
+        expires_at: Date.now() + 3600000 // 1 hour
+      }
+      return { user: mockUser, session: mockSession, error: null }
+    }
+
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password
+      })
+
+      if (error) {
+        return { user: null, session: null, error: { message: error.message, status: error.status } }
+      }
+
+      const user = data.user ? {
+        id: data.user.id,
+        email: data.user.email!,
+        created_at: data.user.created_at,
+        last_sign_in_at: data.user.last_sign_in_at,
+        user_metadata: data.user.user_metadata
+      } : null
+
+      const session = data.session ? {
+        user: user!,
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token,
+        expires_at: data.session.expires_at!
+      } : null
+
+      return { user, session, error: null }
+    } catch (error) {
+      return { 
+        user: null, 
+        session: null,
+        error: { message: error instanceof Error ? error.message : 'Signin failed' } 
+      }
+    }
+  },
+
+  // Sign out
+  async signOut(): Promise<{ error: AuthError | null }> {
+    if (isDevelopment) {
+      return { error: null }
+    }
+
+    try {
+      const { error } = await supabase.auth.signOut()
+      return { error: error ? { message: error.message, status: error.status } : null }
+    } catch (error) {
+      return { error: { message: error instanceof Error ? error.message : 'Signout failed' } }
+    }
+  },
+
+  // Get current session
+  async getSession(): Promise<{ session: AuthSession | null; error: AuthError | null }> {
+    if (isDevelopment) {
+      return { session: null, error: null }
+    }
+
+    try {
+      const { data, error } = await supabase.auth.getSession()
+      
+      if (error) {
+        return { session: null, error: { message: error.message, status: error.status } }
+      }
+
+      const session = data.session ? {
+        user: {
+          id: data.session.user.id,
+          email: data.session.user.email!,
+          created_at: data.session.user.created_at,
+          last_sign_in_at: data.session.user.last_sign_in_at,
+          user_metadata: data.session.user.user_metadata
+        },
+        access_token: data.session.access_token,
+        refresh_token: data.session.refresh_token,
+        expires_at: data.session.expires_at!
+      } : null
+
+      return { session, error: null }
+    } catch (error) {
+      return { session: null, error: { message: error instanceof Error ? error.message : 'Get session failed' } }
+    }
+  },
+
+  // Track user metrics
+  async trackUserAction(userId: string, action: string, metadata?: Record<string, any>): Promise<void> {
+    if (isDevelopment) {
+      console.log('📊 User action tracked:', { userId, action, metadata })
+      return
+    }
+
+    try {
+      const metrics: Omit<UserMetrics, 'id'> = {
+        user_id: userId,
+        session_id: Date.now().toString(), // Simple session ID
+        action,
+        timestamp: new Date().toISOString(),
+        metadata
+      }
+
+      // Store in user_metrics table (you'll need to create this table in Supabase)
+      await supabase
+        .from('user_metrics')
+        .insert([metrics])
+    } catch (error) {
+      console.error('Failed to track user action:', error)
     }
   }
 }

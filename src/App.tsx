@@ -19,16 +19,23 @@ import Drawer from "./components/layout/Drawer";
 import AnimationControl from "./components/controls/AnimationControl";
 import DataManager from "./components/data/DataManager";
 import { LocationProvider } from "./contexts/LocationContext";
+import { AuthProvider } from "./contexts/AuthContext";
 import { useLocations } from "./hooks/useLocations";
+import { useAuth } from "./contexts/AuthContext";
 import { useDrawer } from "./hooks/useDrawer";
 import { useAnimation } from "./hooks/useAnimation";
 import { filterAndSortLocations } from "./utils/locationUtils";
 import { Location } from "./lib/supabase";
+import AuthModal from "./components/auth/AuthModal";
+import UserProfile from "./components/auth/UserProfile";
 
 // Create a system for Chakra UI
 const system = createSystem(defaultConfig);
 
 function App() {
+  // Authentication state
+  const { user, isAuthenticated, loading: authLoading } = useAuth();
+  
   // Use custom hooks for state management
   const {
     locations,
@@ -60,6 +67,9 @@ function App() {
 
   // Data Management modal state
   const [isDataManagerOpen, setIsDataManagerOpen] = React.useState(false);
+  
+  // Authentication modal state
+  const [isAuthModalOpen, setIsAuthModalOpen] = React.useState(false);
 
   // Globe pause state when data manager is open
   const [isGlobePaused, setIsGlobePaused] = React.useState(false);
@@ -221,6 +231,26 @@ function App() {
                   <EyeIcon className="h-4 w-4" />
                 )}
               </Button>
+              
+              {/* Authentication Button */}
+              {isAuthenticated ? (
+                <UserProfile />
+              ) : (
+                <Button
+                  onClick={() => setIsAuthModalOpen(true)}
+                  size="sm"
+                  h="25px"
+                  colorScheme="green"
+                  fontWeight="600"
+                  fontSize="0.7rem"
+                  borderRadius="md"
+                  whiteSpace="nowrap"
+                  title="Sign in to save your projects"
+                >
+                  Sign In
+                </Button>
+              )}
+              
               <Button
                 onClick={openDrawer}
                 size="sm"
@@ -335,17 +365,25 @@ function App() {
           onClose={() => setIsDataManagerOpen(false)}
           onGlobePause={setIsGlobePaused}
         />
+
+        {/* Authentication Modal */}
+        <AuthModal
+          isOpen={isAuthModalOpen}
+          onClose={() => setIsAuthModalOpen(false)}
+        />
       </Box>
     </ChakraProvider>
   );
 }
 
-// Main App component wrapped with LocationProvider
+// Main App component wrapped with providers
 const AppWithProvider = () => {
   return (
-    <LocationProvider>
-      <App />
-    </LocationProvider>
+    <AuthProvider>
+      <LocationProvider>
+        <App />
+      </LocationProvider>
+    </AuthProvider>
   );
 };
 
