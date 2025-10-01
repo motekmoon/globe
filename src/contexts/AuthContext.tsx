@@ -17,6 +17,7 @@ interface AuthContextActions {
   signOut: () => Promise<void>;
   trackAction: (action: string, metadata?: Record<string, any>) => void;
   clearError: () => void;
+  updateUserProfile: (updates: { name?: string; email?: string; password?: string }) => Promise<{ success: boolean; error?: string }>;
 }
 
 // Combined context type
@@ -176,6 +177,44 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     }
   };
 
+  // Update user profile
+  const updateUserProfile = async (updates: { name?: string; email?: string; password?: string }): Promise<{ success: boolean; error?: string }> => {
+    try {
+      setLoading(true);
+      setError(null);
+
+      const results = await Promise.allSettled([
+        updates.name ? authService.updateUserMetadata({ name: updates.name }) : Promise.resolve({ success: true }),
+        updates.email ? authService.updateUserEmail(updates.email) : Promise.resolve({ success: true }),
+        updates.password ? authService.updateUserPassword(updates.password) : Promise.resolve({ success: true })
+      ]);
+
+      const errors = results
+        .map((result, index) => result.status === 'rejected' ? `Update ${index + 1} failed` : null)
+        .filter(Boolean);
+
+      if (errors.length > 0) {
+        setError(errors.join(', '));
+        return { success: false, error: errors.join(', ') };
+      }
+
+      // Refresh user data
+      const { session: currentSession } = await authService.getSession();
+      if (currentSession) {
+        setUser(currentSession.user);
+        setSession(currentSession);
+      }
+
+      return { success: true };
+    } catch (err) {
+      const errorMessage = err instanceof Error ? err.message : 'Profile update failed';
+      setError(errorMessage);
+      return { success: false, error: errorMessage };
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Clear error
   const clearError = (): void => {
     setError(null);
@@ -195,6 +234,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     signOut,
     trackAction,
     clearError,
+    updateUserProfile,
   };
 
   return (

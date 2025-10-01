@@ -27,7 +27,7 @@ interface UserSettingsModalProps {
 }
 
 const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }) => {
-  const { user, loading, error } = useAuth();
+  const { user, loading, error, updateUserProfile } = useAuth();
   const [isUpdating, setIsUpdating] = useState(false);
   const [updateError, setUpdateError] = useState<string | null>(null);
   const [updateSuccess, setUpdateSuccess] = useState(false);
@@ -35,6 +35,8 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
   // Form state
   const [name, setName] = useState(user?.user_metadata?.name || '');
   const [email, setEmail] = useState(user?.email || '');
+  const [newPassword, setNewPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
   // Handle form submission
   const handleUpdate = async () => {
@@ -45,18 +47,45 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
     setUpdateSuccess(false);
 
     try {
-      // TODO: Implement actual profile update logic
-      // This would typically involve calling a Supabase update function
-      console.log('Updating profile:', { name, email });
+      // Validate password if provided
+      if (newPassword && newPassword !== confirmPassword) {
+        setUpdateError('Passwords do not match');
+        return;
+      }
+
+      if (newPassword && newPassword.length < 6) {
+        setUpdateError('Password must be at least 6 characters long');
+        return;
+      }
+
+      const updates: { name?: string; email?: string; password?: string } = {};
       
-      // Simulate API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Check if name has changed
+      if (name !== user.user_metadata?.name) {
+        updates.name = name;
+      }
       
-      setUpdateSuccess(true);
-      setTimeout(() => {
-        setUpdateSuccess(false);
-        onClose();
-      }, 1500);
+      // Check if email has changed
+      if (email !== user.email) {
+        updates.email = email;
+      }
+
+      // Check if password has been provided
+      if (newPassword) {
+        updates.password = newPassword;
+      }
+      
+      const { success, error } = await updateUserProfile(updates);
+      
+      if (success) {
+        setUpdateSuccess(true);
+        setTimeout(() => {
+          setUpdateSuccess(false);
+          onClose();
+        }, 1500);
+      } else {
+        setUpdateError(error || 'Failed to update profile');
+      }
     } catch (err) {
       console.error('Profile update error:', err);
       setUpdateError('Failed to update profile. Please try again.');
@@ -163,16 +192,24 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
 
             <Box>
               <Text fontSize="sm" fontWeight="semibold" mb={2} color="gray.700">
-                Password
-              </Text>
-              <Button
-                variant="outline"
-                size="sm"
-                disabled={isUpdating}
-                onClick={() => console.log('Change password clicked')}
-              >
                 Change Password
-              </Button>
+              </Text>
+              <VStack gap={2} align="stretch">
+                <Input
+                  type="password"
+                  placeholder="New password (leave blank to keep current)"
+                  value={newPassword}
+                  onChange={(e) => setNewPassword(e.target.value)}
+                  disabled={isUpdating}
+                />
+                <Input
+                  type="password"
+                  placeholder="Confirm new password"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  disabled={isUpdating}
+                />
+              </VStack>
             </Box>
           </VStack>
         </DialogBody>
@@ -192,7 +229,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
               onClick={handleUpdate}
               loading={isUpdating}
               loadingText="Updating..."
-              disabled={!name.trim() || !email.trim()}
+              disabled={!name.trim() || !email.trim() || (newPassword && newPassword !== confirmPassword)}
               flex={1}
             >
               Save Changes

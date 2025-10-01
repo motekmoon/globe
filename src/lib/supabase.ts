@@ -545,5 +545,71 @@ export const authService = {
     // Temporarily disabled to isolate signup issue
     console.log('📊 User action tracked (disabled):', { userId, action, metadata })
     return
+  },
+
+  // Update user metadata (display name)
+  async updateUserMetadata(updates: { name?: string }): Promise<{ success: boolean; error?: string }> {
+    if (isDevelopment) {
+      console.log('🔧 Mock: Updating user metadata:', updates);
+      return { success: true };
+    }
+
+    try {
+      const { data, error } = await supabase.auth.updateUser({
+        data: updates
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error instanceof Error ? error.message : 'Update failed' };
+    }
+  },
+
+  // Update user email
+  async updateUserEmail(newEmail: string): Promise<{ success: boolean; error?: string }> {
+    if (isDevelopment) {
+      console.log('🔧 Mock: Updating email to:', newEmail);
+      return { success: true };
+    }
+
+    try {
+      const { data, error } = await supabase.auth.updateUser({
+        email: newEmail
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error instanceof Error ? error.message : 'Email update failed' };
+    }
+  },
+
+  // Update user password
+  async updateUserPassword(newPassword: string): Promise<{ success: boolean; error?: string }> {
+    if (isDevelopment) {
+      console.log('🔧 Mock: Updating password');
+      return { success: true };
+    }
+
+    try {
+      const { data, error } = await supabase.auth.updateUser({
+        password: newPassword
+      });
+
+      if (error) {
+        return { success: false, error: error.message };
+      }
+
+      return { success: true };
+    } catch (error) {
+      return { success: false, error: error instanceof Error ? error.message : 'Password update failed' };
+    }
   }
 }
