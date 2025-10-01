@@ -131,9 +131,6 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
               <Text fontSize="sm" color="gray.600">
                 <strong>User ID:</strong> {user.id}
               </Text>
-              <Text fontSize="sm" color="gray.600">
-                <strong>Member since:</strong> {new Date(user.created_at).toLocaleDateString()}
-              </Text>
             </VStack>
           </Box>
 
