@@ -67,6 +67,16 @@ const Drawer: React.FC<DrawerProps> = ({
     checkOverflow();
   };
 
+  // Scroll to top function
+  const scrollToTop = () => {
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.scrollTo({
+        top: 0,
+        behavior: 'smooth'
+      });
+    }
+  };
+
   // Set up scroll listener and initial check
   useEffect(() => {
     if (!isOpen) return;
@@ -104,7 +114,7 @@ const Drawer: React.FC<DrawerProps> = ({
       zIndex={1000}
       boxShadow="lg"
     >
-      {/* Scroll Up Indicator */}
+      {/* Clickable Scroll Up Indicator */}
       {showScrollUpIndicator && (
         <Box
           position="absolute"
@@ -115,12 +125,19 @@ const Drawer: React.FC<DrawerProps> = ({
           flexDirection="column"
           alignItems="center"
           gap={1}
-          pointerEvents="none"
+          pointerEvents="auto"
           zIndex={1001}
+          cursor="pointer"
+          onClick={scrollToTop}
+          _hover={{
+            transform: "translateX(-50%) scale(1.05)",
+            transition: "transform 0.2s ease-in-out"
+          }}
+          transition="transform 0.2s ease-in-out"
         >
           <Text
             fontSize="xs"
-            color="rgba(255, 255, 255, 0.6)"
+            color="rgba(255, 255, 255, 0.8)"
             fontWeight="500"
             textAlign="center"
           >
@@ -129,7 +146,7 @@ const Drawer: React.FC<DrawerProps> = ({
           <Icon
             as={ChevronUpIcon}
             boxSize={4}
-            color="rgba(255, 255, 255, 0.6)"
+            color="rgba(255, 255, 255, 0.8)"
           />
         </Box>
       )}
