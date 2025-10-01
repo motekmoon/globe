@@ -424,20 +424,6 @@ const Drawer: React.FC<DrawerProps> = ({
             as={ChevronDownIcon}
             boxSize={4}
             color="rgba(255, 255, 255, 0.6)"
-            animation="bounce 3s infinite"
-            css={{
-              "@keyframes bounce": {
-                "0%, 20%, 50%, 80%, 100%": {
-                  transform: "translateY(0)",
-                },
-                "40%": {
-                  transform: "translateY(-4px)",
-                },
-                "60%": {
-                  transform: "translateY(-2px)",
-                },
-              },
-            }}
           />
         </Box>
       )}
