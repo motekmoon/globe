@@ -53,7 +53,7 @@ const DataTable: React.FC<DataTableProps> = ({
     toggleLocationSelection,
     deleteLocation,
     deleteLocations,
-    exportLocations,
+    // exportLocations,
     exportSelectedLocations,
     columnMapping,
     availableColumns,

@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   Box,
   HStack,
@@ -63,9 +63,9 @@ const Drawer: React.FC<DrawerProps> = ({
   };
 
   // Handle scroll events
-  const handleScroll = () => {
+  const handleScroll = useCallback(() => {
     checkOverflow();
-  };
+  }, [checkOverflow]);
 
   // Scroll to top function
   const scrollToTop = () => {
