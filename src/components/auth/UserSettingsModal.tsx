@@ -105,7 +105,18 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
 
   return (
     <DialogRoot open={isOpen} onOpenChange={handleClose}>
-      <DialogContent maxW="400px" position="relative" zIndex={9999}>
+      <DialogContent 
+        maxW="400px" 
+        position="fixed" 
+        top="50%" 
+        left="50%" 
+        transform="translate(-50%, -50%)"
+        zIndex={9999}
+        bg="white"
+        borderRadius="md"
+        boxShadow="xl"
+        p={0}
+      >
         {/* Close Button - Upper Right */}
         <Button
           position="absolute"
@@ -119,7 +130,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
         >
           <Icon as={XMarkIcon} boxSize={4} />
         </Button>
-        <DialogHeader>
+        <DialogHeader p={6} pb={4}>
           <HStack gap={3}>
             <Icon as={UserIcon} boxSize={5} color="blue.500" />
             <Text fontSize="lg" fontWeight="semibold">
@@ -128,7 +139,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
           </HStack>
         </DialogHeader>
 
-        <DialogBody>
+        <DialogBody p={6} pt={0}>
           {/* Error Display */}
           {updateError && (
             <AlertRoot status="error" mb={4}>
@@ -214,7 +225,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
           </VStack>
         </DialogBody>
 
-        <DialogFooter>
+        <DialogFooter p={6} pt={4}>
           <HStack gap={2} w="100%">
             <Button
               variant="outline"
