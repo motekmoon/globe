@@ -229,7 +229,7 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
               onClick={handleUpdate}
               loading={isUpdating}
               loadingText="Updating..."
-              disabled={!name.trim() || !email.trim() || (newPassword && newPassword !== confirmPassword)}
+              disabled={!name.trim() || !email.trim() || (newPassword && newPassword !== confirmPassword) || isUpdating}
               flex={1}
             >
               Save Changes
