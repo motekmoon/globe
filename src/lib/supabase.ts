@@ -614,7 +614,7 @@ export const authService = {
   },
 
   // Listen for auth state changes (including email confirmations)
-  onAuthStateChange(callback: (event: string, session: AuthSession | null) => void) {
+  onAuthStateChange(callback: (event: any, session: any) => void) {
     if (isDevelopment) {
       console.log('🔧 Mock: Auth state change listener set up');
       return { data: { subscription: { unsubscribe: () => {} } } };

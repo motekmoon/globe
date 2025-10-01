@@ -73,9 +73,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       
       if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
         if (session?.user) {
-          setUser(session.user);
-          setSession(session);
-          console.log('✅ User session updated:', session.user.email);
+          // Convert Supabase user to our AuthUser type
+          const authUser: AuthUser = {
+            id: session.user.id,
+            email: session.user.email || '',
+            created_at: session.user.created_at,
+            user_metadata: session.user.user_metadata
+          };
+          const authSession: AuthSession = {
+            user: authUser,
+            access_token: session.access_token,
+            refresh_token: session.refresh_token,
+            expires_at: session.expires_at
+          };
+          setUser(authUser);
+          setSession(authSession);
+          console.log('✅ User session updated:', authUser.email);
         }
       } else if (event === 'SIGNED_OUT') {
         setUser(null);
@@ -84,9 +97,22 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
       } else if (event === 'USER_UPDATED') {
         // Handle email confirmation and other user updates
         if (session?.user) {
-          setUser(session.user);
-          setSession(session);
-          console.log('✅ User updated (email confirmed):', session.user.email);
+          // Convert Supabase user to our AuthUser type
+          const authUser: AuthUser = {
+            id: session.user.id,
+            email: session.user.email || '',
+            created_at: session.user.created_at,
+            user_metadata: session.user.user_metadata
+          };
+          const authSession: AuthSession = {
+            user: authUser,
+            access_token: session.access_token,
+            refresh_token: session.refresh_token,
+            expires_at: session.expires_at
+          };
+          setUser(authUser);
+          setSession(authSession);
+          console.log('✅ User updated (email confirmed):', authUser.email);
         }
       }
     });
