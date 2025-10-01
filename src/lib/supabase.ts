@@ -120,6 +120,7 @@ const storeLocations = (locations: Location[]) => {
 export const locationService = {
   // Get all locations
   async getLocations(): Promise<Location[]> {
+    // FORCE LOCAL STORAGE ONLY - Supabase operations commented out
     // In development mode, use IndexedDB with localStorage fallback
     if (isDevelopment) {
       try {
@@ -131,26 +132,32 @@ export const locationService = {
       }
     }
 
-    try {
-      const { data, error } = await supabase
-        .from('locations')
-        .select('*')
-        .order('created_at', { ascending: false })
-      
-      if (error) {
-        console.error('Error fetching locations:', error)
-        return getStoredLocations() // Fallback to localStorage
-      }
-      
-      return data || []
-    } catch (error) {
-      console.error('Database connection error:', error)
-      return getStoredLocations() // Fallback to localStorage
-    }
+    // COMMENTED OUT: Supabase operations disabled to prevent import errors
+    // try {
+    //   const { data, error } = await supabase
+    //     .from('locations')
+    //     .select('*')
+    //     .order('created_at', { ascending: false })
+    //   
+    //   if (error) {
+    //     console.error('Error fetching locations:', error)
+    //     return getStoredLocations() // Fallback to localStorage
+    //   }
+    //   
+    //   return data || []
+    // } catch (error) {
+    //   console.error('Database connection error:', error)
+    //   return getStoredLocations() // Fallback to localStorage
+    // }
+
+    // FORCE LOCAL STORAGE FALLBACK
+    console.log('🔧 Using local storage only (Supabase disabled)')
+    return getStoredLocations()
   },
 
   // Add a new location
   async addLocation(location: Omit<Location, 'id' | 'created_at' | 'updated_at'>): Promise<Location | null> {
+    // FORCE LOCAL STORAGE ONLY - Supabase operations commented out
     // In development mode, use IndexedDB with localStorage fallback
     if (isDevelopment) {
       try {
@@ -178,35 +185,44 @@ export const locationService = {
       updated_at: new Date().toISOString()
     }
 
-    try {
-      const { data, error } = await supabase
-        .from('locations')
-        .insert([location])
-        .select()
-        .single()
-      
-      if (error) {
-        console.error('Error adding location:', error)
-        // Fallback to localStorage
-        const locations = getStoredLocations()
-        locations.unshift(newLocation)
-        storeLocations(locations)
-        return newLocation
-      }
-      
-      return data
-    } catch (error) {
-      console.error('Database connection error:', error)
-      // Fallback to localStorage
-      const locations = getStoredLocations()
-      locations.unshift(newLocation)
-      storeLocations(locations)
-      return newLocation
-    }
+    // COMMENTED OUT: Supabase operations disabled to prevent import errors
+    // try {
+    //   const { data, error } = await supabase
+    //     .from('locations')
+    //     .insert([location])
+    //     .select()
+    //     .single()
+    //   
+    //   if (error) {
+    //     console.error('Error adding location:', error)
+    //     // Fallback to localStorage
+    //     const locations = getStoredLocations()
+    //     locations.unshift(newLocation)
+    //     storeLocations(locations)
+    //     return newLocation
+    //   }
+    //   
+    //   return data
+    // } catch (error) {
+    //   console.error('Database connection error:', error)
+    //   // Fallback to localStorage
+    //   const locations = getStoredLocations()
+    //   locations.unshift(newLocation)
+    //   storeLocations(locations)
+    //   return newLocation
+    // }
+
+    // FORCE LOCAL STORAGE FALLBACK
+    console.log('🔧 Using local storage only (Supabase disabled)')
+    const locations = getStoredLocations()
+    locations.unshift(newLocation)
+    storeLocations(locations)
+    return newLocation
   },
 
   // Update a location
   async updateLocation(id: string, updates: Partial<Omit<Location, 'id' | 'created_at' | 'updated_at'>>): Promise<Location | null> {
+    // FORCE LOCAL STORAGE ONLY - Supabase operations commented out
     // In development mode, use IndexedDB with localStorage fallback
     if (isDevelopment) {
       try {
@@ -229,28 +245,45 @@ export const locationService = {
       }
     }
 
-    try {
-      const { data, error } = await supabase
-        .from('locations')
-        .update(updates)
-        .eq('id', id)
-        .select()
-        .single()
+    // COMMENTED OUT: Supabase operations disabled to prevent import errors
+    // try {
+    //   const { data, error } = await supabase
+    //     .from('locations')
+    //     .update(updates)
+    //     .eq('id', id)
+    //     .select()
+    //     .single()
 
-      if (error) {
-        console.error('Error updating location:', error)
-        return null
-      }
+    //   if (error) {
+    //     console.error('Error updating location:', error)
+    //     return null
+    //   }
 
-      return data
-    } catch (error) {
-      console.error('Database connection error:', error)
-      return null
+    //   return data
+    // } catch (error) {
+    //   console.error('Database connection error:', error)
+    //   return null
+    // }
+
+    // FORCE LOCAL STORAGE FALLBACK
+    console.log('🔧 Using local storage only (Supabase disabled)')
+    const locations = getStoredLocations()
+    const locationIndex = locations.findIndex(loc => loc.id === id)
+    if (locationIndex === -1) return null
+    
+    const updatedLocation = {
+      ...locations[locationIndex],
+      ...updates,
+      updated_at: new Date().toISOString()
     }
+    locations[locationIndex] = updatedLocation
+    storeLocations(locations)
+    return updatedLocation
   },
 
   // Delete a location
   async deleteLocation(id: string): Promise<boolean> {
+    // FORCE LOCAL STORAGE ONLY - Supabase operations commented out
     // In development mode, use IndexedDB with localStorage fallback
     if (isDevelopment) {
       try {
@@ -265,26 +298,35 @@ export const locationService = {
       }
     }
 
-    try {
-      const { error } = await supabase
-        .from('locations')
-        .delete()
-        .eq('id', id)
+    // COMMENTED OUT: Supabase operations disabled to prevent import errors
+    // try {
+    //   const { error } = await supabase
+    //     .from('locations')
+    //     .delete()
+    //     .eq('id', id)
 
-      if (error) {
-        console.error('Error deleting location:', error)
-        return false
-      }
+    //   if (error) {
+    //     console.error('Error deleting location:', error)
+    //     return false
+    //   }
 
-      return true
-    } catch (error) {
-      console.error('Database connection error:', error)
-      return false
-    }
+    //   return true
+    // } catch (error) {
+    //   console.error('Database connection error:', error)
+    //   return false
+    // }
+
+    // FORCE LOCAL STORAGE FALLBACK
+    console.log('🔧 Using local storage only (Supabase disabled)')
+    const locations = getStoredLocations()
+    const filtered = locations.filter(loc => loc.id !== id)
+    storeLocations(filtered)
+    return true
   },
 
   // Export locations to JSON
   async exportLocations(): Promise<string> {
+    // FORCE LOCAL STORAGE ONLY - Supabase operations commented out
     if (isDevelopment) {
       try {
         await indexedDBStorage.init()
@@ -296,8 +338,9 @@ export const locationService = {
       }
     }
     
-    // For production, export from Supabase
-    const locations = await this.getLocations()
+    // FORCE LOCAL STORAGE FALLBACK (Supabase disabled)
+    console.log('🔧 Using local storage only (Supabase disabled)')
+    const locations = getStoredLocations()
     return JSON.stringify(locations, null, 2)
   },
 
@@ -307,6 +350,7 @@ export const locationService = {
       const locations = JSON.parse(jsonData)
       if (!Array.isArray(locations)) return false
 
+      // FORCE LOCAL STORAGE ONLY - Supabase operations commented out
       if (isDevelopment) {
         try {
           await indexedDBStorage.init()
@@ -318,10 +362,9 @@ export const locationService = {
         }
       }
 
-      // For production, import to Supabase
-      for (const location of locations) {
-        await this.addLocation(location)
-      }
+      // FORCE LOCAL STORAGE FALLBACK (Supabase disabled)
+      console.log('🔧 Using local storage only (Supabase disabled)')
+      storeLocations(locations)
       return true
     } catch (error) {
       console.error('Import error:', error)
