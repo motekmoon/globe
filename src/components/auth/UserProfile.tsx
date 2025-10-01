@@ -5,7 +5,9 @@ import {
   HStack,
   Text,
   Button,
-  Avatar,
+  AvatarRoot,
+  AvatarImage,
+  AvatarFallback,
   MenuRoot,
   MenuTrigger,
   MenuContent,
@@ -74,15 +76,13 @@ const UserProfile: React.FC = () => {
             _hover={{ bg: "rgba(255, 255, 255, 0.2)" }}
             borderRadius="full"
           >
-            <HStack spacing={2}>
-              <Avatar
-                size="sm"
-                name={displayName}
-                bg="blue.500"
-                color="white"
-                fontSize="xs"
-              />
-              <VStack spacing={0} align="start" display={{ base: "none", md: "flex" }}>
+            <HStack gap={2}>
+              <AvatarRoot size="sm">
+                <AvatarFallback bg="blue.500" color="white" fontSize="xs">
+                  {getInitials(displayName)}
+                </AvatarFallback>
+              </AvatarRoot>
+              <VStack gap={0} align="start" display={{ base: "none", md: "flex" }}>
                 <Text fontSize="sm" fontWeight="medium">
                   {displayName}
                 </Text>
@@ -95,7 +95,7 @@ const UserProfile: React.FC = () => {
         </MenuTrigger>
 
         <MenuContent minW="200px">
-          <VStack spacing={2} p={3} align="start">
+          <VStack gap={2} p={3} align="start">
             <Text fontSize="sm" fontWeight="semibold" color="gray.700">
               {displayName}
             </Text>

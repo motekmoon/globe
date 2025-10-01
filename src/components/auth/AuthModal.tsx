@@ -6,12 +6,12 @@ import {
   Text,
   Button,
   Input,
-  ModalRoot,
-  ModalOverlay,
-  ModalContent,
-  ModalCloseButton,
-  ModalHeader,
-  ModalBody,
+  DialogRoot,
+  DialogBackdrop,
+  DialogContent,
+  DialogCloseTrigger,
+  DialogHeader,
+  DialogBody,
   AlertRoot,
   AlertIndicator,
   AlertContent,
@@ -89,20 +89,20 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
   };
 
   return (
-    <ModalRoot open={isOpen} onOpenChange={handleClose}>
-      <ModalOverlay />
-      <ModalContent maxW="md" mx="auto" mt="10vh">
-        <ModalCloseButton />
-        <ModalHeader>
+    <DialogRoot open={isOpen} onOpenChange={handleClose}>
+      <DialogBackdrop />
+      <DialogContent maxW="md" mx="auto" mt="10vh">
+        <DialogCloseTrigger />
+        <DialogHeader>
           <Text fontSize="2xl" fontWeight="bold" textAlign="center">
             Welcome to Globe
           </Text>
           <Text fontSize="sm" color="gray.600" textAlign="center" mt={2}>
             Sign in to save your projects and track your progress
           </Text>
-        </ModalHeader>
+        </DialogHeader>
         
-        <ModalBody pb={6}>
+        <DialogBody pb={6}>
           <TabsRoot value={activeTab} onValueChange={setActiveTab}>
             <TabsList>
               <TabsTrigger value="signin">Sign In</TabsTrigger>
@@ -123,7 +123,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             {/* Sign In Tab */}
             <TabsContent value="signin">
               <form onSubmit={handleSignIn}>
-                <VStack spacing={4} mt={4}>
+                <VStack gap={4} mt={4}>
                   <Input
                     type="email"
                     placeholder="Email address"
@@ -144,7 +144,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     type="submit"
                     colorScheme="blue"
                     width="100%"
-                    isLoading={loading}
+                    loading={loading}
                     loadingText="Signing in..."
                     disabled={!email || !password}
                   >
@@ -157,7 +157,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             {/* Sign Up Tab */}
             <TabsContent value="signup">
               <form onSubmit={handleSignUp}>
-                <VStack spacing={4} mt={4}>
+                <VStack gap={4} mt={4}>
                   <Input
                     type="text"
                     placeholder="Full name (optional)"
@@ -194,7 +194,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                     type="submit"
                     colorScheme="blue"
                     width="100%"
-                    isLoading={loading}
+                    loading={loading}
                     loadingText="Creating account..."
                     disabled={!email || !password || !confirmPassword || password !== confirmPassword}
                   >
@@ -210,7 +210,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             <Text fontSize="sm" fontWeight="semibold" mb={2}>
               Why sign up?
             </Text>
-            <VStack spacing={2} align="start">
+            <VStack gap={2} align="start">
               <HStack>
                 <Text fontSize="sm">💾</Text>
                 <Text fontSize="sm">Save your projects in the cloud</Text>
@@ -229,9 +229,9 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
               </HStack>
             </VStack>
           </Box>
-        </ModalBody>
-      </ModalContent>
-    </ModalRoot>
+        </DialogBody>
+      </DialogContent>
+    </DialogRoot>
   );
 };
 

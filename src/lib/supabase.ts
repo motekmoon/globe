@@ -1,4 +1,4 @@
-import { createClient, SupabaseClient, User, Session, AuthError } from '@supabase/supabase-js'
+import { createClient, SupabaseClient, User, Session } from '@supabase/supabase-js'
 import { indexedDBStorage } from './indexeddb'
 
 // For local development, use mock values or disable Supabase
@@ -60,6 +60,7 @@ export interface AuthSession {
 export interface AuthError {
   message: string
   status?: number
+  code?: string
 }
 
 // Database types
@@ -370,7 +371,7 @@ export const authService = {
       })
 
       if (error) {
-        return { user: null, error: { message: error.message, status: error.status } }
+        return { user: null, error: { message: error.message, status: error.status, code: error.code } }
       }
 
       return { 
@@ -385,7 +386,7 @@ export const authService = {
     } catch (error) {
       return { 
         user: null, 
-        error: { message: error instanceof Error ? error.message : 'Signup failed' } 
+        error: { message: error instanceof Error ? error.message : 'Signup failed', code: 'SIGNUP_ERROR' } 
       }
     }
   },
@@ -416,7 +417,7 @@ export const authService = {
       })
 
       if (error) {
-        return { user: null, session: null, error: { message: error.message, status: error.status } }
+        return { user: null, session: null, error: { message: error.message, status: error.status, code: error.code } }
       }
 
       const user = data.user ? {
@@ -439,7 +440,7 @@ export const authService = {
       return { 
         user: null, 
         session: null,
-        error: { message: error instanceof Error ? error.message : 'Signin failed' } 
+        error: { message: error instanceof Error ? error.message : 'Signin failed', code: 'SIGNIN_ERROR' } 
       }
     }
   },
@@ -452,9 +453,9 @@ export const authService = {
 
     try {
       const { error } = await supabase.auth.signOut()
-      return { error: error ? { message: error.message, status: error.status } : null }
+      return { error: error ? { message: error.message, status: error.status, code: error.code } : null }
     } catch (error) {
-      return { error: { message: error instanceof Error ? error.message : 'Signout failed' } }
+      return { error: { message: error instanceof Error ? error.message : 'Signout failed', code: 'SIGNOUT_ERROR' } }
     }
   },
 
@@ -468,7 +469,7 @@ export const authService = {
       const { data, error } = await supabase.auth.getSession()
       
       if (error) {
-        return { session: null, error: { message: error.message, status: error.status } }
+        return { session: null, error: { message: error.message, status: error.status, code: error.code } }
       }
 
       const session = data.session ? {
@@ -486,7 +487,7 @@ export const authService = {
 
       return { session, error: null }
     } catch (error) {
-      return { session: null, error: { message: error instanceof Error ? error.message : 'Get session failed' } }
+      return { session: null, error: { message: error instanceof Error ? error.message : 'Get session failed', code: 'SESSION_ERROR' } }
     }
   },
 
