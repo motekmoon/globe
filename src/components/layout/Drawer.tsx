@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import {
   Box,
   HStack,
@@ -45,6 +45,65 @@ const Drawer: React.FC<DrawerProps> = ({
   onDeleteLocation,
   hiddenLocations,
 }) => {
+  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
+  const [isScrolling, setIsScrolling] = useState(false);
+  const scrollContainerRef = useRef<HTMLDivElement>(null);
+  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
+  // Check if content overflows and show/hide indicator accordingly
+  const checkOverflow = () => {
+    if (!scrollContainerRef.current) return;
+    
+    const container = scrollContainerRef.current;
+    const hasOverflow = container.scrollHeight > container.clientHeight;
+    const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 5;
+    
+    setShowScrollIndicator(hasOverflow && !isAtBottom && !isScrolling);
+  };
+
+  // Handle scroll events with debouncing
+  const handleScroll = () => {
+    setIsScrolling(true);
+    setShowScrollIndicator(false);
+    
+    // Clear existing timeout
+    if (scrollTimeoutRef.current) {
+      clearTimeout(scrollTimeoutRef.current);
+    }
+    
+    // Set new timeout to check after scrolling stops
+    scrollTimeoutRef.current = setTimeout(() => {
+      setIsScrolling(false);
+      checkOverflow();
+    }, 150);
+  };
+
+  // Set up scroll listener and initial check
+  useEffect(() => {
+    if (!isOpen) return;
+    
+    const container = scrollContainerRef.current;
+    if (!container) return;
+
+    container.addEventListener('scroll', handleScroll);
+    checkOverflow(); // Initial check
+    
+    return () => {
+      container.removeEventListener('scroll', handleScroll);
+      if (scrollTimeoutRef.current) {
+        clearTimeout(scrollTimeoutRef.current);
+      }
+    };
+  }, [isOpen, filteredLocations.length]);
+
+  // Check overflow when filtered locations change
+  useEffect(() => {
+    if (isOpen) {
+      // Small delay to ensure DOM is updated
+      setTimeout(checkOverflow, 100);
+    }
+  }, [filteredLocations.length, isOpen]);
+
   if (!isOpen) return null;
 
   return (
@@ -60,6 +119,7 @@ const Drawer: React.FC<DrawerProps> = ({
       overflow="auto"
       zIndex={1000}
       boxShadow="lg"
+      ref={scrollContainerRef}
     >
       <HStack justify="space-between" align="center" mb={4}>
         <Heading size="md" color="white">
@@ -331,47 +391,51 @@ const Drawer: React.FC<DrawerProps> = ({
         )}
       </VStack>
 
-      {/* Scroll Down Indicator */}
-      <Box
-        position="absolute"
-        bottom="10px"
-        left="50%"
-        transform="translateX(-50%)"
-        display="flex"
-        flexDirection="column"
-        alignItems="center"
-        gap={1}
-        pointerEvents="none"
-        zIndex={1001}
-      >
-        <Text
-          fontSize="xs"
-          color="rgba(255, 255, 255, 0.6)"
-          fontWeight="500"
-          textAlign="center"
+      {/* Smart Scroll Down Indicator */}
+      {showScrollIndicator && (
+        <Box
+          position="absolute"
+          bottom="10px"
+          left="50%"
+          transform="translateX(-50%)"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          gap={1}
+          pointerEvents="none"
+          zIndex={1001}
+          opacity={showScrollIndicator ? 1 : 0}
+          transition="opacity 0.3s ease-in-out"
         >
-          Scroll down
-        </Text>
-        <Icon
-          as={ChevronDownIcon}
-          boxSize={4}
-          color="rgba(255, 255, 255, 0.6)"
-          animation="bounce 2s infinite"
-          css={{
-            "@keyframes bounce": {
-              "0%, 20%, 50%, 80%, 100%": {
-                transform: "translateY(0)",
+          <Text
+            fontSize="xs"
+            color="rgba(255, 255, 255, 0.6)"
+            fontWeight="500"
+            textAlign="center"
+          >
+            Scroll down
+          </Text>
+          <Icon
+            as={ChevronDownIcon}
+            boxSize={4}
+            color="rgba(255, 255, 255, 0.6)"
+            animation="bounce 2s infinite"
+            css={{
+              "@keyframes bounce": {
+                "0%, 20%, 50%, 80%, 100%": {
+                  transform: "translateY(0)",
+                },
+                "40%": {
+                  transform: "translateY(-4px)",
+                },
+                "60%": {
+                  transform: "translateY(-2px)",
+                },
               },
-              "40%": {
-                transform: "translateY(-4px)",
-              },
-              "60%": {
-                transform: "translateY(-2px)",
-              },
-            },
-          }}
-        />
-      </Box>
+            }}
+          />
+        </Box>
+      )}
     </Box>
   );
 };
