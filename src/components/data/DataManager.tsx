@@ -47,6 +47,8 @@ const DataManager: React.FC<DataManagerProps> = ({
     importLocations,
     updateLocation,
     exportLocations,
+    exportCompleteBackup,
+    importBackupData,
   } = useDataManager();
 
   const [activeTab, setActiveTab] = useState("table");
@@ -54,6 +56,11 @@ const DataManager: React.FC<DataManagerProps> = ({
   const [importLoading, setImportLoading] = useState(false);
   const [importError, setImportError] = useState<string | null>(null);
   const [importSuccess, setImportSuccess] = useState<string | null>(null);
+
+  // Project file handling
+  const [projectFile, setProjectFile] = useState<File | null>(null);
+  const [projectLoading, setProjectLoading] = useState(false);
+  const [projectError, setProjectError] = useState<string | null>(null);
   const [editingLocation, setEditingLocation] = useState<Location | null>(null);
 
   // Load data on mount
@@ -94,6 +101,39 @@ const DataManager: React.FC<DataManagerProps> = ({
 
   const handleExport = (format: "csv" | "json") => {
     exportLocations(format);
+  };
+
+  // Project handlers
+  const handleSaveProject = () => {
+    try {
+      exportCompleteBackup();
+    } catch (error) {
+      console.error("Failed to save project:", error);
+    }
+  };
+
+  const handleLoadProject = async () => {
+    if (!projectFile) return;
+
+    setProjectLoading(true);
+    setProjectError(null);
+
+    try {
+      await importBackupData(projectFile);
+      setProjectFile(null); // Clear the file after successful import
+    } catch (error) {
+      console.error("Failed to load project:", error);
+      setProjectError(
+        error instanceof Error ? error.message : "Failed to load project"
+      );
+    } finally {
+      setProjectLoading(false);
+    }
+  };
+
+  const resetProject = () => {
+    setProjectFile(null);
+    setProjectError(null);
   };
 
   const handleImport = async () => {
@@ -182,6 +222,61 @@ const DataManager: React.FC<DataManagerProps> = ({
                 </Badge>
               </HStack>
               <HStack gap={2} align="center">
+                {/* Save/Load Project Section */}
+                <HStack gap={2} align="center">
+                  <Button
+                    size="sm"
+                    variant="outline"
+                    onClick={handleSaveProject}
+                    disabled={loading}
+                  >
+                    Save Project
+                  </Button>
+
+                  {!projectFile && (
+                    <FileUpload.Root
+                      accept={[".json"]}
+                      maxFiles={1}
+                      onFileChange={(details: any) => {
+                        if (details.acceptedFiles.length > 0) {
+                          setProjectFile(details.acceptedFiles[0]);
+                          setProjectError(null);
+                        }
+                      }}
+                    >
+                      <FileUpload.HiddenInput />
+                      <FileUpload.Trigger asChild>
+                        <Button variant="outline" size="sm">
+                          Load Project
+                        </Button>
+                      </FileUpload.Trigger>
+                    </FileUpload.Root>
+                  )}
+
+                  {projectFile && (
+                    <HStack gap={1} align="center">
+                      <Text fontSize="xs" color="gray.600">
+                        {projectFile.name}
+                      </Text>
+                      <Button size="xs" variant="ghost" onClick={resetProject}>
+                        ✕
+                      </Button>
+                    </HStack>
+                  )}
+
+                  {projectFile && (
+                    <Button
+                      size="sm"
+                      colorScheme="blue"
+                      onClick={handleLoadProject}
+                      disabled={projectLoading}
+                      loading={projectLoading}
+                    >
+                      {projectLoading ? "Loading..." : "Load"}
+                    </Button>
+                  )}
+                </HStack>
+
                 {/* Import Section */}
                 <HStack gap={2} align="center">
                   {!importFile && (
@@ -292,6 +387,16 @@ const DataManager: React.FC<DataManagerProps> = ({
                 </AlertRoot>
               )}
 
+              {/* Project Error Message */}
+              {projectError && (
+                <AlertRoot status="error">
+                  <AlertIndicator />
+                  <AlertContent>
+                    <AlertTitle>Load Project Failed</AlertTitle>
+                    <AlertDescription>{projectError}</AlertDescription>
+                  </AlertContent>
+                </AlertRoot>
+              )}
 
               {/* Main Content */}
               <TabsRoot
