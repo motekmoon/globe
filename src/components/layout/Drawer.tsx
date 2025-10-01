@@ -9,7 +9,7 @@ import {
   Text,
   Icon,
 } from "@chakra-ui/react";
-import { ChevronDownIcon } from "@heroicons/react/24/outline";
+import { ChevronDownIcon, ChevronUpIcon } from "@heroicons/react/24/outline";
 import { Location } from "../../lib/supabase";
 
 interface DrawerProps {
@@ -45,37 +45,26 @@ const Drawer: React.FC<DrawerProps> = ({
   onDeleteLocation,
   hiddenLocations,
 }) => {
-  const [showScrollIndicator, setShowScrollIndicator] = useState(false);
-  const [isScrolling, setIsScrolling] = useState(false);
+  const [showScrollDownIndicator, setShowScrollDownIndicator] = useState(false);
+  const [showScrollUpIndicator, setShowScrollUpIndicator] = useState(false);
   const scrollContainerRef = useRef<HTMLDivElement>(null);
-  const scrollTimeoutRef = useRef<NodeJS.Timeout | null>(null);
 
-  // Check if content overflows and show/hide indicator accordingly
+  // Check if content overflows and show indicators accordingly
   const checkOverflow = () => {
     if (!scrollContainerRef.current) return;
     
     const container = scrollContainerRef.current;
     const hasOverflow = container.scrollHeight > container.clientHeight;
+    const isAtTop = container.scrollTop <= 5;
     const isAtBottom = container.scrollTop + container.clientHeight >= container.scrollHeight - 5;
     
-    setShowScrollIndicator(hasOverflow && !isAtBottom && !isScrolling);
+    setShowScrollDownIndicator(hasOverflow && !isAtBottom);
+    setShowScrollUpIndicator(hasOverflow && !isAtTop);
   };
 
-  // Handle scroll events with debouncing
+  // Handle scroll events
   const handleScroll = () => {
-    setIsScrolling(true);
-    setShowScrollIndicator(false);
-    
-    // Clear existing timeout
-    if (scrollTimeoutRef.current) {
-      clearTimeout(scrollTimeoutRef.current);
-    }
-    
-    // Set new timeout to check after scrolling stops
-    scrollTimeoutRef.current = setTimeout(() => {
-      setIsScrolling(false);
-      checkOverflow();
-    }, 150);
+    checkOverflow();
   };
 
   // Set up scroll listener and initial check
@@ -90,9 +79,6 @@ const Drawer: React.FC<DrawerProps> = ({
     
     return () => {
       container.removeEventListener('scroll', handleScroll);
-      if (scrollTimeoutRef.current) {
-        clearTimeout(scrollTimeoutRef.current);
-      }
     };
   }, [isOpen, filteredLocations.length]);
 
@@ -118,6 +104,36 @@ const Drawer: React.FC<DrawerProps> = ({
       zIndex={1000}
       boxShadow="lg"
     >
+      {/* Scroll Up Indicator */}
+      {showScrollUpIndicator && (
+        <Box
+          position="absolute"
+          top="10px"
+          left="50%"
+          transform="translateX(-50%)"
+          display="flex"
+          flexDirection="column"
+          alignItems="center"
+          gap={1}
+          pointerEvents="none"
+          zIndex={1001}
+        >
+          <Text
+            fontSize="xs"
+            color="rgba(255, 255, 255, 0.6)"
+            fontWeight="500"
+            textAlign="center"
+          >
+            Back to top
+          </Text>
+          <Icon
+            as={ChevronUpIcon}
+            boxSize={4}
+            color="rgba(255, 255, 255, 0.6)"
+          />
+        </Box>
+      )}
+
       {/* Scrollable Content Container */}
       <Box
         p={4}
@@ -396,8 +412,8 @@ const Drawer: React.FC<DrawerProps> = ({
       </VStack>
       </Box>
 
-      {/* Sticky Smart Scroll Down Indicator */}
-      {showScrollIndicator && (
+      {/* Scroll Down Indicator */}
+      {showScrollDownIndicator && (
         <Box
           position="absolute"
           bottom="10px"
@@ -409,8 +425,6 @@ const Drawer: React.FC<DrawerProps> = ({
           gap={1}
           pointerEvents="none"
           zIndex={1001}
-          opacity={showScrollIndicator ? 1 : 0}
-          transition="opacity 0.3s ease-in-out"
         >
           <Text
             fontSize="xs"
