@@ -66,6 +66,36 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
     initializeAuth();
   }, []);
 
+  // Listen for auth state changes (including email confirmations)
+  useEffect(() => {
+    const { data: { subscription } } = authService.onAuthStateChange((event, session) => {
+      console.log('🔄 Auth state change:', event, session?.user?.email);
+      
+      if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+        if (session?.user) {
+          setUser(session.user);
+          setSession(session);
+          console.log('✅ User session updated:', session.user.email);
+        }
+      } else if (event === 'SIGNED_OUT') {
+        setUser(null);
+        setSession(null);
+        console.log('✅ User signed out');
+      } else if (event === 'USER_UPDATED') {
+        // Handle email confirmation and other user updates
+        if (session?.user) {
+          setUser(session.user);
+          setSession(session);
+          console.log('✅ User updated (email confirmed):', session.user.email);
+        }
+      }
+    });
+
+    return () => {
+      subscription?.unsubscribe();
+    };
+  }, []);
+
   // Sign up function
   const signUp = async (email: string, password: string, name?: string): Promise<{ success: boolean; error?: string }> => {
     try {

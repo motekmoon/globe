@@ -611,5 +611,15 @@ export const authService = {
     } catch (error) {
       return { success: false, error: error instanceof Error ? error.message : 'Password update failed' };
     }
+  },
+
+  // Listen for auth state changes (including email confirmations)
+  onAuthStateChange(callback: (event: string, session: AuthSession | null) => void) {
+    if (isDevelopment) {
+      console.log('🔧 Mock: Auth state change listener set up');
+      return { data: { subscription: { unsubscribe: () => {} } } };
+    }
+
+    return supabase.auth.onAuthStateChange(callback);
   }
 }

@@ -79,10 +79,19 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
       
       if (success) {
         setUpdateSuccess(true);
-        setTimeout(() => {
-          setUpdateSuccess(false);
-          onClose();
-        }, 1500);
+        // Show different message if email was changed
+        if (updates.email) {
+          setUpdateSuccess(true);
+          setTimeout(() => {
+            setUpdateSuccess(false);
+            onClose();
+          }, 3000); // Longer timeout for email confirmation message
+        } else {
+          setTimeout(() => {
+            setUpdateSuccess(false);
+            onClose();
+          }, 1500);
+        }
       } else {
         setUpdateError(error || 'Failed to update profile');
       }
@@ -157,7 +166,12 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
               <AlertIndicator />
               <AlertContent>
                 <AlertTitle>Profile Updated</AlertTitle>
-                <AlertDescription>Your settings have been saved successfully.</AlertDescription>
+                <AlertDescription>
+                  {email !== user?.email 
+                    ? "Your settings have been saved. Please check your email and click the confirmation link to complete the email change."
+                    : "Your settings have been saved successfully."
+                  }
+                </AlertDescription>
               </AlertContent>
             </AlertRoot>
           )}
