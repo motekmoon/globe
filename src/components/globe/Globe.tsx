@@ -4,13 +4,15 @@ import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 import GlobeMarkers from './GlobeMarkers';
 import QuantityVisualization from "../visualization/QuantityVisualization";
-import { Location } from '../../lib/supabase';
+import FlightPath from "./FlightPath";
+import { Location } from "../../lib/supabase";
 
 interface GlobeProps {
   locations: Location[];
   hiddenLocations: Set<string>;
   isPlaying?: boolean;
   showQuantityVisualization?: boolean; // New prop to toggle quantity visualization
+  columnMapping?: { [key: string]: string }; // Column mapping for flight paths
 }
 
 const Globe: React.FC<GlobeProps> = ({
@@ -18,11 +20,15 @@ const Globe: React.FC<GlobeProps> = ({
   hiddenLocations,
   isPlaying = true,
   showQuantityVisualization = false,
+  columnMapping = {},
 }) => {
   const groupRef = useRef<THREE.Group>(null);
 
   // Load NASA Blue Marble world map texture
   const worldMapTexture = useTexture("/nasa-blue-marble.jpg");
+
+  // Check if any column is mapped to flightPath
+  const showFlightPaths = Object.values(columnMapping).includes("flightPath");
 
   // Three-axis rotation animation (only when playing)
   useFrame((state, delta) => {
@@ -57,6 +63,7 @@ const Globe: React.FC<GlobeProps> = ({
         hiddenLocations={hiddenLocations}
         isEnabled={showQuantityVisualization}
       />
+      <FlightPath locations={locations} isEnabled={showFlightPaths} />
     </group>
   );
 };

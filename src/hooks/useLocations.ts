@@ -15,6 +15,7 @@ export const useLocations = () => {
     showLocation,
     setEditingLocation,
     importLocations,
+    columnMapping,
   } = context;
 
   const handleLocationAdd = async (location: {
@@ -93,5 +94,6 @@ export const useLocations = () => {
     handleHideLocation,
     handleDeleteLocation,
     handleBulkImport,
+    columnMapping,
   };
 };

@@ -490,6 +490,8 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
         [columnName]: parameter,
       }));
 
+      console.log(`🔧 Column mapping updated: ${columnName} → ${parameter}`);
+
       // If mapping to quantity, update location.quantity field
       if (parameter === "quantity") {
         console.log(`🔄 Mapping column '${columnName}' to quantity field`);
@@ -522,6 +524,43 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
           })
         );
       }
+
+      // If mapping to flightPath, update location.date field
+      if (parameter === "flightPath") {
+        console.log(
+          `🛫 Mapping column '${columnName}' to flight path date field`
+        );
+        setLocations((prevLocations) =>
+          prevLocations.map((location) => {
+            const mappedValue = (location as any)[columnName];
+            console.log(
+              `🔍 Processing ${location.name}: ${columnName} = ${mappedValue}`
+            );
+            if (mappedValue !== undefined && mappedValue !== null) {
+              // Try to parse as date
+              const dateValue = new Date(mappedValue);
+              if (!isNaN(dateValue.getTime())) {
+                console.log(
+                  `🛫 Updated ${
+                    location.name
+                  }: ${mappedValue} → date: ${dateValue.toISOString()}`
+                );
+                return {
+                  ...location,
+                  date: mappedValue, // Keep original format for display
+                };
+              } else {
+                console.log(`❌ Invalid date value: ${mappedValue}`);
+              }
+            } else {
+              console.log(
+                `❌ No value found for ${columnName} in ${location.name}`
+              );
+            }
+            return location;
+          })
+        );
+      }
     },
     [locations]
   );
@@ -541,6 +580,16 @@ export const LocationProvider: React.FC<LocationProviderProps> = ({
           prevLocations.map((location) => ({
             ...location,
             quantity: undefined,
+          }))
+        );
+      }
+
+      // If clearing a flightPath mapping, reset date field to undefined
+      if (currentMapping === "flightPath") {
+        setLocations((prevLocations) =>
+          prevLocations.map((location) => ({
+            ...location,
+            date: undefined,
           }))
         );
       }

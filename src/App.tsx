@@ -41,6 +41,7 @@ function App() {
     handleHideLocation,
     handleDeleteLocation,
     handleBulkImport,
+    columnMapping,
   } = useLocations();
 
   const {
@@ -287,6 +288,7 @@ function App() {
                   hiddenLocations={hiddenLocations}
                   isPlaying={isPlaying && !isGlobePaused}
                   showQuantityVisualization={showQuantityVisualization}
+                  columnMapping={columnMapping}
                 />
 
                 <OrbitControls
