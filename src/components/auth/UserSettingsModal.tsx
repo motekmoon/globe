@@ -79,19 +79,8 @@ const UserSettingsModal: React.FC<UserSettingsModalProps> = ({ isOpen, onClose }
       
       if (success) {
         setUpdateSuccess(true);
-        // Show different message if email was changed
-        if (updates.email) {
-          setUpdateSuccess(true);
-          setTimeout(() => {
-            setUpdateSuccess(false);
-            onClose();
-          }, 3000); // Longer timeout for email confirmation message
-        } else {
-          setTimeout(() => {
-            setUpdateSuccess(false);
-            onClose();
-          }, 1500);
-        }
+        // Don't auto-close modal - let user close it manually
+        // This allows them to read the email confirmation instructions
       } else {
         setUpdateError(error || 'Failed to update profile');
       }
