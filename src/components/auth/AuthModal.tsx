@@ -92,13 +92,28 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
       <DialogBackdrop />
       <DialogContent maxW="md" mx="auto" mt="10vh">
         <DialogCloseTrigger />
-        <DialogHeader>
-          <Text fontSize="2xl" fontWeight="bold" textAlign="center">
-            Welcome to Globe
-          </Text>
-          <Text fontSize="sm" color="gray.600" textAlign="center" mt={2}>
-            Sign in to save your projects and track your progress
-          </Text>
+        <DialogHeader textAlign="center">
+          <VStack gap={2} align="center" w="100%">
+            <Text
+              fontSize="2xl"
+              fontWeight="600"
+              fontFamily="'Alumni Sans Pinstripe', cursive, sans-serif"
+              textAlign="center"
+              whiteSpace="nowrap"
+              w="100%"
+            >
+              Welcome to ORBO
+            </Text>
+            <Text
+              fontSize="sm"
+              color="gray.600"
+              textAlign="center"
+              w="100%"
+              px={4}
+            >
+              Sign in to save your projects and track your progress
+            </Text>
+          </VStack>
           {process.env.NODE_ENV === "development" &&
             !process.env.REACT_APP_SUPABASE_URL && (
               <Box
@@ -110,7 +125,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
                 borderColor="yellow.200"
               >
                 <Text fontSize="xs" color="yellow.700" textAlign="center">
-                  🔧 Development Mode: Using mock authentication. Set
+                  Development Mode: Using mock authentication. Set
                   REACT_APP_SUPABASE_URL for real accounts.
                 </Text>
               </Box>
@@ -261,23 +276,23 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose }) => {
             <Text fontSize="sm" fontWeight="semibold" mb={2}>
               Why sign up?
             </Text>
+            <VStack gap={2} align="start" mb={4}>
+              <Text fontSize="sm">• Get early access to new features</Text>
+              <Text fontSize="sm">• Track your visualization progress</Text>
+            </VStack>
+
+            <Text fontSize="sm" fontWeight="semibold" mb={2}>
+              How does ORBO work?
+            </Text>
             <VStack gap={2} align="start">
-              <HStack>
-                <Text fontSize="sm">💾</Text>
-                <Text fontSize="sm">Save your projects in the cloud</Text>
-              </HStack>
-              <HStack>
-                <Text fontSize="sm">📊</Text>
-                <Text fontSize="sm">Track your visualization progress</Text>
-              </HStack>
-              <HStack>
-                <Text fontSize="sm">🔄</Text>
-                <Text fontSize="sm">Sync across devices</Text>
-              </HStack>
-              <HStack>
-                <Text fontSize="sm">🚀</Text>
-                <Text fontSize="sm">Get early access to new features</Text>
-              </HStack>
+              <Text fontSize="sm">
+                • Data and project settings you work with are saved locally on
+                your device.
+              </Text>
+              <Text fontSize="sm">
+                • ORBO processes your data and visualization in the browser
+                locally and does not go through a cloud service or AI model.
+              </Text>
             </VStack>
           </Box>
         </DialogBody>

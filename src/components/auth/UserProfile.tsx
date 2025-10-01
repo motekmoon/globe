@@ -5,9 +5,7 @@ import {
   HStack,
   Text,
   Button,
-  AvatarRoot,
-  AvatarImage,
-  AvatarFallback,
+  Icon,
   MenuRoot,
   MenuTrigger,
   MenuContent,
@@ -18,8 +16,9 @@ import {
   AlertContent,
   AlertTitle,
   AlertDescription,
-} from '@chakra-ui/react';
-import { useAuth } from '../../contexts/AuthContext';
+} from "@chakra-ui/react";
+import { UserIcon } from "@heroicons/react/24/outline";
+import { useAuth } from "../../contexts/AuthContext";
 import UserAnalytics from "./UserAnalytics";
 
 const UserProfile: React.FC = () => {
@@ -36,22 +35,13 @@ const UserProfile: React.FC = () => {
     try {
       await signOut();
     } catch (err) {
-      console.error('Sign out error:', err);
+      console.error("Sign out error:", err);
     } finally {
       setIsSigningOut(false);
     }
   };
 
-  const getInitials = (email: string) => {
-    return email
-      .split('@')[0]
-      .split('.')
-      .map(part => part.charAt(0).toUpperCase())
-      .join('')
-      .slice(0, 2);
-  };
-
-  const displayName = user.user_metadata?.name || user.email.split('@')[0];
+  const displayName = user.user_metadata?.name || user.email.split("@")[0];
 
   return (
     <Box>
@@ -71,36 +61,27 @@ const UserProfile: React.FC = () => {
           <Button
             variant="ghost"
             size="sm"
-            p={2}
-            h="auto"
+            px={3}
+            h="25px"
             bg="rgba(255, 255, 255, 0.1)"
             color="white"
             _hover={{ bg: "rgba(255, 255, 255, 0.2)" }}
-            borderRadius="full"
+            borderRadius="md"
           >
             <HStack gap={2}>
-              <AvatarRoot size="sm">
-                <AvatarFallback bg="blue.500" color="white" fontSize="xs">
-                  {getInitials(displayName)}
-                </AvatarFallback>
-              </AvatarRoot>
-              <VStack
-                gap={0}
-                align="start"
-                display={{ base: "none", md: "flex" }}
+              <Icon as={UserIcon} boxSize={4} color="white" />
+              <Text
+                fontSize={{ base: "0.6rem", sm: "0.7rem" }}
+                fontWeight="600"
+                display={{ base: "none", md: "block" }}
               >
-                <Text fontSize="sm" fontWeight="medium">
-                  {displayName}
-                </Text>
-                <Text fontSize="xs" color="gray.300">
-                  {user.email}
-                </Text>
-              </VStack>
+                {displayName}
+              </Text>
             </HStack>
           </Button>
         </MenuTrigger>
 
-        <MenuContent minW="200px">
+        <MenuContent minW="200px" position="absolute" zIndex={50}>
           <VStack gap={2} p={3} align="start">
             <Text fontSize="sm" fontWeight="semibold" color="gray.700">
               {displayName}
@@ -116,15 +97,15 @@ const UserProfile: React.FC = () => {
           <MenuSeparator />
 
           <MenuItem onClick={() => console.log("Profile settings")}>
-            <Text fontSize="sm">⚙️ Profile Settings</Text>
+            <Text fontSize="sm">Profile Settings</Text>
           </MenuItem>
 
           <MenuItem onClick={() => setShowAnalytics(!showAnalytics)}>
-            <Text fontSize="sm">📊 Usage Analytics</Text>
+            <Text fontSize="sm">Usage Analytics</Text>
           </MenuItem>
 
           <MenuItem onClick={() => console.log("Export data")}>
-            <Text fontSize="sm">📤 Export Data</Text>
+            <Text fontSize="sm">Export Data</Text>
           </MenuItem>
 
           <MenuSeparator />
@@ -135,7 +116,7 @@ const UserProfile: React.FC = () => {
             color="red.600"
           >
             <Text fontSize="sm">
-              {isSigningOut ? "Signing out..." : "🚪 Sign Out"}
+              {isSigningOut ? "Signing out..." : "Sign Out"}
             </Text>
           </MenuItem>
         </MenuContent>
@@ -158,14 +139,14 @@ const UserProfile: React.FC = () => {
         >
           <HStack justify="space-between" mb={4}>
             <Text fontSize="lg" fontWeight="semibold">
-              📊 Your Analytics
+              Your Analytics
             </Text>
             <Button
               size="sm"
               variant="ghost"
               onClick={() => setShowAnalytics(false)}
             >
-              ✕
+              ×
             </Button>
           </HStack>
           <UserAnalytics />

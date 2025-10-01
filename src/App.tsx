@@ -1,7 +1,12 @@
 import React, { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { OrbitControls } from "@react-three/drei";
-import { EyeIcon, EyeSlashIcon } from "@heroicons/react/24/solid";
+import {
+  EyeIcon,
+  EyeSlashIcon,
+  PlayIcon,
+  PauseIcon,
+} from "@heroicons/react/24/solid";
 import {
   ChakraProvider,
   Box,
@@ -16,7 +21,6 @@ import {
 import Globe from "./components/globe/Globe";
 import LocationForm from "./components/location/LocationForm";
 import Drawer from "./components/layout/Drawer";
-import AnimationControl from "./components/controls/AnimationControl";
 import DataManager from "./components/data/DataManager";
 import { LocationProvider } from "./contexts/LocationContext";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -35,7 +39,7 @@ const system = createSystem(defaultConfig);
 function App() {
   // Authentication state
   const { user, isAuthenticated, loading: authLoading } = useAuth();
-  
+
   // Use custom hooks for state management
   const {
     locations,
@@ -67,7 +71,7 @@ function App() {
 
   // Data Management modal state
   const [isDataManagerOpen, setIsDataManagerOpen] = React.useState(false);
-  
+
   // Authentication modal state
   const [isAuthModalOpen, setIsAuthModalOpen] = React.useState(false);
 
@@ -113,7 +117,7 @@ function App() {
         height="100vh"
         // bg="linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 50%, #0f0f0f 100%)"
       >
-        {/* Logo and title positioned in bottom left */}
+        {/* Bottom Controls - Flex Container */}
         <Box
           position="absolute"
           bottom="20px"
@@ -122,10 +126,15 @@ function App() {
           display="flex"
           alignItems="center"
           gap="8px"
-          h="45px"
-          p="0"
         >
-          <Box width="40px" height="40px">
+          {/* Logo */}
+          <Box
+            width="40px"
+            height="40px"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+          >
             <img
               src="/logo.PNG"
               alt="Globe"
@@ -137,62 +146,240 @@ function App() {
               }}
             />
           </Box>
-          <Heading
-            color="white"
-            fontSize="1.8rem"
-            fontWeight="600"
-            fontFamily="'Alumni Sans Pinstripe', cursive, sans-serif"
-            margin="0"
-            h="40px"
-            lineHeight="40px"
+
+          {/* ORBO Text */}
+          <Box
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            minWidth="fit-content"
           >
-            O R B O
-          </Heading>
+            <Heading
+              color="white"
+              fontSize="1.8rem"
+              fontWeight="600"
+              fontFamily="'Alumni Sans Pinstripe', cursive, sans-serif"
+              m={0}
+            >
+              O R B O
+            </Heading>
+          </Box>
+
+          {/* Play/Pause Button */}
+          <Button
+            onClick={toggleAnimation}
+            size="md"
+            width="40px"
+            height="40px"
+            bg="rgba(255, 255, 255, 0.1)"
+            color="white"
+            borderRadius="full"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            aria-label={
+              isPlaying ? "Pause globe animation" : "Play globe animation"
+            }
+            _hover={{
+              bg: "rgba(255, 255, 255, 0.2)",
+              transform: "scale(1.05)",
+              transition: "all 0.2s ease-in-out",
+            }}
+            _active={{
+              bg: "rgba(255, 255, 255, 0.3)",
+              transform: "scale(0.95)",
+            }}
+          >
+            {isPlaying ? (
+              <PauseIcon className="h-4 w-4" />
+            ) : (
+              <PlayIcon className="h-4 w-4" />
+            )}
+          </Button>
+
+          {/* Show/Hide Visualization Button */}
+          <Button
+            onClick={() =>
+              setShowQuantityVisualization(!showQuantityVisualization)
+            }
+            size="md"
+            width="40px"
+            height="40px"
+            bg="rgba(255, 255, 255, 0.1)"
+            color="white"
+            borderRadius="full"
+            display="flex"
+            alignItems="center"
+            justifyContent="center"
+            title="Show/Hide Visualization"
+            aria-label={
+              showQuantityVisualization
+                ? "Hide visualization"
+                : "Show visualization"
+            }
+            _hover={{
+              bg: "rgba(255, 255, 255, 0.2)",
+              transform: "scale(1.05)",
+              transition: "all 0.2s ease-in-out",
+            }}
+            _active={{
+              bg: "rgba(255, 255, 255, 0.3)",
+              transform: "scale(0.95)",
+            }}
+          >
+            {showQuantityVisualization ? (
+              <EyeSlashIcon className="h-4 w-4" />
+            ) : (
+              <EyeIcon className="h-4 w-4" />
+            )}
+          </Button>
         </Box>
 
-        {/* Navigation Container */}
+        {/* Navigation Container - Clean Flexible Layout */}
         <Box
           position="absolute"
           top="15px"
           left="15px"
           right="15px"
           zIndex={30}
-          display="flex"
-          justifyContent="space-between"
-          alignItems="flex-start"
-          gap="10px"
-          minWidth="1200px"
-          overflow="visible"
-          bg="transparent"
           pointerEvents="none"
         >
-          {/* Left side - LocationForm */}
+          {/* Mobile Layout - Stacked */}
           <Box
-            flex="1"
-            minWidth="0"
-            maxWidth="calc(100vw - 200px)"
-            pointerEvents="auto"
-            bg="rgba(0, 0, 0, 0.1)"
-            borderRadius="md"
-            zIndex={31}
+            display={{ base: "flex", md: "none" }}
+            flexDirection="column"
+            gap="8px"
+            width="100%"
           >
-            <LocationForm onLocationAdd={handleLocationAdd} />
+            {/* Row 1: Login + Buttons */}
+            <Box display="flex" gap="8px" alignItems="center" flexWrap="wrap">
+              {/* Login/User Profile */}
+              <Box flexShrink={0} pointerEvents="auto" zIndex={31}>
+                {isAuthenticated ? (
+                  <UserProfile />
+                ) : (
+                  <Button
+                    onClick={() => setIsAuthModalOpen(true)}
+                    size="sm"
+                    h="32px"
+                    colorScheme="green"
+                    fontWeight="600"
+                    fontSize="0.7rem"
+                    borderRadius="md"
+                    whiteSpace="nowrap"
+                    title="Sign in to save your projects"
+                  >
+                    Sign In
+                  </Button>
+                )}
+              </Box>
+
+              {/* Data Manager - Mobile */}
+              {!isDrawerOpen && (
+                <Box flexShrink={0} pointerEvents="auto" zIndex={31}>
+                  <Button
+                    onClick={() => setIsDataManagerOpen(true)}
+                    size="sm"
+                    h="32px"
+                    bg="rgba(255, 255, 255, 0.8)"
+                    color="black"
+                    fontWeight="600"
+                    fontSize="0.6rem"
+                    borderRadius="md"
+                    whiteSpace="nowrap"
+                    border="none"
+                    _hover={{
+                      bg: "rgba(255, 255, 255, 0.9)",
+                    }}
+                  >
+                    Data Manager
+                  </Button>
+                </Box>
+              )}
+
+              {/* Quick Edit - Mobile */}
+              {!isDrawerOpen && (
+                <Box flexShrink={0} pointerEvents="auto" zIndex={31}>
+                  <Button
+                    onClick={openDrawer}
+                    size="sm"
+                    h="32px"
+                    colorScheme="blue"
+                    fontWeight="600"
+                    fontSize="0.6rem"
+                    borderRadius="md"
+                    whiteSpace="nowrap"
+                  >
+                    Quick Edit ({locations.length})
+                  </Button>
+                </Box>
+              )}
+            </Box>
+
+            {/* Row 2: Location Form - Full Width Flexible */}
+            <Box
+              width="100%"
+              pointerEvents="auto"
+              bg="rgba(0, 0, 0, 0.1)"
+              borderRadius="md"
+              zIndex={31}
+              overflow="hidden"
+              minWidth="0"
+            >
+              <LocationForm onLocationAdd={handleLocationAdd} />
+            </Box>
           </Box>
 
-          {/* Right side - Buttons */}
-          {!isDrawerOpen && (
+          {/* Desktop Layout - Horizontal with Flexible LocationForm */}
+          <Box
+            display={{ base: "none", md: "flex" }}
+            alignItems="center"
+            gap="12px"
+            width="100%"
+            minWidth="0"
+          >
+            {/* Login/User Profile - Fixed */}
+            <Box flexShrink={0} pointerEvents="auto" zIndex={31}>
+              {isAuthenticated ? (
+                <UserProfile />
+              ) : (
+                <Button
+                  onClick={() => setIsAuthModalOpen(true)}
+                  size="sm"
+                  h="32px"
+                  colorScheme="green"
+                  fontWeight="600"
+                  fontSize="0.7rem"
+                  borderRadius="md"
+                  whiteSpace="nowrap"
+                  title="Sign in to save your projects"
+                >
+                  Sign In
+                </Button>
+              )}
+            </Box>
+
+            {/* Location Form - Flexible Width */}
             <Box
-              display="flex"
-              gap="12px"
-              alignItems="center"
-              flexShrink={0}
-              minWidth="fit-content"
+              flex="1"
+              minWidth="0"
               pointerEvents="auto"
+              bg="rgba(0, 0, 0, 0.1)"
+              borderRadius="md"
+              zIndex={31}
+              overflow="hidden"
             >
+              <LocationForm onLocationAdd={handleLocationAdd} />
+            </Box>
+
+            {/* Data Manager - Fixed */}
+            {/* {!isDrawerOpen && ( */}
+            <Box flexShrink={0} pointerEvents="auto" zIndex={31}>
               <Button
                 onClick={() => setIsDataManagerOpen(true)}
                 size="sm"
                 h="25px"
+                py={0}
                 bg="rgba(255, 255, 255, 0.8)"
                 color="black"
                 fontWeight="600"
@@ -206,65 +393,31 @@ function App() {
               >
                 Data Manager
               </Button>
+            </Box>
+            {/* )} */}
 
-              <Button
-                onClick={() =>
-                  setShowQuantityVisualization(!showQuantityVisualization)
-                }
-                size="sm"
-                h="25px"
-                bg="rgba(255, 255, 255, 0.8)"
-                color="black"
-                fontWeight="600"
-                fontSize="0.7rem"
-                borderRadius="md"
-                whiteSpace="nowrap"
-                border="none"
-                title="Show/Hide Visualization"
-                _hover={{
-                  bg: "rgba(255, 255, 255, 0.9)",
-                }}
-              >
-                {showQuantityVisualization ? (
-                  <EyeSlashIcon className="h-4 w-4" />
-                ) : (
-                  <EyeIcon className="h-4 w-4" />
-                )}
-              </Button>
-              
-              {/* Authentication Button */}
-              {isAuthenticated ? (
-                <UserProfile />
-              ) : (
-                <Button
-                  onClick={() => setIsAuthModalOpen(true)}
-                  size="sm"
-                  h="25px"
-                  colorScheme="green"
-                  fontWeight="600"
-                  fontSize="0.7rem"
-                  borderRadius="md"
-                  whiteSpace="nowrap"
-                  title="Sign in to save your projects"
-                >
-                  Sign In
-                </Button>
-              )}
-              
+            {/* Quick Edit - Fixed */}
+            {/* {!isDrawerOpen && ( */}
+            <Box flexShrink={0} pointerEvents="auto" zIndex={31}>
               <Button
                 onClick={openDrawer}
                 size="sm"
                 h="25px"
-                colorScheme="blue"
+                px={3}
+                py={0}
+                bg="rgba(255, 255, 255, 0.1)"
+                color="white"
                 fontWeight="600"
                 fontSize="0.7rem"
                 borderRadius="md"
                 whiteSpace="nowrap"
+                _hover={{ bg: "rgba(255, 255, 255, 0.2)" }}
               >
                 Live Edit ({locations.length})
               </Button>
             </Box>
-          )}
+            {/* )} */}
+          </Box>
         </Box>
 
         {/* Loading Indicator */}
@@ -337,9 +490,6 @@ function App() {
             </Canvas>
           </Box>
         </div>
-
-        {/* Animation Control Button */}
-        <AnimationControl isPlaying={isPlaying} onToggle={toggleAnimation} />
 
         {/* Location Manager Drawer */}
         <Drawer

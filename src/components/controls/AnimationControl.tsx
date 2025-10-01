@@ -16,6 +16,7 @@ const AnimationControl: React.FC<AnimationControlProps> = ({ isPlaying, onToggle
       zIndex={10}
       onClick={onToggle}
       size="md"
+      p={2}
       bg="rgba(255, 255, 255, 0.1)"
       color="white"
       borderRadius="full"
